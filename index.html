@@ -518,9 +518,12 @@
 
 
   
-  
+
   <!-- البطاقة 10 -->
-  <div id="gradeGroupContainer"></div>
+  <div class="card" id="gradeGroupCard">
+    <h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>
+    <div id="gradeGroupContainer"></div>
+  </div>
 
   <script>
     async function loadData() {
@@ -555,9 +558,8 @@
       groups.forEach(group => {
         const students = data.filter(s => group.values.includes(s["التقدير"]));
         if (students.length > 0) {
-          const card = document.createElement("div");
-          card.className = "card";
-          const title = document.createElement("h2");
+          const block = document.createElement("div");
+          const title = document.createElement("h3");
           title.textContent = group.title;
 
           const table = document.createElement("table");
@@ -570,9 +572,9 @@
             </tbody>
           `;
 
-          card.appendChild(title);
-          card.appendChild(table);
-          groupContainer.appendChild(card);
+          block.appendChild(title);
+          block.appendChild(table);
+          groupContainer.appendChild(block);
         }
       });
     }
