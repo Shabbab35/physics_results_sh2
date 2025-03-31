@@ -368,55 +368,65 @@
 </script>
 
 
-  <!-- البطاقة 7 -->
-  <div class="card" id="histFinalCard" style="display:none;">
-    <h2>البطاقة 7: توزيع درجات نهاية الفصل مقارنة بالمنحنى الطبيعي</h2>
-    <div id="finalHistogram" style="height:400px;"></div>
-  </div>
+ <!-- البطاقة 7 -->
+<div class="card" id="histFinalCard" style="display:none;">
+  <h2>البطاقة 7: توزيع درجات نهاية الفصل مقارنة بالمنحنى الطبيعي</h2>
+  <div id="finalHistogram" style="height:400px; display: flex; justify-content: center;"></div>
+</div>
 
-  <script>
-    async function loadData() {
-      const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
-      const data = await response.json();
+<script>
+  async function loadData() {
+    const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
+    const data = await response.json();
 
-      const final = data.map(s => s["final_practical"] + s["final_written"]);
-      const mean = final.reduce((a,b)=>a+b,0) / final.length;
-      const std = Math.sqrt(final.reduce((a,b)=>a + Math.pow(b - mean,2), 0) / final.length);
+    const final = data.map(s => s["final_practical"] + s["final_written"]);
+    const mean = final.reduce((a,b)=>a+b,0) / final.length;
+    const std = Math.sqrt(final.reduce((a,b)=>a + Math.pow(b - mean,2), 0) / final.length);
 
-      const normalDist = Array.from({length: 100}, (_, i) => {
-        const x = i;
-        const fx = (1 / (std * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
-        return {x, y: fx * 1000};
-      });
+    const normalDist = Array.from({length: 100}, (_, i) => {
+      const x = i;
+      const fx = (1 / (std * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
+      return {x, y: fx};
+    });
 
-      const trace1 = {
-        x: final,
-        type: 'histogram',
-        opacity: 0.6,
-        name: 'نهاية الفصل'
-      };
-      const trace2 = {
-        x: normalDist.map(p => p.x),
-        y: normalDist.map(p => p.y),
-        type: 'scatter',
-        mode: 'lines',
-        name: 'التوزيع الطبيعي'
-      };
-      const layout = {
-        barmode: 'overlay',
-        xaxis: {title: 'الدرجات'},
-        yaxis: {title: 'عدد الطلاب'},
-        legend: {orientation: 'h'}
-      };
+    const trace1 = {
+      x: final,
+      type: 'histogram',
+      histnorm: 'probability density',
+      opacity: 0.6,
+      name: 'نهاية الفصل',
+      marker: {
+        color: 'rgba(231,76,60,0.6)',
+        line: {
+          color: 'black',
+          width: 1
+        }
+      }
+    };
 
-      Plotly.newPlot('finalHistogram', [trace1, trace2], layout);
-      document.getElementById("histFinalCard").style.display = "block";
-    }
+    const trace2 = {
+      x: normalDist.map(p => p.x),
+      y: normalDist.map(p => p.y),
+      type: 'scatter',
+      mode: 'lines',
+      name: 'المنحنى الطبيعي'
+    };
 
-    loadData();
-  </script>
+    const layout = {
+      barmode: 'overlay',
+      xaxis: {title: 'الدرجات'},
+      yaxis: {title: 'الكثافة الاحتمالية'},
+      legend: {orientation: 'h'}
+    };
+
+    Plotly.newPlot('finalHistogram', [trace1, trace2], layout);
+    document.getElementById("histFinalCard").style.display = "block";
+  }
+
+  loadData();
+</script>
   
-
+ <!-- البطاقة 8 -->
   <div class="card" id="compareHistCard" style="display:none;">
     <h2>البطاقة 8: مقارنة التوزيع الفعلي والمنحنى الطبيعي للفترتين</h2>
     <div id="compareHistogram" style="height:500px;"></div>
