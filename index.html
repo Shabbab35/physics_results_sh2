@@ -396,6 +396,47 @@
 
     loadData();
   </script>
+  
+  <div class="card" id="compareHistCard" style="display:none;">
+    <h2>البطاقة 8: مقارنة توزيع الدرجات في الفترتين</h2>
+    <div id="compareHistogram" style="height:400px;"></div>
+  </div>
+
+  <script>
+    async function loadData() {
+      const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
+      const data = await response.json();
+
+      const period1 = data.map(s => s["period1_total"]);
+      const final = data.map(s => s["final_practical"] + s["final_written"]);
+
+      const trace1 = {
+        x: period1,
+        type: 'histogram',
+        opacity: 0.5,
+        name: 'الفترة الأولى',
+        marker: {color: 'rgba(52,152,219,0.7)'}
+      };
+      const trace2 = {
+        x: final,
+        type: 'histogram',
+        opacity: 0.5,
+        name: 'نهاية الفصل',
+        marker: {color: 'rgba(231,76,60,0.7)'}
+      };
+
+      const layout = {
+        barmode: 'overlay',
+        xaxis: {title: 'الدرجات'},
+        yaxis: {title: 'عدد الطلاب'},
+        legend: {orientation: 'h'}
+      };
+
+      Plotly.newPlot('compareHistogram', [trace1, trace2], layout);
+      document.getElementById("compareHistCard").style.display = "block";
+    }
+
+    loadData();
+  </script>
 </body>
 </html>
-  
