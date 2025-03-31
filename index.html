@@ -591,5 +591,83 @@
 
     loadData();
   </script>
+
+
+  <!-- البطاقة 11 -->
+<div class="card" id="pieGradeCard" style="display:none;">
+  <h2>البطاقة 11: النسبة المئوية لتوزيع الطلاب حسب التقدير</h2>
+  <canvas id="gradePieChart"></canvas>
+</div>
+
+<script>
+  async function loadData() {
+    const response = await fetch("grades_sh2_term2_with_total_and_grade.json");
+    const data = await response.json();
+
+    const groups = [
+      {
+        title: "ممتاز",
+        values: ["ممتاز مرتفع", "ممتاز"],
+        color: "#2ecc71"
+      },
+      {
+        title: "جيد جدًا",
+        values: ["جيد جدًا مرتفع", "جيد جدًا"],
+        color: "#3498db"
+      },
+      {
+        title: "جيد",
+        values: ["جيد مرتفع", "جيد"],
+        color: "#f1c40f"
+      },
+      {
+        title: "مقبول",
+        values: ["مقبول مرتفع", "مقبول"],
+        color: "#e67e22"
+      },
+      {
+        title: "ضعيف",
+        values: ["ضعيف"],
+        color: "#e74c3c"
+      }
+    ];
+
+    const labels = [];
+    const values = [];
+    const colors = [];
+
+    groups.forEach(group => {
+      const count = data.filter(s => group.values.includes(s["التقدير"])).length;
+      if (count > 0) {
+        labels.push(group.title);
+        values.push(count);
+        colors.push(group.color);
+      }
+    });
+
+    const pieCtx = document.getElementById("gradePieChart").getContext("2d");
+    new Chart(pieCtx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: colors
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+
+    document.getElementById("pieGradeCard").style.display = "block";
+  }
+
+  loadData();
+</script>
+
 </body>
 </html>
