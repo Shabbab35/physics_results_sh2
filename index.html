@@ -548,68 +548,103 @@
 
   
 
-  <!-- البطاقة 10 -->
-  <div class="card>
-    <h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>
-    <div class="grid" id="gradeGroupContainer"></div>
-  </div>
+<!-- البطاقة 10 -->
+<div class="card">
+  <h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>
+  <div class="grid" id="gradeGroupContainer"></div>
+</div>
 
-  <script>
-    async function loadData() {
-      const response = await fetch("grades_sh2_term2_with_total_and_grade.json");
-      const data = await response.json();
-
-      const container = document.getElementById("gradeGroupContainer");
-
-      const groups = [
-        {
-          title: "ممتاز (يشمل ممتاز مرتفع وممتاز)",
-          values: ["ممتاز مرتفع", "ممتاز"]
-        },
-        {
-          title: "جيد جدًا (يشمل جيد جدًا مرتفع وجيد جدًا)",
-          values: ["جيد جدًا مرتفع", "جيد جدًا"]
-        },
-        {
-          title: "جيد (يشمل جيد مرتفع وجيد)",
-          values: ["جيد مرتفع", "جيد"]
-        },
-        {
-          title: "مقبول (يشمل مقبول مرتفع ومقبول)",
-          values: ["مقبول مرتفع", "مقبول"]
-        },
-        {
-          title: "ضعيف",
-          values: ["ضعيف"]
-        }
-      ];
-
-      groups.forEach(group => {
-        const students = data.filter(s => group.values.includes(s["التقدير"]));
-        if (students.length > 0) {
-          const card = document.createElement("div");
-          card.className = "card";
-
-          const title = document.createElement("h3");
-          title.textContent = group.title;
-
-          const table = document.createElement("table");
-          table.innerHTML = `
-            <thead><tr><th>م</th><th>اسم الطالب</th></tr></thead>
-            <tbody>
-              ${students.map((s, i) => `<tr><td>${i + 1}</td><td>${s.student_name}</td></tr>`).join("")}
-            </tbody>
-          `;
-
-          card.appendChild(title);
-          card.appendChild(table);
-          container.appendChild(card);
-        }
-      });
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 10px;
+  }
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
     }
+  }
+  .grid .card {
+    width: 100%;
+    margin: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .grade-header {
+    color: #fff;
+    padding: 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    text-align: center;
+  }
+</style>
 
-    loadData();
-  </script>
+<script>
+  async function loadData() {
+    const response = await fetch("grades_sh2_term2_with_total_and_grade.json");
+    const data = await response.json();
+
+    const container = document.getElementById("gradeGroupContainer");
+
+    const groups = [
+      {
+        label: "الطلاب الحاصلين على تقدير ممتاز",
+        values: ["ممتاز مرتفع", "ممتاز"],
+        color: "#2ecc71"
+      },
+      {
+        label: "الطلاب الحاصلين على تقدير جيد جدًا",
+        values: ["جيد جدًا مرتفع", "جيد جدًا"],
+        color: "#3498db"
+      },
+      {
+        label: "الطلاب الحاصلين على تقدير جيد",
+        values: ["جيد مرتفع", "جيد"],
+        color: "#f1c40f"
+      },
+      {
+        label: "الطلاب الحاصلين على تقدير مقبول",
+        values: ["مقبول مرتفع", "مقبول"],
+        color: "#e67e22"
+      },
+      {
+        label: "الطلاب الحاصلين على تقدير ضعيف",
+        values: ["ضعيف"],
+        color: "#e74c3c"
+      }
+    ];
+
+    groups.forEach(group => {
+      const students = data.filter(s => group.values.includes(s["التقدير"]));
+      if (students.length > 0) {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const title = document.createElement("div");
+        title.className = "grade-header";
+        title.style.backgroundColor = group.color;
+        title.textContent = group.label;
+
+        const table = document.createElement("table");
+        table.innerHTML = `
+          <thead><tr><th>م</th><th>اسم الطالب</th></tr></thead>
+          <tbody>
+            ${students.map((s, i) => `<tr><td>${i + 1}</td><td>${s.student_name}</td></tr>`).join("")}
+          </tbody>
+        `;
+
+        card.appendChild(title);
+        card.appendChild(table);
+        container.appendChild(card);
+      }
+    });
+  }
+
+  loadData();
+</script>
+
 
 <!-- البطاقة 11 -->
 <div class="card" id="pieGradeCard" style="display:none;">
