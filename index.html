@@ -335,8 +335,16 @@
       type: 'histogram',
       histnorm: 'probability density',
       opacity: 0.6,
-      name: 'الفترة الأولى'
+      name: 'الفترة الأولى',
+      marker: {
+        color: 'rgba(52,152,219,0.6)',
+        line: {
+          color: 'black',
+          width: 1
+        }
+      }
     };
+
     const trace2 = {
       x: normalDist.map(p => p.x),
       y: normalDist.map(p => p.y),
@@ -344,6 +352,7 @@
       mode: 'lines',
       name: 'المنحنى الطبيعي'
     };
+
     const layout = {
       barmode: 'overlay',
       xaxis: {title: 'الدرجات'},
