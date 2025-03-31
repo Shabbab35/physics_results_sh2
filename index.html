@@ -79,7 +79,12 @@
   </div>
 
 
+
   <!-- البطاقة 2 -->
+<div class="card" id="chartCard" style="display:none;">
+  <h2>البطاقة 2: مقارنة الإحصائيات في الفترتين (رسم بياني عمودي - نسبة مئوية)</h2>
+  <canvas id="comparisonChart"></canvas>
+</div>
  
 
 
@@ -160,11 +165,6 @@
       document.getElementById("statsCard").style.display = "block";
 
       // البطاقة 2: رسم بياني
-<!-- البطاقة 2 -->
-<div class="card" id="chartCard" style="display:none;">
-  <h2>البطاقة 2: مقارنة الإحصائيات في الفترتين (رسم بياني عمودي - نسبة مئوية)</h2>
-  <canvas id="comparisonChart"></canvas>
-</div>
 
       // إعداد بيانات المقارنة النسبية
 const indicators = [
