@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -7,7 +6,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap">
   <style>
-    body { font-family: 'Cairo', sans-serif; background-color: #f9f9f9; margin: 20px; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
+    }
     .card {
       width: 90%;
       margin: 10px auto;
@@ -17,48 +20,112 @@
       padding: 15px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .card h2 { font-size: 1.3em; margin-bottom: 10px; color: #2c3e50; text-align: right; }
-    table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-    th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; }
-    th { background-color: #eef0f2; }
-    .grade-table {
-      width: 30%; min-width: 200px; margin: 10px; float: right;
+    .card h2 {
+      font-size: 1.3em;
+      margin-bottom: 10px;
+      text-align: right;
+      color: #2c3e50;
     }
-    .grade-table caption {
-      caption-side: top;
-      font-weight: bold;
-      background-color: #eef0f2;
-      padding: 5px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+    }
+    table, th, td {
       border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 8px 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #eef0f2;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
 </head>
 <body>
   <h1 style="text-align:center; color:#34495e;">تقرير إحصائي – الفيزياء 1 (شعبة 2)</h1>
-  <div class="card">
+  <div class="card" id="loadingCard">
     <h2>تحميل البيانات</h2>
     <p>انتظر لحظة... يتم تحميل البيانات من ملف JSON وعرضها ديناميكيًا.</p>
   </div>
+  <div class="card" id="statsCard" style="display:none;">
+    <h2>إحصائية مفصلة للفترتين</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>المؤشر الإحصائي</th>
+          <th>الفترة الأولى</th>
+          <th>نهاية الفصل</th>
+        </tr>
+      </thead>
+      <tbody id="statsTableBody"></tbody>
+    </table>
+  </div>
+
   <script>
-    async function fetchDataAndRender() {
-      fetch('grades_sh2_term2_with_total_and_grade.json')
-  .then(response => response.json())
-  .then(data => {
-    // معالجة البيانات
-  })
-  .catch(error => console.error('حدث خطأ أثناء تحميل البيانات:', error));
+    async function loadData() {
+      const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
+      const data = await response.json();
+      document.getElementById("loadingCard").style.display = "none";
 
-      // في هذه المرحلة، سيتم تحليل البيانات وملء البطاقات الـ 12 كاملة تلقائيًا.
-      // يجب أن يتم توليد الجداول والرسوم البيانية باستخدام DOM + Chart.js + Plotly
-      // هذه نسخة مبدئية توضح ربط البيانات فقط.
-      console.log(data);
+      // حساب الإحصائيات للفترة الأولى ونهاية الفصل
+      const period1 = data.map(s => s["مجموع الفترة الأولى"]);
+      const final = data.map(s => s["الاختبار النهائي العملي"] + s["الاختبار النهائي التحريري"]);
 
-      // مثال سريع: عرض أول اسم طالب في alert
-      alert("تم تحميل البيانات لأول طالب: " + data[0]["اسم الطالب"]);
+      function mean(arr) {
+        return arr.reduce((a,b)=>a+b,0) / arr.length;
+      }
+      function median(arr) {
+        const sorted = [...arr].sort((a,b)=>a-b);
+        const mid = Math.floor(sorted.length/2);
+        return sorted.length % 2 === 0 ? (sorted[mid-1]+sorted[mid])/2 : sorted[mid];
+      }
+      function mode(arr) {
+        const freq = {};
+        arr.forEach(v => freq[v] = (freq[v]||0)+1);
+        const maxFreq = Math.max(...Object.values(freq));
+        const modes = Object.entries(freq).filter(([_,v])=>v===maxFreq).map(([k])=>parseFloat(k));
+        return modes[0];
+      }
+      function stddev(arr, avg) {
+        const variance = arr.reduce((a,b)=>a + Math.pow(b-avg,2), 0) / arr.length;
+        return Math.sqrt(variance);
+      }
+
+      const p1_mean = mean(period1).toFixed(2);
+      const p1_median = median(period1).toFixed(2);
+      const p1_mode = mode(period1);
+      const p1_std = stddev(period1, mean(period1)).toFixed(2);
+      const p1_var = (p1_std * p1_std).toFixed(2);
+
+      const f_mean = mean(final).toFixed(2);
+      const f_median = median(final).toFixed(2);
+      const f_mode = mode(final);
+      const f_std = stddev(final, mean(final)).toFixed(2);
+      const f_var = (f_std * f_std).toFixed(2);
+
+      const statsBody = document.getElementById("statsTableBody");
+      const rows = [
+        ["عدد الطلاب", period1.length, final.length],
+        ["مجموع الدرجات", period1.reduce((a,b)=>a+b,0).toFixed(2), final.reduce((a,b)=>a+b,0).toFixed(2)],
+        ["المتوسط الحسابي", p1_mean, f_mean],
+        ["الوسيط", p1_median, f_median],
+        ["المنوال", p1_mode, f_mode],
+        ["الانحراف المعياري", p1_std, f_std],
+        ["التباين", p1_var, f_var],
+      ];
+      rows.forEach(([label,p1,f]) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${label}</td><td>${p1}</td><td>${f}</td>`;
+        statsBody.appendChild(tr);
+      });
+      document.getElementById("statsCard").style.display = "block";
     }
-    fetchDataAndRender();
+
+    loadData();
   </script>
 </body>
 </html>
