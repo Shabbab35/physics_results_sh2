@@ -592,12 +592,14 @@
     loadData();
   </script>
 
-
-  <!-- البطاقة 11 -->
+<!-- البطاقة 11 -->
 <div class="card" id="pieGradeCard" style="display:none;">
   <h2>البطاقة 11: النسبة المئوية لتوزيع الطلاب حسب التقدير</h2>
   <canvas id="gradePieChart"></canvas>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
 <script>
   async function loadData() {
@@ -645,6 +647,8 @@
       }
     });
 
+    const total = values.reduce((a, b) => a + b, 0);
+
     const pieCtx = document.getElementById("gradePieChart").getContext("2d");
     new Chart(pieCtx, {
       type: 'pie',
@@ -658,9 +662,21 @@
       options: {
         responsive: true,
         plugins: {
-          legend: { position: 'bottom' }
+          legend: { position: 'bottom' },
+          datalabels: {
+            formatter: (value, context) => {
+              const percentage = ((value / total) * 100).toFixed(1);
+              return percentage + '%';
+            },
+            color: '#fff',
+            font: {
+              weight: 'bold',
+              size: 14
+            }
+          }
         }
-      }
+      },
+      plugins: [ChartDataLabels]
     });
 
     document.getElementById("pieGradeCard").style.display = "block";
@@ -668,6 +684,8 @@
 
   loadData();
 </script>
+
+
 
 </body>
 </html>
