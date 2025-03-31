@@ -69,9 +69,9 @@
     async function loadData() {
       const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
       const data = await response.json();
+      console.log("أول سجل في البيانات:", data[0]);
       document.getElementById("loadingCard").style.display = "none";
 
-      // استخدام الحقول الصحيحة من JSON
       const period1 = data.map(s => s["period1_total"]);
       const final = data.map(s => s["final_practical"] + s["final_written"]);
 
