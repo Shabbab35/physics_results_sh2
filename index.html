@@ -78,7 +78,7 @@
     <h2>البطاقة 3: توزيع الطلاب حسب التقدير</h2>
     <table>
       <thead>
-        <tr><th>التقدير</th><th>عدد الطلاب</th><th>النسبة المئوية</th></tr>
+        <tr><th>الرمز</th><th>التقدير</th><th>النطاق</th><th>عدد الطلاب</th><th>النسبة المئوية</th></tr>
       </thead>
       <tbody id="gradeTableBody"></tbody>
     </table>
@@ -184,12 +184,21 @@
       const gradeTableBody = document.getElementById("gradeTableBody");
       const totalStudents = data.length;
       const orderedGrades = [
-        "ممتاز مرتفع", "ممتاز", "جيد جدًا مرتفع", "جيد جدًا", "جيد مرتفع", "جيد", "مقبول مرتفع", "مقبول", "ضعيف"
+        { grade: "ممتاز مرتفع", symbol: "+A", range: "100 - 95" },
+        { grade: "ممتاز", symbol: "A", range: "94 - 90" },
+        { grade: "جيد جدًا مرتفع", symbol: "+B", range: "89 - 85" },
+        { grade: "جيد جدًا", symbol: "B", range: "84 - 80" },
+        { grade: "جيد مرتفع", symbol: "+C", range: "79 - 75" },
+        { grade: "جيد", symbol: "C", range: "74 - 70" },
+        { grade: "مقبول مرتفع", symbol: "+D", range: "69 - 65" },
+        { grade: "مقبول", symbol: "D", range: "64 - 60" },
+        { grade: "ضعيف", symbol: "F", range: "59 وأقل" }
       ];
-      orderedGrades.forEach(grade => {
+
+      orderedGrades.forEach(({grade, symbol, range}) => {
         const count = gradeCounts[grade] || 0;
         const percent = ((count / totalStudents) * 100).toFixed(1) + "%";
-        const row = `<tr><td>${grade}</td><td>${count}</td><td>${percent}</td></tr>`;
+        const row = `<tr><td>${symbol}</td><td>${grade}</td><td>${range}</td><td>${count}</td><td>${percent}</td></tr>`;
         gradeTableBody.innerHTML += row;
       });
       document.getElementById("gradeDistCard").style.display = "block";
