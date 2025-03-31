@@ -80,10 +80,7 @@
 
 
   <!-- البطاقة 2 -->
-  <div class="card" id="chartCard" style="display:none;">
-    <h2>البطاقة 2: مقارنة الإحصائيات في الفترتين (رسم بياني عمودي)</h2>
-    <canvas id="comparisonChart"></canvas>
-  </div>
+ 
 
 
   <!-- البطاقة 3 -->
@@ -163,32 +160,74 @@
       document.getElementById("statsCard").style.display = "block";
 
       // البطاقة 2: رسم بياني
-      const ctx = document.getElementById("comparisonChart").getContext("2d");
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ["المتوسط الحسابي", "الوسيط", "المنوال", "الانحراف المعياري", "التباين"],
-          datasets: [
-            {
-              label: "الفترة الأولى",
-              data: [p1_mean, p1_median, p1_mode, p1_std, p1_var],
-              backgroundColor: 'rgba(52, 152, 219, 0.7)'
-            },
-            {
-              label: "نهاية الفصل",
-              data: [f_mean, f_median, f_mode, f_std, f_var],
-              backgroundColor: 'rgba(231, 76, 60, 0.7)'
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { position: 'top' } },
-          scales: { y: { beginAtZero: true } }
-        }
-      });
-      document.getElementById("chartCard").style.display = "block";
+<!-- البطاقة 2 -->
+<div class="card" id="chartCard" style="display:none;">
+  <h2>البطاقة 2: مقارنة الإحصائيات في الفترتين (رسم بياني عمودي - نسبة مئوية)</h2>
+  <canvas id="comparisonChart"></canvas>
+</div>
 
+      // إعداد بيانات المقارنة النسبية
+const indicators = [
+  { label: "المتوسط الحسابي", p1: p1_mean, f: f_mean },
+  { label: "الوسيط", p1: p1_median, f: f_median },
+  { label: "المنوال", p1: p1_mode, f: f_mode },
+  { label: "الانحراف المعياري", p1: p1_std_raw, f: f_std_raw },
+  { label: "التباين", p1: p1_var, f: f_var }
+];
+
+// التطبيع إلى نسبة مئوية
+const maxVal = Math.max(...indicators.flatMap(ind => [ind.p1, ind.f]));
+const labels = indicators.map(i => i.label);
+const p1Data = indicators.map(i => ((i.p1 / maxVal) * 100).toFixed(2));
+const fData = indicators.map(i => ((i.f / maxVal) * 100).toFixed(2));
+
+// إنشاء الرسم
+const ctx = document.getElementById("comparisonChart").getContext("2d");
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: labels,
+    datasets: [
+      {
+        label: "الفترة الأولى",
+        data: p1Data,
+        backgroundColor: 'rgba(52, 152, 219, 0.7)'
+      },
+      {
+        label: "نهاية الفصل",
+        data: fData,
+        backgroundColor: 'rgba(231, 76, 60, 0.7)'
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.label + ': ' + ctx.raw + '%'
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,
+        ticks: {
+          callback: function(value) {
+            return value + '%';
+          }
+        },
+        title: {
+          display: true,
+          text: 'النسبة المئوية (%)'
+        }
+      }
+    }
+  }
+});
+document.getElementById("chartCard").style.display = "block";
 
 
 
