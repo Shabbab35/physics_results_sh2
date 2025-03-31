@@ -84,6 +84,12 @@
     </table>
   </div>
 
+  <!-- البطاقة 4 -->
+  <div class="card" id="doughnutCard" style="display:none;">
+    <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
+    <canvas id="gradeDoughnutChart"></canvas>
+  </div>
+
   <script>
     async function loadData() {
       const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
@@ -164,17 +170,13 @@
         },
         options: {
           responsive: true,
-          plugins: {
-            legend: { position: 'top' }
-          },
-          scales: {
-            y: { beginAtZero: true }
-          }
+          plugins: { legend: { position: 'top' } },
+          scales: { y: { beginAtZero: true } }
         }
       });
       document.getElementById("chartCard").style.display = "block";
 
-      // البطاقة 3: توزيع الطلاب حسب التقدير
+      // البطاقة 3 و 4: توزيع الطلاب حسب التقدير
       const gradeCounts = {};
       data.forEach(s => {
         const grade = s["التقدير"] || "غير محدد";
@@ -195,13 +197,40 @@
         { grade: "ضعيف", symbol: "F", range: "59 وأقل" }
       ];
 
-      orderedGrades.forEach(({grade, symbol, range}) => {
+      const labels = [];
+      const values = [];
+      const colors = [
+        '#1abc9c','#2ecc71','#3498db','#9b59b6','#f1c40f','#e67e22','#e74c3c','#95a5a6','#34495e'
+      ];
+
+      orderedGrades.forEach(({grade, symbol, range}, idx) => {
         const count = gradeCounts[grade] || 0;
         const percent = ((count / totalStudents) * 100).toFixed(1) + "%";
+        labels.push(grade);
+        values.push(count);
         const row = `<tr><td>${symbol}</td><td>${grade}</td><td>${range}</td><td>${count}</td><td>${percent}</td></tr>`;
         gradeTableBody.innerHTML += row;
       });
       document.getElementById("gradeDistCard").style.display = "block";
+
+      const doughnutCtx = document.getElementById("gradeDoughnutChart").getContext("2d");
+      new Chart(doughnutCtx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: values,
+            backgroundColor: colors
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+      document.getElementById("doughnutCard").style.display = "block";
     }
 
     loadData();
