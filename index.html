@@ -41,18 +41,24 @@
     th {
       background-color: #eef0f2;
     }
+    canvas {
+      max-width: 100%;
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
 </head>
 <body>
   <h1 style="text-align:center; color:#34495e;">تقرير إحصائي – الفيزياء 1 (شعبة 2)</h1>
+
   <div class="card" id="loadingCard">
     <h2>تحميل البيانات</h2>
     <p>انتظر لحظة... يتم تحميل البيانات من ملف JSON وعرضها ديناميكيًا.</p>
   </div>
+
+  <!-- البطاقة 1: الإحصائيات -->
   <div class="card" id="statsCard" style="display:none;">
-    <h2>إحصائية مفصلة للفترتين</h2>
+    <h2>البطاقة 1: إحصائية مفصلة للفترتين</h2>
     <table>
       <thead>
         <tr>
@@ -63,6 +69,12 @@
       </thead>
       <tbody id="statsTableBody"></tbody>
     </table>
+  </div>
+
+  <!-- البطاقة 2: رسم بياني عمودي -->
+  <div class="card" id="chartCard" style="display:none;">
+    <h2>البطاقة 2: مقارنة الإحصائيات في الفترتين (رسم بياني عمودي)</h2>
+    <canvas id="comparisonChart"></canvas>
   </div>
 
   <script>
@@ -123,6 +135,42 @@
         statsBody.appendChild(tr);
       });
       document.getElementById("statsCard").style.display = "block";
+
+      // رسم البطاقة 2
+      const ctx = document.getElementById("comparisonChart").getContext("2d");
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ["عدد الطلاب", "مجموع الدرجات", "المتوسط الحسابي", "الوسيط", "المنوال", "الانحراف المعياري", "التباين"],
+          datasets: [
+            {
+              label: "الفترة الأولى",
+              data: [period1.length, period1.reduce((a,b)=>a+b,0), p1_mean, p1_median, p1_mode, p1_std, p1_var],
+              backgroundColor: 'rgba(52, 152, 219, 0.7)'
+            },
+            {
+              label: "نهاية الفصل",
+              data: [final.length, final.reduce((a,b)=>a+b,0), f_mean, f_median, f_mode, f_std, f_var],
+              backgroundColor: 'rgba(231, 76, 60, 0.7)'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'top' },
+            title: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+      document.getElementById("chartCard").style.display = "block";
     }
 
     loadData();
