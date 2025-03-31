@@ -107,23 +107,29 @@
         return Math.sqrt(variance);
       }
 
-      const p1_mean = mean(period1).toFixed(2);
-      const p1_median = median(period1).toFixed(2);
-      const p1_mode = mode(period1);
-      const p1_std = stddev(period1, mean(period1)).toFixed(2);
-      const p1_var = (p1_std * p1_std).toFixed(2);
+      const p1_mean = mean(period1);
+      const f_mean = mean(final);
 
-      const f_mean = mean(final).toFixed(2);
+      const p1_std_raw = stddev(period1, p1_mean);
+      const f_std_raw = stddev(final, f_mean);
+
+      const p1_std = p1_std_raw.toFixed(2);
+      const f_std = f_std_raw.toFixed(2);
+
+      const p1_var = (p1_std_raw * p1_std_raw).toFixed(2);
+      const f_var = (f_std_raw * f_std_raw).toFixed(2);
+
+      const p1_median = median(period1).toFixed(2);
       const f_median = median(final).toFixed(2);
+
+      const p1_mode = mode(period1);
       const f_mode = mode(final);
-      const f_std = stddev(final, mean(final)).toFixed(2);
-      const f_var = (f_std * f_std).toFixed(2);
 
       const statsBody = document.getElementById("statsTableBody");
       const rows = [
         ["عدد الطلاب", period1.length, final.length],
         ["مجموع الدرجات", period1.reduce((a,b)=>a+b,0).toFixed(2), final.reduce((a,b)=>a+b,0).toFixed(2)],
-        ["المتوسط الحسابي", p1_mean, f_mean],
+        ["المتوسط الحسابي", p1_mean.toFixed(2), f_mean.toFixed(2)],
         ["الوسيط", p1_median, f_median],
         ["المنوال", p1_mode, f_mode],
         ["الانحراف المعياري", p1_std, f_std],
