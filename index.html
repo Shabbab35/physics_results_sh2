@@ -518,31 +518,61 @@
 
 
   
+  
   <!-- البطاقة 10 -->
-  <div class="card" id="gradeGroupCard">
-    <h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>
-    <div id="gradeGroupsContainer"></div>
-  </div>
+  <div id="gradeGroupContainer"></div>
 
   <script>
     async function loadData() {
       const response = await fetch("grades_sh2_term2_with_total_and_grade.json");
       const data = await response.json();
 
-      const container = document.getElementById("gradeGroupsContainer");
-      const gradeCategories = [
-        "ممتاز مرتفع", "ممتاز", "جيد جدًا مرتفع", "جيد جدًا",
-        "جيد مرتفع", "جيد", "مقبول مرتفع", "مقبول", "ضعيف"
+      const groupContainer = document.getElementById("gradeGroupContainer");
+
+      const groups = [
+        {
+          title: "ممتاز (يشمل ممتاز مرتفع وممتاز)",
+          values: ["ممتاز مرتفع", "ممتاز"]
+        },
+        {
+          title: "جيد جدًا (يشمل جيد جدًا مرتفع وجيد جدًا)",
+          values: ["جيد جدًا مرتفع", "جيد جدًا"]
+        },
+        {
+          title: "جيد (يشمل جيد مرتفع وجيد)",
+          values: ["جيد مرتفع", "جيد"]
+        },
+        {
+          title: "مقبول (يشمل مقبول مرتفع ومقبول)",
+          values: ["مقبول مرتفع", "مقبول"]
+        },
+        {
+          title: "ضعيف",
+          values: ["ضعيف"]
+        }
       ];
 
-      gradeCategories.forEach(grade => {
-        const students = data.filter(s => s["التقدير"] === grade);
+      groups.forEach(group => {
+        const students = data.filter(s => group.values.includes(s["التقدير"]));
         if (students.length > 0) {
+          const card = document.createElement("div");
+          card.className = "card";
+          const title = document.createElement("h2");
+          title.textContent = group.title;
+
           const table = document.createElement("table");
-          const thead = `<thead><tr><th colspan="1">${grade}</th></tr><tr><th>اسم الطالب</th></tr></thead>`;
-          const rows = students.map(s => `<tr><td>${s.student_name}</td></tr>`).join("");
-          table.innerHTML = thead + '<tbody>' + rows + '</tbody>';
-          container.appendChild(table);
+          table.innerHTML = `
+            <thead>
+              <tr><th>م</th><th>اسم الطالب</th></tr>
+            </thead>
+            <tbody>
+              ${students.map((s, i) => `<tr><td>${i + 1}</td><td>${s.student_name}</td></tr>`).join("")}
+            </tbody>
+          `;
+
+          card.appendChild(title);
+          card.appendChild(table);
+          groupContainer.appendChild(card);
         }
       });
     }
