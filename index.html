@@ -19,6 +19,7 @@
       border-radius: 8px;
       padding: 15px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      overflow-x: auto;
     }
     .card h2 {
       font-size: 1.3em;
@@ -37,6 +38,7 @@
     th, td {
       padding: 8px 12px;
       text-align: center;
+      white-space: nowrap;
     }
     th {
       background-color: #eef0f2;
@@ -231,6 +233,65 @@
         }
       });
       document.getElementById("doughnutCard").style.display = "block";
+    }
+
+
+    
+  <!-- البطاقة 5 -->
+  <div class="card" id="studentsTableCard" style="display:none;">
+    <h2>البطاقة 5: جدول تفصيلي لدرجات الطلاب</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>اسم الطالب</th>
+          <th>الواجبات</th>
+          <th>المشاريع</th>
+          <th>النشاطات</th>
+          <th>المشاركة</th>
+          <th>اختبارات قصيرة</th>
+          <th>تطبيق عملي</th>
+          <th>مجموع الفترة الأولى</th>
+          <th>النهائي العملي</th>
+          <th>النهائي التحريري</th>
+          <th>مجموع نهاية الفصل</th>
+          <th>المجموع الكلي</th>
+          <th>التقدير</th>
+        </tr>
+      </thead>
+      <tbody id="studentsTableBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    async function loadData() {
+      const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
+      const data = await response.json();
+      document.getElementById("loadingCard").style.display = "none";
+
+      // البيانات الأخرى...
+
+      // البطاقة 5: جدول درجات الطلاب
+      const studentsBody = document.getElementById("studentsTableBody");
+      data.forEach(s => {
+        const finalTotal = (s["final_practical"] + s["final_written"]).toFixed(2);
+        const row = `<tr>
+          <td>${s.student_name}</td>
+          <td>${s.assignments}</td>
+          <td>${s.projects}</td>
+          <td>${s.activities}</td>
+          <td>${s.participation}</td>
+          <td>${s.short_written}</td>
+          <td>${s.short_practical}</td>
+          <td>${s.period1_total}</td>
+          <td>${s.final_practical}</td>
+          <td>${s.final_written}</td>
+          <td>${finalTotal}</td>
+          <td>${s.total_score}</td>
+          <td>${s["التقدير"]}</td>
+        </tr>`;
+        studentsBody.innerHTML += row;
+      });
+      document.getElementById("studentsTableCard").style.display = "block";
     }
 
     loadData();
