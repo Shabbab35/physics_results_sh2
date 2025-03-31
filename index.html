@@ -43,8 +43,12 @@
   </div>
   <script>
     async function fetchDataAndRender() {
-      const response = await fetch('Grades_sh2_term2_with_total_and_grade.json');
-      const data = await response.json();
+      fetch('grades_sh2_term2_with_total_and_grade.json')
+  .then(response => response.json())
+  .then(data => {
+    // معالجة البيانات
+  })
+  .catch(error => console.error('حدث خطأ أثناء تحميل البيانات:', error));
 
       // في هذه المرحلة، سيتم تحليل البيانات وملء البطاقات الـ 12 كاملة تلقائيًا.
       // يجب أن يتم توليد الجداول والرسوم البيانية باستخدام DOM + Chart.js + Plotly
