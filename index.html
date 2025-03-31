@@ -397,9 +397,10 @@
     loadData();
   </script>
   
+
   <div class="card" id="compareHistCard" style="display:none;">
-    <h2>البطاقة 8: مقارنة توزيع الدرجات في الفترتين</h2>
-    <div id="compareHistogram" style="height:400px;"></div>
+    <h2>البطاقة 8: مقارنة التوزيع الفعلي والمنحنى الطبيعي للفترتين</h2>
+    <div id="compareHistogram" style="height:500px;"></div>
   </div>
 
   <script>
@@ -410,19 +411,51 @@
       const period1 = data.map(s => s["period1_total"]);
       const final = data.map(s => s["final_practical"] + s["final_written"]);
 
-      const trace1 = {
+      function getNormalDistribution(arr) {
+        const mean = arr.reduce((a,b)=>a+b,0) / arr.length;
+        const std = Math.sqrt(arr.reduce((a,b)=>a + Math.pow(b - mean,2), 0) / arr.length);
+        const min = Math.min(...arr);
+        const max = Math.max(...arr);
+        const points = [];
+        for (let x = min - 5; x <= max + 5; x += 0.5) {
+          const fx = (1 / (std * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
+          points.push({x, y: fx * arr.length * 2});
+        }
+        return points;
+      }
+
+      const period1Normal = getNormalDistribution(period1);
+      const finalNormal = getNormalDistribution(final);
+
+      const traceP1 = {
         x: period1,
         type: 'histogram',
         opacity: 0.5,
         name: 'الفترة الأولى',
         marker: {color: 'rgba(52,152,219,0.7)'}
       };
-      const trace2 = {
+      const traceF = {
         x: final,
         type: 'histogram',
         opacity: 0.5,
         name: 'نهاية الفصل',
         marker: {color: 'rgba(231,76,60,0.7)'}
+      };
+      const traceP1Norm = {
+        x: period1Normal.map(p => p.x),
+        y: period1Normal.map(p => p.y),
+        type: 'scatter',
+        mode: 'lines',
+        name: 'منحنى الفترة الأولى',
+        line: {color: 'blue'}
+      };
+      const traceFNorm = {
+        x: finalNormal.map(p => p.x),
+        y: finalNormal.map(p => p.y),
+        type: 'scatter',
+        mode: 'lines',
+        name: 'منحنى نهاية الفصل',
+        line: {color: 'red'}
       };
 
       const layout = {
@@ -432,7 +465,7 @@
         legend: {orientation: 'h'}
       };
 
-      Plotly.newPlot('compareHistogram', [trace1, trace2], layout);
+      Plotly.newPlot('compareHistogram', [traceP1, traceF, traceP1Norm, traceFNorm], layout);
       document.getElementById("compareHistCard").style.display = "block";
     }
 
