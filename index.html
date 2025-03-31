@@ -71,12 +71,9 @@
       const data = await response.json();
       document.getElementById("loadingCard").style.display = "none";
 
-      // تحويل القيم النصية إلى أرقام مع التنظيف
-      const period1 = data.map(s => parseFloat((s["مجموع الفترة الأولى"] || "0").toString().trim()) || 0);
-      const final = data.map(s =>
-        parseFloat((s["الاختبار النهائي العملي"] || "0").toString().trim()) +
-        parseFloat((s["الاختبار النهائي التحريري"] || "0").toString().trim())
-      );
+      // استخدام الحقول الصحيحة من JSON
+      const period1 = data.map(s => s["period1_total"]);
+      const final = data.map(s => s["final_practical"] + s["final_written"]);
 
       function mean(arr) {
         return arr.reduce((a,b)=>a+b,0) / arr.length;
