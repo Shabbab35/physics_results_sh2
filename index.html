@@ -520,9 +520,9 @@
   
 
   <!-- البطاقة 10 -->
-  <div class="card" id="gradeGroupCard">
+  <div class="card main-card">
     <h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>
-    <div id="gradeGroupContainer"></div>
+    <div class="grid" id="gradeGroupContainer"></div>
   </div>
 
   <script>
@@ -530,7 +530,7 @@
       const response = await fetch("grades_sh2_term2_with_total_and_grade.json");
       const data = await response.json();
 
-      const groupContainer = document.getElementById("gradeGroupContainer");
+      const container = document.getElementById("gradeGroupContainer");
 
       const groups = [
         {
@@ -558,26 +558,27 @@
       groups.forEach(group => {
         const students = data.filter(s => group.values.includes(s["التقدير"]));
         if (students.length > 0) {
-          const block = document.createElement("div");
+          const card = document.createElement("div");
+          card.className = "card";
+
           const title = document.createElement("h3");
           title.textContent = group.title;
 
           const table = document.createElement("table");
           table.innerHTML = `
-            <thead>
-              <tr><th>م</th><th>اسم الطالب</th></tr>
-            </thead>
+            <thead><tr><th>م</th><th>اسم الطالب</th></tr></thead>
             <tbody>
               ${students.map((s, i) => `<tr><td>${i + 1}</td><td>${s.student_name}</td></tr>`).join("")}
             </tbody>
           `;
 
-          block.appendChild(title);
-          block.appendChild(table);
-          groupContainer.appendChild(block);
+          card.appendChild(title);
+          card.appendChild(table);
+          container.appendChild(card);
         }
       });
     }
+
     loadData();
   </script>
 </body>
