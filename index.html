@@ -72,7 +72,7 @@
       console.log("أول سجل في البيانات:", data[0]);
       document.getElementById("loadingCard").style.display = "none";
 
-      const period1 = data.map(s => s["period1_total"]);
+      const period1 = data.map(s => s["period_total"]);
       const final = data.map(s => s["final_practical"] + s["final_written"]);
 
       function mean(arr) {
