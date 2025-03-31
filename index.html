@@ -686,6 +686,61 @@
 </script>
 
 
+  <!-- البطاقة 12 -->
+<div class="card" id="nationalityCard" style="display:none;">
+  <h2>البطاقة 12: توزيع الطلاب حسب الجنسية</h2>
+  <canvas id="nationalityDoughnutChart"></canvas>
+</div>
+
+<script>
+  async function loadData() {
+    const response = await fetch("grades_sh2_term2_with_total_and_grade.json");
+    const data = await response.json();
+
+    const nationalityCounts = { سعودي: 0, "غير سعودي": 0 };
+    data.forEach(s => {
+      const isSaudi = s.student_id.toString().startsWith("1");
+      const label = isSaudi ? "سعودي" : "غير سعودي";
+      nationalityCounts[label]++;
+    });
+
+    const labels = Object.keys(nationalityCounts);
+    const values = Object.values(nationalityCounts);
+    const colors = ['#2980b9', '#16a085'];
+
+    const ctx = document.getElementById("nationalityDoughnutChart").getContext("2d");
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: colors
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const total = values.reduce((a,b)=>a+b,0);
+                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                return `${context.label}: ${context.parsed} (${percentage}%)`;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    document.getElementById("nationalityCard").style.display = "block";
+  }
+
+  loadData();
+</script>
+
 
 </body>
 </html>
