@@ -136,21 +136,21 @@
       });
       document.getElementById("statsCard").style.display = "block";
 
-      // رسم البطاقة 2
+      // رسم البطاقة 2 بدون عدد الطلاب ومجموع الدرجات
       const ctx = document.getElementById("comparisonChart").getContext("2d");
       new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ["عدد الطلاب", "مجموع الدرجات", "المتوسط الحسابي", "الوسيط", "المنوال", "الانحراف المعياري", "التباين"],
+          labels: ["المتوسط الحسابي", "الوسيط", "المنوال", "الانحراف المعياري", "التباين"],
           datasets: [
             {
               label: "الفترة الأولى",
-              data: [period1.length, period1.reduce((a,b)=>a+b,0), p1_mean, p1_median, p1_mode, p1_std, p1_var],
+              data: [p1_mean, p1_median, p1_mode, p1_std, p1_var],
               backgroundColor: 'rgba(52, 152, 219, 0.7)'
             },
             {
               label: "نهاية الفصل",
-              data: [final.length, final.reduce((a,b)=>a+b,0), f_mean, f_median, f_mode, f_std, f_var],
+              data: [f_mean, f_median, f_mode, f_std, f_var],
               backgroundColor: 'rgba(231, 76, 60, 0.7)'
             }
           ]
