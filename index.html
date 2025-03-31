@@ -297,5 +297,56 @@
 
     loadData();
   </script>
+
+
+    <!-- البطاقة 6 -->
+  <div class="card" id="histPeriod1Card" style="display:none;">
+    <h2>البطاقة 6: توزيع درجات الفترة الأولى مقارنة بالمنحنى الطبيعي</h2>
+    <div id="period1Histogram" style="height:400px;"></div>
+  </div>
+
+  <script>
+    async function loadData() {
+      const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
+      const data = await response.json();
+
+      const period1 = data.map(s => s["period1_total"]);
+      const mean = period1.reduce((a,b)=>a+b,0) / period1.length;
+      const std = Math.sqrt(period1.reduce((a,b)=>a + Math.pow(b - mean,2), 0) / period1.length);
+
+      const normalDist = Array.from({length: 100}, (_, i) => {
+        const x = i;
+        const fx = (1 / (std * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
+        return {x, y: fx * 1000};
+      });
+
+      const trace1 = {
+        x: period1,
+        type: 'histogram',
+        opacity: 0.6,
+        name: 'الفترة الأولى'
+      };
+      const trace2 = {
+        x: normalDist.map(p => p.x),
+        y: normalDist.map(p => p.y),
+        type: 'scatter',
+        mode: 'lines',
+        name: 'التوزيع الطبيعي'
+      };
+      const layout = {
+        barmode: 'overlay',
+        xaxis: {title: 'الدرجات'},
+        yaxis: {title: 'عدد الطلاب'},
+        legend: {orientation: 'h'}
+      };
+
+      Plotly.newPlot('period1Histogram', [trace1, trace2], layout);
+      document.getElementById("histPeriod1Card").style.display = "block";
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
 </body>
 </html>
