@@ -163,6 +163,17 @@ doughnutCard.appendChild(doughnutCanvas);
 container.appendChild(doughnutCard);
 
 const doughnutCtx = doughnutCanvas.getContext("2d");
+      const orderedGrades = [
+  { grade: "ممتاز مرتفع", color: '#1abc9c' },
+  { grade: "ممتاز", color: '#2ecc71' },
+  { grade: "جيد جدًا مرتفع", color: '#3498db' },
+  { grade: "جيد جدًا", color: '#9b59b6' },
+  { grade: "جيد مرتفع", color: '#f1c40f' },
+  { grade: "جيد", color: '#e67e22' },
+  { grade: "مقبول مرتفع", color: '#e74c3c' },
+  { grade: "مقبول", color: '#95a5a6' },
+  { grade: "ضعيف", color: '#34495e' }
+];
 const labels4 = orderedGrades.map(g => g.grade);
 const values4 = orderedGrades.map(g => gradeCounts[g.grade] || 0);
 const colors4 = [
