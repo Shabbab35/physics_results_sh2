@@ -1,9 +1,10 @@
+// تحميل البيانات من ملف student_data.js وتنفيذ التحليل
 function loadData() {
-  const data = studentData; // تم تحميلها مسبقًا من student_data.js
-  const container = document.getElementById("cardsContainer");
-  document.getElementById("loadingCard").style.display = "none";
+  const data = studentData;
 
-  // ========== البطاقة 1 ==========
+  const container = document.getElementById("cardsContainer");
+
+  // ===== البطاقة 1 =====
   const period1 = data.map(s => s["period1_total"]);
   const final = data.map(s => s["final_practical"] + s["final_written"]);
 
@@ -17,7 +18,7 @@ function loadData() {
     const freq = {};
     arr.forEach(v => freq[v] = (freq[v] || 0) + 1);
     const maxFreq = Math.max(...Object.values(freq));
-    return parseFloat(Object.keys(freq).find(k => freq[k] === maxFreq));
+    return parseFloat(Object.keys(freq).find(k => freq[k] == maxFreq));
   };
   const stddev = (arr, avg) => Math.sqrt(arr.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) / arr.length);
 
@@ -42,8 +43,56 @@ function loadData() {
     </tbody></table>`;
   container.appendChild(card1);
 
-  // يمكنك الآن إضافة باقي البطاقات 2 إلى 12 بنفس الأسلوب هنا...
+  // ===== البطاقة 2 =====
+  const indicators = [
+    { label: "المتوسط الحسابي", p1: p1_mean, f: f_mean },
+    { label: "الوسيط", p1: p1_median, f: f_median },
+    { label: "المنوال", p1: p1_mode, f: f_mode },
+    { label: "الانحراف المعياري", p1: p1_std, f: f_std },
+    { label: "التباين", p1: p1_var, f: f_var }
+  ];
+  const maxVal = Math.max(...indicators.flatMap(i => [i.p1, i.f]));
+  const labels = indicators.map(i => i.label);
+  const p1Data = indicators.map(i => ((i.p1 / maxVal) * 100).toFixed(2));
+  const fData = indicators.map(i => ((i.f / maxVal) * 100).toFixed(2));
+
+  const card2 = document.createElement("div");
+  card2.className = "card";
+  card2.innerHTML = `<h2>البطاقة 2: مقارنة المؤشرات (نسبة مئوية)</h2><canvas id="comparisonChart"></canvas>`;
+  container.appendChild(card2);
+
+  new Chart(document.getElementById("comparisonChart").getContext("2d"), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        { label: "الفترة الأولى", data: p1Data, backgroundColor: '#3498db' },
+        { label: "نهاية الفصل", data: fData, backgroundColor: '#e74c3c' }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.dataset.label + ': ' + ctx.raw + '%'
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          ticks: {
+            callback: value => value + '%'
+          },
+          title: { display: true, text: 'النسبة المئوية (%)' }
+        }
+      }
+    }
+  });
 }
 
-// استدعاء الدالة بعد تعريفها
+// استدعاء الدالة
 loadData();
