@@ -1,9 +1,10 @@
 async function loadData() {
-  const response = await fetch('https://github.com/Shabbab35/physics_results_sh2/blob/main/grades_sh2_term2_with_total_and_grade.json');
+  const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
   const data = await response.json();
   document.getElementById("loadingCard").style.display = "none";
   const container = document.getElementById("cardsContainer");
 
+  // دوال إحصائية
   const mean = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
   const median = arr => {
     const sorted = [...arr].sort((a, b) => a - b);
@@ -14,7 +15,7 @@ async function loadData() {
     const freq = {};
     arr.forEach(v => freq[v] = (freq[v] || 0) + 1);
     const maxFreq = Math.max(...Object.values(freq));
-    return parseFloat(Object.keys(freq).find(k => freq[k] == maxFreq));
+    return parseFloat(Object.keys(freq).find(k => freq[k] === maxFreq));
   };
   const stddev = (arr, avg) => Math.sqrt(arr.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) / arr.length);
 
@@ -43,15 +44,14 @@ async function loadData() {
     </tbody></table>`;
   container.appendChild(card1);
 
-  // البطاقة 2: مقارنة المؤشرات كنسبة مئوية
+  // البطاقة 2
   const indicators = [
-    { label: "المتوسط الحسابي", p1: p1_mean, f: f_mean },
+    { label: "المتوسط", p1: p1_mean, f: f_mean },
     { label: "الوسيط", p1: p1_median, f: f_median },
     { label: "المنوال", p1: p1_mode, f: f_mode },
     { label: "الانحراف المعياري", p1: p1_std, f: f_std },
     { label: "التباين", p1: p1_var, f: f_var }
   ];
-
   const maxVal = Math.max(...indicators.flatMap(i => [i.p1, i.f]));
   const labels = indicators.map(i => i.label);
   const p1Data = indicators.map(i => ((i.p1 / maxVal) * 100).toFixed(2));
@@ -59,7 +59,7 @@ async function loadData() {
 
   const card2 = document.createElement("div");
   card2.className = "card";
-  card2.innerHTML = `<h2>البطاقة 2: مقارنة المؤشرات (نسبة مئوية)</h2><canvas id="comparisonChart"></canvas>`;
+  card2.innerHTML = `<h2>البطاقة 2: مقارنة المؤشرات الإحصائية</h2><canvas id="comparisonChart"></canvas>`;
   container.appendChild(card2);
 
   new Chart(document.getElementById("comparisonChart").getContext("2d"), {
@@ -85,14 +85,15 @@ async function loadData() {
         y: {
           beginAtZero: true,
           max: 100,
-          ticks: { callback: value => value + '%' },
-          title: { display: true, text: 'النسبة المئوية (%)' }
+          ticks: {
+            callback: value => value + '%'
+          }
         }
       }
     }
   });
 
-  // البطاقة 3: توزيع الطلاب حسب التقدير
+  // البطاقة 3
   const gradeCounts = {};
   data.forEach(s => {
     const grade = s["التقدير"] || "غير محدد";
@@ -115,13 +116,11 @@ async function loadData() {
     </tbody></table>`;
   container.appendChild(card3);
 
-  // البطاقة 4: الرسم الكعكي
-  const doughnutCard = document.createElement("div");
-  doughnutCard.className = "card";
-  doughnutCard.innerHTML = `
-    <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
-    <canvas id="gradeDoughnutChart"></canvas>`;
-  container.appendChild(doughnutCard);
+  // البطاقة 4
+  const card4 = document.createElement("div");
+  card4.className = "card";
+  card4.innerHTML = `<h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2><canvas id="gradeDoughnutChart"></canvas>`;
+  container.appendChild(card4);
 
   const orderedGrades = [
     { grade: "ممتاز مرتفع", color: '#1abc9c' },
@@ -145,9 +144,10 @@ async function loadData() {
     }
   });
 
-  const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
+  const total = doughnutValues.reduce((a, b) => a + b, 0);
+
   Chart.register(ChartDataLabels);
-  new Chart(ctx4, {
+  new Chart(document.getElementById("gradeDoughnutChart").getContext("2d"), {
     type: 'doughnut',
     data: {
       labels: doughnutLabels,
@@ -163,15 +163,15 @@ async function loadData() {
         datalabels: {
           color: '#fff',
           font: { weight: 'bold' },
-          formatter: (value, ctx) => {
-            const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+          formatter: value => {
             const percent = (value / total * 100).toFixed(1);
             return `${percent}%`;
           }
         }
       }
-    },
-    plugins: [ChartDataLabels]
+    }
   });
 }
+
+// استدعاء الدالة
 loadData();
