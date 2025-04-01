@@ -46,7 +46,48 @@ async function loadData() {
   // === البطاقة 4 ===
   container.appendChild(createGradeDoughnut(gradeCounts));
 
-  // === البطاقات 5 إلى 12 ===
-  // يمكنك الآن متابعة إنشاء باقي البطاقات بنفس النمط: إحصاءات - رسوم - جداول...
-  // يتم حفظ وظائف الإنشاء بشكل منفصل ليسهل التنظيم
-}
+// === البطاقة 5 ===
+const card5 = document.createElement("div");
+card5.className = "card";
+card5.innerHTML = `
+  <h2>البطاقة 5: مقارنة توزيع التقديرات (الرسم البياني الشريطي الأفقي)</h2>
+  <canvas id="gradesBarChart"></canvas>
+`;
+container.appendChild(card5);
+
+const gradeLabels5 = grades;
+const gradeValues5 = gradeLabels5.map(g => gradeCounts[g] || 0);
+
+new Chart(document.getElementById("gradesBarChart").getContext("2d"), {
+  type: 'bar',
+  data: {
+    labels: gradeLabels5,
+    datasets: [{
+      label: 'عدد الطلاب',
+      data: gradeValues5,
+      backgroundColor: '#2980b9'
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.raw + ' طالب'
+        }
+      }
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'عدد الطلاب'
+        }
+      }
+    }
+  }
+});
+  
