@@ -117,12 +117,12 @@ function loadData() {
   container.appendChild(card3);
 
   // === البطاقة 4 ===
-  const card4 = document.createElement("div");
-  card4.className = "card";
-  card4.innerHTML = `
-    <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
-    <canvas id="gradeDoughnutChart"></canvas>`;
-  container.appendChild(card4);
+const card4 = document.createElement("div");
+card4.className = "card";
+card4.innerHTML = `
+  <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
+  <canvas id="gradeDoughnutChart"></canvas>`;
+container.appendChild(card4);
 
   const orderedGrades = grades.map((g, i) => ({ grade: g, color: [
     '#1abc9c','#2ecc71','#3498db','#9b59b6','#f1c40f','#e67e22','#e74c3c','#95a5a6','#34495e'][i] }));
