@@ -147,8 +147,7 @@
         </tbody></table>`;
       container.appendChild(card3);
 
-      // === البطاقة 4 ===
-// أولًا: إنشاء البطاقة وإدراجها
+// === البطاقة 4 ===
 const doughnutCard = document.createElement("div");
 doughnutCard.className = "card";
 doughnutCard.innerHTML = `
@@ -157,7 +156,7 @@ doughnutCard.innerHTML = `
 `;
 container.appendChild(doughnutCard);
 
-// ثانيًا: حساب البيانات
+// بيانات التقديرات مرتبة بالألوان
 const orderedGrades = [
   { grade: "ممتاز مرتفع", color: '#1abc9c' },
   { grade: "ممتاز", color: '#2ecc71' },
@@ -170,6 +169,7 @@ const orderedGrades = [
   { grade: "ضعيف", color: '#34495e' }
 ];
 
+// تحضير البيانات للرسم
 const doughnutLabels = [];
 const doughnutValues = [];
 const doughnutColors = [];
@@ -183,23 +183,25 @@ orderedGrades.forEach(({ grade, color }) => {
   }
 });
 
-// ثالثًا: الرسم بعد التأكد أن العنصر موجود
-const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
-new Chart(ctx4, {
-  type: 'doughnut',
-  data: {
-    labels: doughnutLabels,
-    datasets: [{
-      data: doughnutValues,
-      backgroundColor: doughnutColors
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: 'bottom' }
+// رسم الرسم الكعكي بعد إدراج العنصر في DOM
+requestAnimationFrame(() => {
+  const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
+  new Chart(ctx4, {
+    type: 'doughnut',
+    data: {
+      labels: doughnutLabels,
+      datasets: [{
+        data: doughnutValues,
+        backgroundColor: doughnutColors
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' }
+      }
     }
-  }
+  });
 });
   </script>
 </body>
