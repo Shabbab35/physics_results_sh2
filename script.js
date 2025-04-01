@@ -1,13 +1,11 @@
-// تحميل البيانات من ملف student_data.js وتنفيذ التحليل
+// بيانات الطلاب تأتي من ملف student_data.js كـ const students = [...]
+
 function loadData() {
-  const data = studentData;
-
+  const data = students;
   const container = document.getElementById("cardsContainer");
+  document.getElementById("loadingCard").style.display = "none";
 
-  // ===== البطاقة 1 =====
-  const period1 = data.map(s => s["period1_total"]);
-  const final = data.map(s => s["final_practical"] + s["final_written"]);
-
+  // دوال مساعدة إحصائية
   const mean = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
   const median = arr => {
     const sorted = [...arr].sort((a, b) => a - b);
@@ -22,12 +20,16 @@ function loadData() {
   };
   const stddev = (arr, avg) => Math.sqrt(arr.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) / arr.length);
 
+  const period1 = data.map(s => s["period1_total"]);
+  const final = data.map(s => s["final_practical"] + s["final_written"]);
+
   const p1_mean = mean(period1), f_mean = mean(final);
   const p1_median = median(period1), f_median = median(final);
   const p1_mode = mode(period1), f_mode = mode(final);
   const p1_std = stddev(period1, p1_mean), f_std = stddev(final, f_mean);
   const p1_var = p1_std ** 2, f_var = f_std ** 2;
 
+  // === البطاقة 1 ===
   const card1 = document.createElement("div");
   card1.className = "card";
   card1.innerHTML = `
@@ -43,7 +45,7 @@ function loadData() {
     </tbody></table>`;
   container.appendChild(card1);
 
-  // ===== البطاقة 2 =====
+  // === البطاقة 2 ===
   const indicators = [
     { label: "المتوسط الحسابي", p1: p1_mean, f: f_mean },
     { label: "الوسيط", p1: p1_median, f: f_median },
@@ -58,7 +60,7 @@ function loadData() {
 
   const card2 = document.createElement("div");
   card2.className = "card";
-  card2.innerHTML = `<h2>البطاقة 2: مقارنة المؤشرات (نسبة مئوية)</h2><canvas id="comparisonChart"></canvas>`;
+  card2.innerHTML = `<h2>البطاقة 2: مقارنة المؤشرات بالنسب المئوية</h2><canvas id="comparisonChart"></canvas>`;
   container.appendChild(card2);
 
   new Chart(document.getElementById("comparisonChart").getContext("2d"), {
@@ -84,25 +86,16 @@ function loadData() {
         y: {
           beginAtZero: true,
           max: 100,
-          ticks: {
-            callback: value => value + '%'
-          },
-          title: { display: true, text: 'النسبة المئوية (%)' }
+          ticks: { callback: value => value + '%' },
+          title: { display: true, text: 'النسبة (%)' }
         }
       }
     }
   });
+
+  // === البطاقات من 3 إلى 12 تضاف لاحقًا بنفس النمط ===
 }
 
-// استدعاء الدالة
-loadData();
-
-// دالة الطوارئ لإخفاء رسالة "تحميل البيانات" بعد 5 ثوانٍ كحد أقصى
-setTimeout(() => {
-  const loadingCard = document.getElementById("loadingCard");
-  if (loadingCard && loadingCard.style.display !== "none") {
-    console.warn("تم تجاوز التحميل التلقائي. إخفاء البطاقة يدويًا.");
-    loadingCard.style.display = "none";
-  }
-}, 5000); // 5000 ميلي ثانية = 5 ثوانٍ
-
+document.addEventListener("DOMContentLoaded", function () {
+  loadData();
+});
