@@ -96,3 +96,13 @@ function loadData() {
 
 // استدعاء الدالة
 loadData();
+
+// دالة الطوارئ لإخفاء رسالة "تحميل البيانات" بعد 5 ثوانٍ كحد أقصى
+setTimeout(() => {
+  const loadingCard = document.getElementById("loadingCard");
+  if (loadingCard && loadingCard.style.display !== "none") {
+    console.warn("تم تجاوز التحميل التلقائي. إخفاء البطاقة يدويًا.");
+    loadingCard.style.display = "none";
+  }
+}, 5000); // 5000 ميلي ثانية = 5 ثوانٍ
+
