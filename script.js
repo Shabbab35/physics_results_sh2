@@ -174,3 +174,4 @@ async function loadData() {
     plugins: [ChartDataLabels]
   });
 }
+loadData();
