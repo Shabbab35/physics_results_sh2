@@ -122,11 +122,10 @@ const card4 = document.createElement("div");
 card4.className = "card";
 card4.innerHTML = `
   <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
-  <canvas id="gradeDoughnutChart"></canvas>`;
-  console.log("إضافة البطاقة 4 إلى DOM");
-container.appendChild(card4);  // ← يجب أن يكون قبل getElementById
+  <canvas id="gradeDoughnutChart" width="300" height="300"></canvas>`;
+container.appendChild(card4);
 
-// تحديد ألوان وتقديرات مرتبة
+// ترتيب الدرجات حسب اللون
 const orderedGrades = [
   { grade: "ممتاز مرتفع", color: '#1abc9c' },
   { grade: "ممتاز", color: '#2ecc71' },
@@ -139,7 +138,6 @@ const orderedGrades = [
   { grade: "ضعيف", color: '#34495e' }
 ];
 
-// تجهيز البيانات للرسم
 const doughnutLabels = [];
 const doughnutValues = [];
 const doughnutColors = [];
@@ -155,11 +153,9 @@ orderedGrades.forEach(({ grade, color }) => {
 
 const total = doughnutValues.reduce((a, b) => a + b, 0);
 
-// تأكد من تسجيل الإضافة
+// تأكد من تسجيل ChartDataLabels قبل استخدامه
 Chart.register(ChartDataLabels);
 
-// تنفيذ الرسم الكعكي
-  console.log("الحصول على سياق الرسم البياني");
 const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
 new Chart(ctx4, {
   type: 'doughnut',
