@@ -86,8 +86,6 @@
     const period1 = data.map(s => s["period1_total"]);
     const final = data.map(s => s["final_practical"] + s["final_written"]);
 
-    const p1_mean = period1.reduce((a, b) => a + b, 0) / period1.length;
-    const f_mean = final.reduce((a, b) => a + b, 0) / final.length;
 
 // === البطاقة 1 ===
 const mean = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
