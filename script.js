@@ -1,5 +1,5 @@
 async function loadData() {
-  const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
+  const response = await fetch('https://github.com/Shabbab35/physics_results_sh2/blob/main/grades_sh2_term2_with_total_and_grade.json');
   const data = await response.json();
   document.getElementById("loadingCard").style.display = "none";
   const container = document.getElementById("cardsContainer");
