@@ -2,23 +2,22 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>تحليل نتائج فيزياء 1 - شعبة 2</title>
+  <title>تقرير نتائج الفيزياء 1 - شعبة 2 (الفصل الثاني)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 </head>
 <body>
-  <h1 class="main-title">تقرير إحصائي – الفيزياء 1 (شعبة 2)</h1>
-
-  <div class="card" id="loadingCard">
-    <h2>تحميل البيانات</h2>
-    <p>انتظر لحظة... يتم تحميل البيانات من ملف JSON.</p>
+  <div class="container">
+    <h1>تقرير إحصائي – الفيزياء 1 (شعبة 2)</h1>
+    <div class="card" id="loadingCard">
+      <h2>تحميل البيانات</h2>
+      <p>انتظر لحظة... يتم تحميل البيانات من ملف JSON.</p>
+    </div>
+    <div id="cardsContainer"></div>
   </div>
-
-  <div id="cardsContainer" class="cards-grid"></div>
-
   <script src="script.js"></script>
 </body>
 </html>
