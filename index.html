@@ -3,21 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <title>تقرير نتائج الفيزياء 1 - شعبة 2 (الفصل الثاني)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap">
   <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>تقرير إحصائي – الفيزياء 1 (شعبة 2)</h1>
-    <div class="card" id="loadingCard">
-      <h2>تحميل البيانات</h2>
-      <p>انتظر لحظة... يتم تحميل البيانات من ملف JSON.</p>
-    </div>
-    <div id="cardsContainer"></div>
+  <h1 style="text-align:center; color:#34495e;">تقرير إحصائي – الفيزياء 1 (شعبة 2)</h1>
+  <div class="card" id="loadingCard">
+    <h2>تحميل البيانات</h2>
+    <p>انتظر لحظة... يتم تحميل البيانات من ملف JavaScript.</p>
   </div>
+  <div id="cardsContainer"></div>
+
+  <!-- تضمين بيانات الطلاب -->
+  <script src="student_data.js"></script>
+  <!-- تضمين ملف البرمجة الرئيسي -->
   <script src="script.js"></script>
 </body>
 </html>
