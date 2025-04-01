@@ -146,56 +146,58 @@
           }).join("")}
         </tbody></table>`;
       container.appendChild(card3);
-      // === البطاقة 4 ===
-  const orderedGrades = [
-    { grade: "ممتاز مرتفع", color: '#1abc9c' },
-    { grade: "ممتاز", color: '#2ecc71' },
-    { grade: "جيد جدًا مرتفع", color: '#3498db' },
-    { grade: "جيد جدًا", color: '#9b59b6' },
-    { grade: "جيد مرتفع", color: '#f1c40f' },
-    { grade: "جيد", color: '#e67e22' },
-    { grade: "مقبول مرتفع", color: '#e74c3c' },
-    { grade: "مقبول", color: '#95a5a6' },
-    { grade: "ضعيف", color: '#34495e' }
-  ];
+// === البطاقة 4 ===
+const doughnutCard = document.createElement("div");
+doughnutCard.className = "card";
+doughnutCard.innerHTML = `
+  <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
+  <canvas id="gradeDoughnutChart"></canvas>
+`;
+container.appendChild(doughnutCard);
 
-  const gradeCounts = {};
-  data.forEach(s => {
-    const grade = s["التقدير"] || "غير محدد";
-    gradeCounts[grade] = (gradeCounts[grade] || 0) + 1;
-  });
+const orderedGrades = [
+  { grade: "ممتاز مرتفع", color: '#1abc9c' },
+  { grade: "ممتاز", color: '#2ecc71' },
+  { grade: "جيد جدًا مرتفع", color: '#3498db' },
+  { grade: "جيد جدًا", color: '#9b59b6' },
+  { grade: "جيد مرتفع", color: '#f1c40f' },
+  { grade: "جيد", color: '#e67e22' },
+  { grade: "مقبول مرتفع", color: '#e74c3c' },
+  { grade: "مقبول", color: '#95a5a6' },
+  { grade: "ضعيف", color: '#34495e' }
+];
 
-  const doughnutLabels = [];
-  const doughnutValues = [];
-  const doughnutColors = [];
+const doughnutLabels = [];
+const doughnutValues = [];
+const doughnutColors = [];
 
-  orderedGrades.forEach(({ grade, color }) => {
-    const count = gradeCounts[grade] || 0;
-    if (count > 0) {
-      doughnutLabels.push(grade);
-      doughnutValues.push(count);
-      doughnutColors.push(color);
+orderedGrades.forEach(({ grade, color }) => {
+  const count = gradeCounts[grade] || 0;
+  if (count > 0) {
+    doughnutLabels.push(grade);
+    doughnutValues.push(count);
+    doughnutColors.push(color);
+  }
+});
+
+const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
+new Chart(ctx4, {
+  type: 'doughnut',
+  data: {
+    labels: doughnutLabels,
+    datasets: [{
+      data: doughnutValues,
+      backgroundColor: doughnutColors
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom' }
     }
-  });
+  }
+});
 
-  const ctx = document.getElementById("gradeDoughnutChart").getContext("2d");
-  new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: doughnutLabels,
-      datasets: [{
-        data: doughnutValues,
-        backgroundColor: doughnutColors
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'bottom' }
-      }
-    }
-  });
-    loadData();
   </script>
 </body>
 </html>
