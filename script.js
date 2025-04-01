@@ -84,9 +84,7 @@ function loadData() {
         y: {
           beginAtZero: true,
           max: 100,
-          ticks: {
-            callback: value => value + '%'
-          },
+          ticks: { callback: value => value + '%' },
           title: { display: true, text: 'النسبة المئوية (%)' }
         }
       }
@@ -116,10 +114,8 @@ function loadData() {
     </tbody></table>`;
   container.appendChild(card3);
 
-
-  // === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير ===
+  // === البطاقة 4 ===
   console.log("يتم إنشاء البطاقة 4 الآن.");
-
   const card4 = document.createElement("div");
   card4.className = "card";
   card4.innerHTML = `
@@ -140,7 +136,6 @@ function loadData() {
   ];
 
   const doughnutLabels = [], doughnutValues = [], doughnutColors = [];
-
   orderedGrades.forEach(({ grade, color }) => {
     const count = gradeCounts[grade] || 0;
     if (count > 0) {
@@ -151,16 +146,8 @@ function loadData() {
   });
 
   const total = doughnutValues.reduce((a, b) => a + b, 0);
-
-  // تأكد من تسجيل الإضافة
-  if (typeof ChartDataLabels !== 'undefined') {
-    Chart.register(ChartDataLabels);
-  } else {
-    console.warn("ChartDataLabels غير معرف. تأكد من تحميل المكتبة.");
-  }
-
+  if (typeof ChartDataLabels !== 'undefined') Chart.register(ChartDataLabels);
   const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
-
   new Chart(ctx4, {
     type: 'doughnut',
     data: {
@@ -190,5 +177,6 @@ function loadData() {
     },
     plugins: [ChartDataLabels]
   });
+}
 
 document.addEventListener("DOMContentLoaded", loadData);
