@@ -146,6 +146,26 @@
           }).join("")}
         </tbody></table>`;
       container.appendChild(card3);
+
+      setTimeout(() => {
+  const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
+  new Chart(ctx4, {
+    type: 'doughnut',
+    data: {
+      labels: doughnutLabels,
+      datasets: [{
+        data: doughnutValues,
+        backgroundColor: doughnutColors
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+}, 0);
 // === البطاقة 4 ===
 const doughnutCard = document.createElement("div");
 doughnutCard.className = "card";
