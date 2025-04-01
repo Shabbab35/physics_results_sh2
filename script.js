@@ -84,7 +84,9 @@ function loadData() {
         y: {
           beginAtZero: true,
           max: 100,
-          ticks: { callback: value => value + '%' },
+          ticks: {
+            callback: value => value + '%'
+          },
           title: { display: true, text: 'النسبة المئوية (%)' }
         }
       }
@@ -115,12 +117,9 @@ function loadData() {
   container.appendChild(card3);
 
   // === البطاقة 4 ===
-  console.log("يتم إنشاء البطاقة 4 الآن.");
   const card4 = document.createElement("div");
   card4.className = "card";
-  card4.innerHTML = `
-    <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
-    <canvas id="gradeDoughnutChart"></canvas>`;
+  card4.innerHTML = `<h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2><canvas id="gradeDoughnutChart"></canvas>`;
   container.appendChild(card4);
 
   const orderedGrades = [
@@ -146,9 +145,9 @@ function loadData() {
   });
 
   const total = doughnutValues.reduce((a, b) => a + b, 0);
-  if (typeof ChartDataLabels !== 'undefined') Chart.register(ChartDataLabels);
-  const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
-  new Chart(ctx4, {
+  Chart.register(ChartDataLabels);
+
+  new Chart(document.getElementById("gradeDoughnutChart").getContext("2d"), {
     type: 'doughnut',
     data: {
       labels: doughnutLabels,
@@ -160,11 +159,7 @@ function loadData() {
     options: {
       responsive: true,
       plugins: {
-        legend: {
-          position: 'bottom',
-          rtl: true,
-          labels: { textDirection: 'rtl' }
-        },
+        legend: { position: 'bottom', rtl: true, labels: { textDirection: 'rtl' } },
         datalabels: {
           color: '#fff',
           font: { weight: 'bold' },
