@@ -188,5 +188,5 @@ new Chart(ctx4, {
   },
   plugins: [ChartDataLabels]
 });
-
+ } 
 document.addEventListener("DOMContentLoaded", loadData);
