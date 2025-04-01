@@ -117,76 +117,78 @@ function loadData() {
   container.appendChild(card3);
 
 
-// === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير ===
+  // === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير ===
   console.log("يتم إنشاء البطاقة 4 الآن.");
-const card4 = document.createElement("div");
-card4.className = "card";
-card4.innerHTML = `
-  <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
-  <canvas id="gradeDoughnutChart"></canvas>`;
-container.appendChild(card4);
 
-const orderedGrades = [
-  { grade: "ممتاز مرتفع", color: '#1abc9c' },
-  { grade: "ممتاز", color: '#2ecc71' },
-  { grade: "جيد جدًا مرتفع", color: '#3498db' },
-  { grade: "جيد جدًا", color: '#9b59b6' },
-  { grade: "جيد مرتفع", color: '#f1c40f' },
-  { grade: "جيد", color: '#e67e22' },
-  { grade: "مقبول مرتفع", color: '#e74c3c' },
-  { grade: "مقبول", color: '#95a5a6' },
-  { grade: "ضعيف", color: '#34495e' }
-];
+  const card4 = document.createElement("div");
+  card4.className = "card";
+  card4.innerHTML = `
+    <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
+    <canvas id="gradeDoughnutChart"></canvas>`;
+  container.appendChild(card4);
 
-const doughnutLabels = [], doughnutValues = [], doughnutColors = [];
+  const orderedGrades = [
+    { grade: "ممتاز مرتفع", color: '#1abc9c' },
+    { grade: "ممتاز", color: '#2ecc71' },
+    { grade: "جيد جدًا مرتفع", color: '#3498db' },
+    { grade: "جيد جدًا", color: '#9b59b6' },
+    { grade: "جيد مرتفع", color: '#f1c40f' },
+    { grade: "جيد", color: '#e67e22' },
+    { grade: "مقبول مرتفع", color: '#e74c3c' },
+    { grade: "مقبول", color: '#95a5a6' },
+    { grade: "ضعيف", color: '#34495e' }
+  ];
 
-orderedGrades.forEach(({ grade, color }) => {
-  const count = gradeCounts[grade] || 0;
-  if (count > 0) {
-    doughnutLabels.push(grade);
-    doughnutValues.push(count);
-    doughnutColors.push(color);
+  const doughnutLabels = [], doughnutValues = [], doughnutColors = [];
+
+  orderedGrades.forEach(({ grade, color }) => {
+    const count = gradeCounts[grade] || 0;
+    if (count > 0) {
+      doughnutLabels.push(grade);
+      doughnutValues.push(count);
+      doughnutColors.push(color);
+    }
+  });
+
+  const total = doughnutValues.reduce((a, b) => a + b, 0);
+
+  // تأكد من تسجيل الإضافة
+  if (typeof ChartDataLabels !== 'undefined') {
+    Chart.register(ChartDataLabels);
+  } else {
+    console.warn("ChartDataLabels غير معرف. تأكد من تحميل المكتبة.");
   }
-});
 
-const total = doughnutValues.reduce((a, b) => a + b, 0);
+  const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
 
-// تأكد من تسجيل الإضافة
-Chart.register(ChartDataLabels);
-
-const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
-new Chart(ctx4, {
-  type: 'doughnut',
-  data: {
-    labels: doughnutLabels,
-    datasets: [{
-      data: doughnutValues,
-      backgroundColor: doughnutColors
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'bottom',
-        rtl: true,
-        labels: {
-          textDirection: 'rtl'
-        }
-      },
-      datalabels: {
-        color: '#fff',
-        font: { weight: 'bold' },
-        formatter: (value) => {
-          const percent = (value / total * 100).toFixed(1);
-          return `${percent}%`;
+  new Chart(ctx4, {
+    type: 'doughnut',
+    data: {
+      labels: doughnutLabels,
+      datasets: [{
+        data: doughnutValues,
+        backgroundColor: doughnutColors
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          rtl: true,
+          labels: { textDirection: 'rtl' }
+        },
+        datalabels: {
+          color: '#fff',
+          font: { weight: 'bold' },
+          formatter: (value) => {
+            const percent = (value / total * 100).toFixed(1);
+            return `${percent}%`;
+          }
         }
       }
-    }
-  },
-  plugins: [ChartDataLabels]
-});
-
-}
+    },
+    plugins: [ChartDataLabels]
+  });
 
 document.addEventListener("DOMContentLoaded", loadData);
