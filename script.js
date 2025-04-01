@@ -118,6 +118,7 @@ function loadData() {
 
 
 // === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير ===
+  console.log("يتم إنشاء البطاقة 4 الآن.");
 const card4 = document.createElement("div");
 card4.className = "card";
 card4.innerHTML = `
