@@ -1,31 +1,81 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <title>تقرير نتائج الفيزياء 1 - شعبة 2 (الفصل الثاني)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <style>
-    body { font-family: 'Cairo', sans-serif; margin: 20px; background-color: #f9f9f9; }
-    .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; overflow-x: auto; }
-    .main-card { width: 95%; margin: auto; }
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; padding: 20px; }
-    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
-    h2, h3 { text-align: right; color: #2c3e50; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-    th { background-color: #eef0f2; }
-    canvas { max-width: 100%; }
-    .grade-header { color: #fff; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 1.1em; text-align: center; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+    .main-card {
+      width: 95%;
+      margin: auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      padding: 20px;
+    }
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    h2, h3 {
+      text-align: right;
+      color: #2c3e50;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #eef0f2;
+    }
+    canvas {
+      max-width: 100%;
+    }
+    .grade-header {
+      color: #fff;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 1.1em;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
   <h1 style="text-align:center; color:#34495e;">تقرير إحصائي – الفيزياء 1 (شعبة 2)</h1>
-  <div class="card" id="loadingCard"><h2>تحميل البيانات</h2><p>انتظر لحظة... يتم تحميل البيانات من ملف JSON وعرضها ديناميكيًا.</p></div>
+  <div class="card" id="loadingCard">
+    <h2>تحميل البيانات</h2>
+    <p>انتظر لحظة... يتم تحميل البيانات من ملف JSON وعرضها ديناميكيًا.</p>
+  </div>
   <div id="cardsContainer"></div>
+
   <script>
     async function loadData() {
       const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
@@ -33,27 +83,102 @@
       document.getElementById("loadingCard").style.display = "none";
       const container = document.getElementById("cardsContainer");
 
-      const addCard = (title, contentHTML) => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `<h2>${title}</h2>${contentHTML}`;
-        container.appendChild(card);
-      };
+      // === البطاقة 1 ===
+      const period1 = data.map(s => s["period1_total"]);
+      const final = data.map(s => s["final_practical"] + s["final_written"]);
 
-      addCard("البطاقة 1: تمهيد", "<p>تم تحميل البيانات بنجاح.</p>");
-      addCard("البطاقة 2: مقارنة الإحصائيات", "<canvas id='comparisonChart'></canvas>");
-      addCard("البطاقة 3: توزيع الطلاب حسب التقدير", `<table><thead><tr><th>التقدير</th><th>الرمز</th><th>النطاق</th><th>عدد الطلاب</th><th>النسبة</th></tr></thead><tbody id="gradeTableBody"></tbody></table>`);
-      addCard("البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير", "<canvas id='gradeDoughnutChart'></canvas>");
-      addCard("البطاقة 5: جدول تفصيلي لدرجات الطلاب", `<table><thead><tr><th>اسم الطالب</th><th>الواجبات</th><th>المشاريع</th><th>النشاطات</th><th>المشاركة</th><th>اختبارات قصيرة</th><th>تطبيق عملي</th><th>مجموع الفترة الأولى</th><th>النهائي العملي</th><th>النهائي التحريري</th><th>مجموع نهاية الفصل</th><th>المجموع الكلي</th><th>التقدير</th></tr></thead><tbody id="studentsTableBody"></tbody></table>`);
-      addCard("البطاقة 6: توزيع الفترة الأولى مقارنة بالمنحنى الطبيعي", "<div id='period1Histogram' style='height:400px; display:flex; justify-content:center;'></div>");
-      addCard("البطاقة 7: توزيع نهاية الفصل مقارنة بالمنحنى الطبيعي", "<div id='finalHistogram' style='height:400px; display:flex; justify-content:center;'></div>");
-      addCard("البطاقة 8: مقارنة المنحنيين للفترتين", "<div id='compareHistogram' style='height:500px;'></div>");
-      addCard("البطاقة 9: التفسير الوصفي", "<p><strong>سيتم ملؤها لاحقًا من قبل المعلم.</strong></p>");
-      addCard("البطاقة 10: تصنيف الطلاب حسب التقدير", "<div class='grid' id='gradeGroupContainer'></div>");
-      addCard("البطاقة 11: النسبة المئوية لتوزيع الطلاب", "<canvas id='gradePieChart'></canvas>");
-      addCard("البطاقة 12: توزيع الطلاب حسب الجنسية", "<canvas id='nationalityDoughnutChart'></canvas>");
-    }
+      const p1_mean = period1.reduce((a,b)=>a+b,0)/period1.length;
+      const f_mean = final.reduce((a,b)=>a+b,0)/final.length;
 
+      const p1Card = document.createElement("div");
+      p1Card.className = "card";
+      p1Card.innerHTML = `<h2>البطاقة 1: إحصائية مفصلة للفترتين</h2>
+        <table><thead><tr><th>المؤشر</th><th>الفترة الأولى</th><th>نهاية الفصل</th></tr></thead>
+        <tbody>
+          <tr><td>عدد الطلاب</td><td>${period1.length}</td><td>${final.length}</td></tr>
+          <tr><td>المجموع</td><td>${period1.reduce((a,b)=>a+b,0).toFixed(2)}</td><td>${final.reduce((a,b)=>a+b,0).toFixed(2)}</td></tr>
+          <tr><td>المتوسط</td><td>${p1_mean.toFixed(2)}</td><td>${f_mean.toFixed(2)}</td></tr>
+        </tbody></table>`;
+      container.appendChild(p1Card);
+
+      // === البطاقة 2 ===
+      const comparisonCard = document.createElement("div");
+      comparisonCard.className = "card";
+      comparisonCard.innerHTML = `<h2>البطاقة 2: مقارنة الإحصائيات (نسبة مئوية)</h2><canvas id="comparisonChart"></canvas>`;
+      container.appendChild(comparisonCard);
+
+      const ctx = document.getElementById("comparisonChart").getContext("2d");
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ["المتوسط"],
+          datasets: [
+            { label: "الفترة الأولى", data: [p1_mean], backgroundColor: 'rgba(52, 152, 219, 0.7)' },
+            { label: "نهاية الفصل", data: [f_mean], backgroundColor: 'rgba(231, 76, 60, 0.7)' }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'top' } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+
+      // === البطاقة 3 ===
+      const gradeCounts = {};
+      data.forEach(s => {
+        const grade = s["التقدير"] || "غير محدد";
+        gradeCounts[grade] = (gradeCounts[grade] || 0) + 1;
+      });
+
+      const grades = ["ممتاز مرتفع", "ممتاز", "جيد جدًا مرتفع", "جيد جدًا", "جيد مرتفع", "جيد", "مقبول مرتفع", "مقبول", "ضعيف"];
+      const symbols = ["+A", "A", "+B", "B", "+C", "C", "+D", "D", "F"];
+      const ranges = ["100 - 95", "94 - 90", "89 - 85", "84 - 80", "79 - 75", "74 - 70", "69 - 65", "64 - 60", "59 وأقل"];
+
+      const card3 = document.createElement("div");
+      card3.className = "card";
+      card3.innerHTML = `<h2>البطاقة 3: توزيع الطلاب حسب التقدير</h2>
+        <table><thead><tr><th>التقدير</th><th>الرمز</th><th>النطاق</th><th>عدد الطلاب</th><th>النسبة</th></tr></thead><tbody>
+          ${grades.map((g, i) => {
+            const count = gradeCounts[g] || 0;
+            const percent = ((count / data.length) * 100).toFixed(1) + "%";
+            return `<tr><td>${g}</td><td>${symbols[i]}</td><td>${ranges[i]}</td><td>${count}</td><td>${percent}</td></tr>`;
+          }).join("")}
+        </tbody></table>`;
+      container.appendChild(card3);
+      // === البطاقة 4 ===
+const doughnutCard = document.createElement("div");
+doughnutCard.className = "card";
+doughnutCard.id = "doughnutCard";
+
+const doughnutTitle = document.createElement("h2");
+doughnutTitle.textContent = "البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير";
+
+doughnutCard.appendChild(doughnutTitle);
+
+const doughnutCanvas = document.createElement("canvas");
+doughnutCanvas.id = "gradeDoughnutChart";
+doughnutCard.appendChild(doughnutCanvas);
+
+container.appendChild(doughnutCard);
+
+const doughnutCtx = doughnutCanvas.getContext("2d");
+const labels4 = orderedGrades.map(g => g.grade);
+const values4 = orderedGrades.map(g => gradeCounts[g.grade] || 0);
+const colors4 = [
+  '#1abc9c','#2ecc71','#3498db','#9b59b6','#f1c40f','#e67e22','#e74c3c','#95a5a6','#34495e'
+];
+new Chart(doughnutCtx, {
+  type: 'doughnut',
+  data: {
+    labels: labels4,
+    datasets: [{ data: values4, backgroundColor: colors4 }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom' } }
+  }
+});
     loadData();
   </script>
 </body>
