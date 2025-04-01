@@ -1,11 +1,13 @@
-// بيانات الطلاب تأتي من ملف student_data.js كـ const students = [...]
+// script.js
 
 function loadData() {
-  const data = students;
+  const data = studentData;
   const container = document.getElementById("cardsContainer");
-  document.getElementById("loadingCard").style.display = "none";
 
-  // دوال مساعدة إحصائية
+  // === البطاقة 1 ===
+  const period1 = data.map(s => s.period1_total);
+  const final = data.map(s => s.final_practical + s.final_written);
+
   const mean = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
   const median = arr => {
     const sorted = [...arr].sort((a, b) => a - b);
@@ -16,12 +18,9 @@ function loadData() {
     const freq = {};
     arr.forEach(v => freq[v] = (freq[v] || 0) + 1);
     const maxFreq = Math.max(...Object.values(freq));
-    return parseFloat(Object.keys(freq).find(k => freq[k] == maxFreq));
+    return parseFloat(Object.keys(freq).find(k => freq[k] === maxFreq));
   };
   const stddev = (arr, avg) => Math.sqrt(arr.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) / arr.length);
-
-  const period1 = data.map(s => s["period1_total"]);
-  const final = data.map(s => s["final_practical"] + s["final_written"]);
 
   const p1_mean = mean(period1), f_mean = mean(final);
   const p1_median = median(period1), f_median = median(final);
@@ -29,7 +28,6 @@ function loadData() {
   const p1_std = stddev(period1, p1_mean), f_std = stddev(final, f_mean);
   const p1_var = p1_std ** 2, f_var = f_std ** 2;
 
-  // === البطاقة 1 ===
   const card1 = document.createElement("div");
   card1.className = "card";
   card1.innerHTML = `
@@ -47,7 +45,7 @@ function loadData() {
 
   // === البطاقة 2 ===
   const indicators = [
-    { label: "المتوسط الحسابي", p1: p1_mean, f: f_mean },
+    { label: "المتوسط", p1: p1_mean, f: f_mean },
     { label: "الوسيط", p1: p1_median, f: f_median },
     { label: "المنوال", p1: p1_mode, f: f_mode },
     { label: "الانحراف المعياري", p1: p1_std, f: f_std },
@@ -60,7 +58,7 @@ function loadData() {
 
   const card2 = document.createElement("div");
   card2.className = "card";
-  card2.innerHTML = `<h2>البطاقة 2: مقارنة المؤشرات بالنسب المئوية</h2><canvas id="comparisonChart"></canvas>`;
+  card2.innerHTML = `<h2>البطاقة 2: مقارنة المؤشرات (نسبة مئوية)</h2><canvas id="comparisonChart"></canvas>`;
   container.appendChild(card2);
 
   new Chart(document.getElementById("comparisonChart").getContext("2d"), {
@@ -86,16 +84,22 @@ function loadData() {
         y: {
           beginAtZero: true,
           max: 100,
-          ticks: { callback: value => value + '%' },
-          title: { display: true, text: 'النسبة (%)' }
+          ticks: {
+            callback: value => value + '%'
+          },
+          title: { display: true, text: 'النسبة المئوية (%)' }
         }
       }
     }
   });
 
-  // === البطاقات من 3 إلى 12 تضاف لاحقًا بنفس النمط ===
+  // === البطاقة 3 إلى 12 ===
+  for (let i = 3; i <= 12; i++) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `<h2>البطاقة ${i}: (المحتوى سيتم تطويره)</h2><p>محتوى البطاقة ${i} سيُضاف لاحقًا هنا.</p>`;
+    container.appendChild(card);
+  }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  loadData();
-});
+document.addEventListener("DOMContentLoaded", loadData);
