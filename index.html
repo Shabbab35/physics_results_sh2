@@ -77,12 +77,23 @@
   <div id="cardsContainer"></div>
 
   <script>
-    async function loadData() {
-      const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
-      const data = await response.json();
-      document.getElementById("loadingCard").style.display = "none";
-      const container = document.getElementById("cardsContainer");
-
+  async function loadData() {
+  try {
+    const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    document.getElementById("loadingCard").style.display = "none";
+    // تابع عرض البطاقات هنا...
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+    document.getElementById("loadingCard").innerHTML = `
+      <h2>حدث خطأ في تحميل البيانات</h2>
+      <p>يرجى التحقق من وجود ملف البيانات وصحة تركيبه.</p>
+    `;
+  }
+}
       // === البطاقة 1 ===
       const period1 = data.map(s => s["period1_total"]);
       const final = data.map(s => s["final_practical"] + s["final_written"]);
