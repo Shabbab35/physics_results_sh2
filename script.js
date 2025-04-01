@@ -49,12 +49,12 @@ function loadData() {
     { label: "الوسيط", p1: p1_median, f: f_median, max: 60 },
     { label: "المنوال", p1: p1_mode, f: f_mode, max: 60 },
     { label: "الانحراف المعياري", p1: p1_std, f: f_std, max: 60 },
-    { label: "التباين", p1: p1_var, f: f_var, max: 60 ** 2 }
+    { label: "التباين", p1: p1_var, f: f_var, max: 3600 }
   ];
 
   const labels = indicators.map(i => i.label);
   const p1Data = indicators.map(i => ((i.p1 / i.max) * 100).toFixed(2));
-  const fData = indicators.map(i => ((i.f / (i.label === "التباين" ? 40 ** 2 : 40)) * 100).toFixed(2));
+  const fData = indicators.map(i => ((i.f / (i.label === "التباين" ? 1600 : 40)) * 100).toFixed(2));
 
   const card2 = document.createElement("div");
   card2.className = "card";
@@ -93,10 +93,7 @@ function loadData() {
     }
   });
 
-
-
-
-  // === البطاقة 3: توزيع الطلاب حسب التقدير ===
+  // === البطاقة 3 ===
   const gradeCounts = {};
   data.forEach(s => {
     const grade = s["التقدير"] || "غير محدد";
@@ -119,68 +116,7 @@ function loadData() {
     </tbody></table>`;
   container.appendChild(card3);
 
-  // === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير ===
-  const card4 = document.createElement("div");
-  card4.className = "card";
-  card4.innerHTML = `<h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2><canvas id="gradeDoughnutChart"></canvas>`;
-  container.appendChild(card4);
-
-  const orderedGrades = [
-    { grade: "ممتاز مرتفع", color: '#1abc9c' },
-    { grade: "ممتاز", color: '#2ecc71' },
-    { grade: "جيد جدًا مرتفع", color: '#3498db' },
-    { grade: "جيد جدًا", color: '#9b59b6' },
-    { grade: "جيد مرتفع", color: '#f1c40f' },
-    { grade: "جيد", color: '#e67e22' },
-    { grade: "مقبول مرتفع", color: '#e74c3c' },
-    { grade: "مقبول", color: '#95a5a6' },
-    { grade: "ضعيف", color: '#34495e' }
-  ];
-
-  const doughnutLabels = [], doughnutValues = [], doughnutColors = [];
-
-  orderedGrades.forEach(({ grade, color }) => {
-    const count = gradeCounts[grade] || 0;
-    if (count > 0) {
-      doughnutLabels.push(grade);
-      doughnutValues.push(count);
-      doughnutColors.push(color);
-    }
-  });
-
-  const total = doughnutValues.reduce((a, b) => a + b, 0);
-  const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
-
-  Chart.register(ChartDataLabels);
-
-  new Chart(ctx4, {
-    type: 'doughnut',
-    data: {
-      labels: doughnutLabels,
-      datasets: [{
-        data: doughnutValues,
-        backgroundColor: doughnutColors
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'bottom', rtl: true, labels: { textDirection: 'rtl' } },
-        datalabels: {
-          color: '#fff',
-          font: { weight: 'bold' },
-          formatter: (value, context) => {
-            const percent = (value / total * 100).toFixed(1);
-            return `${percent}%`;
-          }
-        }
-      }
-    },
-    plugins: [ChartDataLabels]
-  });
-
-  // يتم إدراج البطاقات 5 إلى 12 لاحقًا بنفس النمط
+  // يتم إدراج البطاقات 4 إلى 12 لاحقًا بنفس النمط
 }
 
-// استدعاء الدالة
 document.addEventListener("DOMContentLoaded", loadData);
