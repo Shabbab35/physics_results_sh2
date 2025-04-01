@@ -172,7 +172,7 @@
         </tbody></table>`;
       container.appendChild(card3);
 
-// البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير
+// البطاقة 4
 const doughnutCard = document.createElement("div");
 doughnutCard.className = "card";
 doughnutCard.innerHTML = `
@@ -180,7 +180,7 @@ doughnutCard.innerHTML = `
   <canvas id="gradeDoughnutChart"></canvas>`;
 container.appendChild(doughnutCard);
 
-// بيانات مرتبة
+// بيانات التقدير
 const orderedGrades = [
   { grade: "ممتاز مرتفع", color: '#1abc9c' },
   { grade: "ممتاز", color: '#2ecc71' },
@@ -207,6 +207,9 @@ orderedGrades.forEach(({ grade, color }) => {
 const total = doughnutValues.reduce((a, b) => a + b, 0);
 const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
 
+// تفعيل الإضافة
+Chart.register(ChartDataLabels);
+
 new Chart(ctx4, {
   type: 'doughnut',
   data: {
@@ -223,24 +226,22 @@ new Chart(ctx4, {
         position: 'bottom',
         rtl: true,
         labels: {
-          textDirection: 'rtl',
-          generateLabels: (chart) => {
-            const data = chart.data;
-            return data.labels.map((label, i) => {
-              const value = data.datasets[0].data[i];
-              const percent = ((value / total) * 100).toFixed(1);
-              return {
-                text: `${label}: ${percent}%`,
-                fillStyle: data.datasets[0].backgroundColor[i],
-                strokeStyle: data.datasets[0].backgroundColor[i],
-                index: i
-              };
-            });
-          }
+          textDirection: 'rtl'
+        }
+      },
+      datalabels: {
+        color: '#fff',
+        font: {
+          weight: 'bold'
+        },
+        formatter: (value) => {
+          const percent = (value / total * 100).toFixed(1);
+          return `${percent}%`;
         }
       }
     }
-  }
+  },
+  plugins: [ChartDataLabels]
 });
     }
     loadData();
