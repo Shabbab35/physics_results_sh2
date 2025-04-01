@@ -77,127 +77,129 @@
   <div id="cardsContainer"></div>
 
   <script>
-async function loadData() {
-  const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
-  const data = await response.json();
-  document.getElementById("loadingCard").style.display = "none";
-  const container = document.getElementById("cardsContainer");
+  async function loadData() {
+    const response = await fetch('grades_sh2_term2_with_total_and_grade.json');
+    const data = await response.json();
+    document.getElementById("loadingCard").style.display = "none";
+    const container = document.getElementById("cardsContainer");
 
-  const period1 = data.map(s => s["period1_total"]);
-  const final = data.map(s => s["final_practical"] + s["final_written"]);
+    const period1 = data.map(s => s["period1_total"]);
+    const final = data.map(s => s["final_practical"] + s["final_written"]);
 
-  const p1_mean = period1.reduce((a, b) => a + b, 0) / period1.length;
-  const f_mean = final.reduce((a, b) => a + b, 0) / final.length;
+    const p1_mean = period1.reduce((a, b) => a + b, 0) / period1.length;
+    const f_mean = final.reduce((a, b) => a + b, 0) / final.length;
 
-  // البطاقة 1
-  const card1 = document.createElement("div");
-  card1.className = "card";
-  card1.innerHTML = `
-    <h2>البطاقة 1: إحصائية مفصلة للفترتين</h2>
-    <table><thead><tr><th>المؤشر</th><th>الفترة الأولى</th><th>نهاية الفصل</th></tr></thead>
-    <tbody>
-      <tr><td>عدد الطلاب</td><td>${period1.length}</td><td>${final.length}</td></tr>
-      <tr><td>مجموع الدرجات</td><td>${period1.reduce((a,b)=>a+b,0).toFixed(2)}</td><td>${final.reduce((a,b)=>a+b,0).toFixed(2)}</td></tr>
-      <tr><td>المتوسط</td><td>${p1_mean.toFixed(2)}</td><td>${f_mean.toFixed(2)}</td></tr>
-    </tbody></table>`;
-  container.appendChild(card1);
+    // البطاقة 1
+    const card1 = document.createElement("div");
+    card1.className = "card";
+    card1.innerHTML = `
+      <h2>البطاقة 1: إحصائية مفصلة للفترتين</h2>
+      <table><thead><tr><th>المؤشر</th><th>الفترة الأولى</th><th>نهاية الفصل</th></tr></thead>
+      <tbody>
+        <tr><td>عدد الطلاب</td><td>${period1.length}</td><td>${final.length}</td></tr>
+        <tr><td>مجموع الدرجات</td><td>${period1.reduce((a,b)=>a+b,0).toFixed(2)}</td><td>${final.reduce((a,b)=>a+b,0).toFixed(2)}</td></tr>
+        <tr><td>المتوسط</td><td>${p1_mean.toFixed(2)}</td><td>${f_mean.toFixed(2)}</td></tr>
+      </tbody></table>`;
+    container.appendChild(card1);
 
-  // البطاقة 2
-  const card2 = document.createElement("div");
-  card2.className = "card";
-  card2.innerHTML = `<h2>البطاقة 2: مقارنة الإحصائيات (رسم بياني عمودي)</h2><canvas id="comparisonChart"></canvas>`;
-  container.appendChild(card2);
-  const ctx2 = document.getElementById("comparisonChart").getContext("2d");
-  new Chart(ctx2, {
-    type: 'bar',
-    data: {
-      labels: ["المتوسط"],
-      datasets: [
-        { label: "الفترة الأولى", data: [p1_mean], backgroundColor: '#3498db' },
-        { label: "نهاية الفصل", data: [f_mean], backgroundColor: '#e74c3c' }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { position: 'top' } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
+    // البطاقة 2
+    const card2 = document.createElement("div");
+    card2.className = "card";
+    card2.innerHTML = `<h2>البطاقة 2: مقارنة الإحصائيات (رسم بياني عمودي)</h2><canvas id="comparisonChart"></canvas>`;
+    container.appendChild(card2);
+    const ctx2 = document.getElementById("comparisonChart").getContext("2d");
+    new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: ["المتوسط"],
+        datasets: [
+          { label: "الفترة الأولى", data: [p1_mean], backgroundColor: '#3498db' },
+          { label: "نهاية الفصل", data: [f_mean], backgroundColor: '#e74c3c' }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'top' } },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
 
-  // البطاقة 3
-  const gradeCounts = {};
-  data.forEach(s => {
-    const grade = s["التقدير"] || "غير محدد";
-    gradeCounts[grade] = (gradeCounts[grade] || 0) + 1;
-  });
+    // البطاقة 3
+    const gradeCounts = {};
+    data.forEach(s => {
+      const grade = s["التقدير"] || "غير محدد";
+      gradeCounts[grade] = (gradeCounts[grade] || 0) + 1;
+    });
 
-  const grades = ["ممتاز مرتفع", "ممتاز", "جيد جدًا مرتفع", "جيد جدًا", "جيد مرتفع", "جيد", "مقبول مرتفع", "مقبول", "ضعيف"];
-  const symbols = ["+A", "A", "+B", "B", "+C", "C", "+D", "D", "F"];
-  const ranges = ["100 - 95", "94 - 90", "89 - 85", "84 - 80", "79 - 75", "74 - 70", "69 - 65", "64 - 60", "59 وأقل"];
+    const grades = ["ممتاز مرتفع", "ممتاز", "جيد جدًا مرتفع", "جيد جدًا", "جيد مرتفع", "جيد", "مقبول مرتفع", "مقبول", "ضعيف"];
+    const symbols = ["+A", "A", "+B", "B", "+C", "C", "+D", "D", "F"];
+    const ranges = ["100 - 95", "94 - 90", "89 - 85", "84 - 80", "79 - 75", "74 - 70", "69 - 65", "64 - 60", "59 وأقل"];
 
-  const card3 = document.createElement("div");
-  card3.className = "card";
-  card3.innerHTML = `
-    <h2>البطاقة 3: توزيع الطلاب حسب التقدير</h2>
-    <table><thead><tr><th>التقدير</th><th>الرمز</th><th>النطاق</th><th>عدد الطلاب</th><th>النسبة</th></tr></thead><tbody>
-      ${grades.map((g, i) => {
-        const count = gradeCounts[g] || 0;
-        const percent = ((count / data.length) * 100).toFixed(1) + "%";
-        return `<tr><td>${g}</td><td>${symbols[i]}</td><td>${ranges[i]}</td><td>${count}</td><td>${percent}</td></tr>`;
-      }).join("")}
-    </tbody></table>`;
-  container.appendChild(card3);
+    const card3 = document.createElement("div");
+    card3.className = "card";
+    card3.innerHTML = `
+      <h2>البطاقة 3: توزيع الطلاب حسب التقدير</h2>
+      <table><thead><tr><th>التقدير</th><th>الرمز</th><th>النطاق</th><th>عدد الطلاب</th><th>النسبة</th></tr></thead><tbody>
+        ${grades.map((g, i) => {
+          const count = gradeCounts[g] || 0;
+          const percent = ((count / data.length) * 100).toFixed(1) + "%";
+          return `<tr><td>${g}</td><td>${symbols[i]}</td><td>${ranges[i]}</td><td>${count}</td><td>${percent}</td></tr>`;
+        }).join("")}
+      </tbody></table>`;
+    container.appendChild(card3);
 
-  // البطاقة 4
-  const doughnutCard = document.createElement("div");
-  doughnutCard.className = "card";
-  doughnutCard.innerHTML = `
-    <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
-    <canvas id="gradeDoughnutChart"></canvas>`;
-  container.appendChild(doughnutCard);
+    // البطاقة 4
+    const doughnutCard = document.createElement("div");
+    doughnutCard.className = "card";
+    doughnutCard.innerHTML = `
+      <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
+      <canvas id="gradeDoughnutChart"></canvas>`;
+    container.appendChild(doughnutCard);
 
-  const orderedGrades = [
-    { grade: "ممتاز مرتفع", color: '#1abc9c' },
-    { grade: "ممتاز", color: '#2ecc71' },
-    { grade: "جيد جدًا مرتفع", color: '#3498db' },
-    { grade: "جيد جدًا", color: '#9b59b6' },
-    { grade: "جيد مرتفع", color: '#f1c40f' },
-    { grade: "جيد", color: '#e67e22' },
-    { grade: "مقبول مرتفع", color: '#e74c3c' },
-    { grade: "مقبول", color: '#95a5a6' },
-    { grade: "ضعيف", color: '#34495e' }
-  ];
+    const orderedGrades = [
+      { grade: "ممتاز مرتفع", color: '#1abc9c' },
+      { grade: "ممتاز", color: '#2ecc71' },
+      { grade: "جيد جدًا مرتفع", color: '#3498db' },
+      { grade: "جيد جدًا", color: '#9b59b6' },
+      { grade: "جيد مرتفع", color: '#f1c40f' },
+      { grade: "جيد", color: '#e67e22' },
+      { grade: "مقبول مرتفع", color: '#e74c3c' },
+      { grade: "مقبول", color: '#95a5a6' },
+      { grade: "ضعيف", color: '#34495e' }
+    ];
 
-  const doughnutLabels = [];
-  const doughnutValues = [];
-  const doughnutColors = [];
+    const doughnutLabels = [], doughnutValues = [], doughnutColors = [];
 
-  orderedGrades.forEach(({ grade, color }) => {
-    const count = gradeCounts[grade] || 0;
-    if (count > 0) {
-      doughnutLabels.push(grade);
-      doughnutValues.push(count);
-      doughnutColors.push(color);
-    }
-  });
+    orderedGrades.forEach(({ grade, color }) => {
+      const count = gradeCounts[grade] || 0;
+      if (count > 0) {
+        doughnutLabels.push(grade);
+        doughnutValues.push(count);
+        doughnutColors.push(color);
+      }
+    });
 
-  const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
-  new Chart(ctx4, {
-    type: 'doughnut',
-    data: {
-      labels: doughnutLabels,
-      datasets: [{
-        data: doughnutValues,
-        backgroundColor: doughnutColors
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { position: 'bottom' } }
-    }
-  });
-}
+    const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
+    new Chart(ctx4, {
+      type: 'doughnut',
+      data: {
+        labels: doughnutLabels,
+        datasets: [{
+          data: doughnutValues,
+          backgroundColor: doughnutColors
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+  }
 
-  </script>
+  // استدعاء الدالة
+  loadData();
+</script>
 </body>
 </html>
