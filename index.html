@@ -77,435 +77,85 @@
     <p>انتظر لحظة... يتم تحميل البيانات من ملف JSON وعرضها ديناميكيًا.</p>
   </div>
 
-  <!-- هنا سيتم إدراج بقية البطاقات بشكل تلقائي -->
+  <!-- سيتم توليد البطاقات ديناميكيًا داخل هذه الحاوية -->
+  <div id="cardsContainer"></div>
 
-  <script>
+<script>
+async function loadData() {
+  const response = await fetch("grades_sh2_term2_with_total_and_grade.json");
+  const data = await response.json();
 
-// هنا تبدأ معالجة البطاقات 1 إلى 12 كما تم تجهيزها سابقًا (من التحميل حتى الرسوم البيانية)
+  // حذف بطاقة التحميل
+  document.getElementById("loadingCard").style.display = "none";
 
-      // === البطاقة 1 ===
-      const period1 = data.map(s => s["period1_total"]);
-      const final = data.map(s => s["final_practical"] + s["final_written"]);
+  const container = document.getElementById("cardsContainer");
 
-      function mean(arr) {
-        return arr.reduce((a,b)=>a+b,0) / arr.length;
-      }
-      function median(arr) {
-        const sorted = [...arr].sort((a,b)=>a-b);
-        const mid = Math.floor(sorted.length/2);
-        return sorted.length % 2 === 0 ? (sorted[mid-1]+sorted[mid])/2 : sorted[mid];
-      }
-      function mode(arr) {
-        const freq = {};
-        arr.forEach(v => freq[v] = (freq[v]||0)+1);
-        const maxFreq = Math.max(...Object.values(freq));
-        const modes = Object.entries(freq).filter(([_,v])=>v===maxFreq).map(([k])=>parseFloat(k));
-        return modes[0];
-      }
-      function stddev(arr, avg) {
-        const variance = arr.reduce((a,b)=>a + Math.pow(b-avg,2), 0) / arr.length;
-        return Math.sqrt(variance);
-      }
+  // === البطاقة 1 ===
+  const statsCard = document.createElement("div");
+  statsCard.className = "card";
+  statsCard.innerHTML = `
+    <h2>البطاقة 1: إحصائية مفصلة للفترتين</h2>
+    <table>
+      <thead>
+        <tr><th>المؤشر الإحصائي</th><th>الفترة الأولى</th><th>نهاية الفصل</th></tr>
+      </thead>
+      <tbody id="statsTableBody"></tbody>
+    </table>
+  `;
+  container.appendChild(statsCard);
 
-      const p1_mean = mean(period1);
-      const f_mean = mean(final);
-      const p1_std_raw = stddev(period1, p1_mean);
-      const f_std_raw = stddev(final, f_mean);
-      const p1_std = p1_std_raw.toFixed(2);
-      const f_std = f_std_raw.toFixed(2);
-      const p1_var = (p1_std_raw * p1_std_raw).toFixed(2);
-      const f_var = (f_std_raw * f_std_raw).toFixed(2);
-      const p1_median = median(period1).toFixed(2);
-      const f_median = median(final).toFixed(2);
-      const p1_mode = mode(period1);
-      const f_mode = mode(final);
+  const period1 = data.map(s => s["period1_total"]);
+  const final = data.map(s => s["final_practical"] + s["final_written"]);
 
-      const statsBody = document.getElementById("statsTableBody");
-      const rows = [
-        ["عدد الطلاب", period1.length, final.length],
-        ["مجموع الدرجات", period1.reduce((a,b)=>a+b,0).toFixed(2), final.reduce((a,b)=>a+b,0).toFixed(2)],
-        ["المتوسط الحسابي", p1_mean.toFixed(2), f_mean.toFixed(2)],
-        ["الوسيط", p1_median, f_median],
-        ["المنوال", p1_mode, f_mode],
-        ["الانحراف المعياري", p1_std, f_std],
-        ["التباين", p1_var, f_var],
-      ];
-      rows.forEach(([label,p1,f]) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${label}</td><td>${p1}</td><td>${f}</td>`;
-        statsBody.appendChild(tr);
-      });
-      document.getElementById("statsCard").style.display = "block";
+  function mean(arr) {
+    return arr.reduce((a,b)=>a+b,0) / arr.length;
+  }
+  function median(arr) {
+    const sorted = [...arr].sort((a,b)=>a-b);
+    const mid = Math.floor(sorted.length/2);
+    return sorted.length % 2 === 0 ? (sorted[mid-1]+sorted[mid])/2 : sorted[mid];
+  }
+  function mode(arr) {
+    const freq = {};
+    arr.forEach(v => freq[v] = (freq[v]||0)+1);
+    const maxFreq = Math.max(...Object.values(freq));
+    const modes = Object.entries(freq).filter(([_,v])=>v===maxFreq).map(([k])=>parseFloat(k));
+    return modes[0];
+  }
+  function stddev(arr, avg) {
+    const variance = arr.reduce((a,b)=>a + Math.pow(b-avg,2), 0) / arr.length;
+    return Math.sqrt(variance);
+  }
 
-      // === البطاقة 2 === (الرسم البياني العمودي المقارن كنسبة مئوية)
-      const indicators = [
-        { label: "المتوسط الحسابي", p1: p1_mean, f: f_mean },
-        { label: "الوسيط", p1: p1_median, f: f_median },
-        { label: "المنوال", p1: p1_mode, f: f_mode },
-        { label: "الانحراف المعياري", p1: p1_std_raw, f: f_std_raw },
-        { label: "التباين", p1: p1_var, f: f_var }
-      ];
-      const maxVal = Math.max(...indicators.flatMap(ind => [ind.p1, ind.f]));
-      const labels = indicators.map(i => i.label);
-      const p1Data = indicators.map(i => ((i.p1 / maxVal) * 100).toFixed(2));
-      const fData = indicators.map(i => ((i.f / maxVal) * 100).toFixed(2));
-      const ctx = document.getElementById("comparisonChart").getContext("2d");
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: "الفترة الأولى",
-              data: p1Data,
-              backgroundColor: 'rgba(52, 152, 219, 0.7)'
-            },
-            {
-              label: "نهاية الفصل",
-              data: fData,
-              backgroundColor: 'rgba(231, 76, 60, 0.7)'
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: 'top' },
-            tooltip: {
-              callbacks: {
-                label: ctx => ctx.dataset.label + ': ' + ctx.raw + '%'
-              }
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 100,
-              ticks: {
-                callback: function(value) {
-                  return value + '%';
-                }
-              },
-              title: {
-                display: true,
-                text: 'النسبة المئوية (%)'
-              }
-            }
-          }
-        }
-      });
-      document.getElementById("chartCard").style.display = "block";
+  const p1_mean = mean(period1);
+  const f_mean = mean(final);
+  const p1_std_raw = stddev(period1, p1_mean);
+  const f_std_raw = stddev(final, f_mean);
+  const p1_std = p1_std_raw.toFixed(2);
+  const f_std = f_std_raw.toFixed(2);
+  const p1_var = (p1_std_raw * p1_std_raw).toFixed(2);
+  const f_var = (f_std_raw * f_std_raw).toFixed(2);
+  const p1_median = median(period1).toFixed(2);
+  const f_median = median(final).toFixed(2);
+  const p1_mode = mode(period1);
+  const f_mode = mode(final);
 
-      // === البطاقة 3 ===
-      const gradeCounts = {};
-      data.forEach(s => {
-        const grade = s["التقدير"] || "غير محدد";
-        gradeCounts[grade] = (gradeCounts[grade] || 0) + 1;
-      });
-      const gradeTableBody = document.getElementById("gradeTableBody");
-      const totalStudents = data.length;
-      const orderedGrades = [
-        { grade: "ممتاز مرتفع", symbol: "+A", range: "100 - 95" },
-        { grade: "ممتاز", symbol: "A", range: "94 - 90" },
-        { grade: "جيد جدًا مرتفع", symbol: "+B", range: "89 - 85" },
-        { grade: "جيد جدًا", symbol: "B", range: "84 - 80" },
-        { grade: "جيد مرتفع", symbol: "+C", range: "79 - 75" },
-        { grade: "جيد", symbol: "C", range: "74 - 70" },
-        { grade: "مقبول مرتفع", symbol: "+D", range: "69 - 65" },
-        { grade: "مقبول", symbol: "D", range: "64 - 60" },
-        { grade: "ضعيف", symbol: "F", range: "59 وأقل" }
-      ];
-      orderedGrades.forEach(({grade, symbol, range}, idx) => {
-        const count = gradeCounts[grade] || 0;
-        const percent = ((count / totalStudents) * 100).toFixed(1) + "%";
-        const row = `<tr><td>${grade}</td><td>${symbol}</td><td>${range}</td><td>${count}</td><td>${percent}</td></tr>`;
-        gradeTableBody.innerHTML += row;
-      });
-      document.getElementById("gradeDistCard").style.display = "block";
-
-      // === البطاقة 4 ===
-      const doughnutCtx = document.getElementById("gradeDoughnutChart").getContext("2d");
-      const labels4 = orderedGrades.map(g => g.grade);
-      const values4 = orderedGrades.map(g => gradeCounts[g.grade] || 0);
-      const colors4 = [
-        '#1abc9c','#2ecc71','#3498db','#9b59b6','#f1c40f','#e67e22','#e74c3c','#95a5a6','#34495e'
-      ];
-      new Chart(doughnutCtx, {
-        type: 'doughnut',
-        data: {
-          labels: labels4,
-          datasets: [{ data: values4, backgroundColor: colors4 }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { position: 'bottom' } }
-        }
-      });
-      document.getElementById("doughnutCard").style.display = "block";
-
- // === البطاقة 5 ===
-      const studentsBody = document.getElementById("studentsTableBody");
-      data.forEach(s => {
-        const finalTotal = (s["final_practical"] + s["final_written"]).toFixed(2);
-        const row = `<tr>
-          <td>${s.student_name}</td>
-          <td>${s.assignments}</td>
-          <td>${s.projects}</td>
-          <td>${s.activities}</td>
-          <td>${s.participation}</td>
-          <td>${s.short_written}</td>
-          <td>${s.short_practical}</td>
-          <td>${s.period1_total}</td>
-          <td>${s.final_practical}</td>
-          <td>${s.final_written}</td>
-          <td>${finalTotal}</td>
-          <td>${s.total_score}</td>
-          <td>${s["التقدير"]}</td>
-        </tr>`;
-        studentsBody.innerHTML += row;
-      });
-      document.getElementById("studentsTableCard").style.display = "block";
-
-      // === البطاقة 6 ===
-      const period1Hist = document.getElementById("period1Histogram");
-      const mean6 = mean(period1);
-      const std6 = stddev(period1, mean6);
-      const normalDist6 = Array.from({length: 100}, (_, i) => {
-        const x = i;
-        const fx = (1 / (std6 * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean6) / std6, 2));
-        return {x, y: fx};
-      });
-      Plotly.newPlot(period1Hist, [
-        {
-          x: period1,
-          type: 'histogram',
-          histnorm: 'probability density',
-          opacity: 0.6,
-          name: 'الفترة الأولى',
-          marker: {color: 'rgba(52,152,219,0.6)', line: {color: 'black', width: 1}}
-        },
-        {
-          x: normalDist6.map(p => p.x),
-          y: normalDist6.map(p => p.y),
-          type: 'scatter',
-          mode: 'lines',
-          name: 'المنحنى الطبيعي'
-        }
-      ], {
-        barmode: 'overlay',
-        xaxis: {title: 'الدرجات'},
-        yaxis: {title: 'الكثافة الاحتمالية'},
-        legend: {orientation: 'h'}
-      });
-      document.getElementById("histPeriod1Card").style.display = "block";
-
-      // === البطاقة 7 ===
-      const finalScores = data.map(s => s["final_practical"] + s["final_written"]);
-      const mean7 = mean(finalScores);
-      const std7 = stddev(finalScores, mean7);
-      const normalDist7 = Array.from({length: 100}, (_, i) => {
-        const x = i;
-        const fx = (1 / (std7 * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean7) / std7, 2));
-        return {x, y: fx};
-      });
-      Plotly.newPlot('finalHistogram', [
-        {
-          x: finalScores,
-          type: 'histogram',
-          histnorm: 'probability density',
-          opacity: 0.6,
-          name: 'نهاية الفصل',
-          marker: {color: 'rgba(231,76,60,0.6)', line: {color: 'black', width: 1}}
-        },
-        {
-          x: normalDist7.map(p => p.x),
-          y: normalDist7.map(p => p.y),
-          type: 'scatter',
-          mode: 'lines',
-          name: 'المنحنى الطبيعي'
-        }
-      ], {
-        barmode: 'overlay',
-        xaxis: {title: 'الدرجات'},
-        yaxis: {title: 'الكثافة الاحتمالية'},
-        legend: {orientation: 'h'}
-      });
-      document.getElementById("histFinalCard").style.display = "block";
-
-      // === البطاقة 8 ===
-      function getNormalDistribution(arr) {
-        const meanVal = mean(arr);
-        const stdVal = stddev(arr, meanVal);
-        const min = Math.min(...arr);
-        const max = Math.max(...arr);
-        const points = [];
-        for (let x = min - 5; x <= max + 5; x += 0.5) {
-          const fx = (1 / (stdVal * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - meanVal) / stdVal, 2));
-          points.push({x, y: fx * arr.length * 2});
-        }
-        return points;
-      }
-      const period1Norm = getNormalDistribution(period1);
-      const finalNorm = getNormalDistribution(finalScores);
-      Plotly.newPlot('compareHistogram', [
-        {
-          x: period1,
-          type: 'histogram',
-          opacity: 0.5,
-          name: 'الفترة الأولى',
-          marker: {color: 'rgba(52,152,219,0.7)'}
-        },
-        {
-          x: finalScores,
-          type: 'histogram',
-          opacity: 0.5,
-          name: 'نهاية الفصل',
-          marker: {color: 'rgba(231,76,60,0.7)'}
-        },
-        {
-          x: period1Norm.map(p => p.x),
-          y: period1Norm.map(p => p.y),
-          type: 'scatter',
-          mode: 'lines',
-          name: 'منحنى الفترة الأولى',
-          line: {color: 'blue'}
-        },
-        {
-          x: finalNorm.map(p => p.x),
-          y: finalNorm.map(p => p.y),
-          type: 'scatter',
-          mode: 'lines',
-          name: 'منحنى نهاية الفصل',
-          line: {color: 'red'}
-        }
-      ], {
-        barmode: 'overlay',
-        xaxis: {title: 'الدرجات'},
-        yaxis: {title: 'عدد الطلاب'},
-        legend: {orientation: 'h'}
-      });
-      document.getElementById("compareHistCard").style.display = "block";
-
-      // === البطاقة 9 === (لا تتطلب JS إضافي)
-      document.getElementById("analysisCard").style.display = "block";
-
-async function renderCards10to12(data) {
-  // البطاقة 10
-  const gradeGroups = [
-    { label: "الطلاب الحاصلين على تقدير ممتاز", values: ["ممتاز مرتفع", "ممتاز"], color: "#2ecc71" },
-    { label: "الطلاب الحاصلين على تقدير جيد جدًا", values: ["جيد جدًا مرتفع", "جيد جدًا"], color: "#3498db" },
-    { label: "الطلاب الحاصلين على تقدير جيد", values: ["جيد مرتفع", "جيد"], color: "#f1c40f" },
-    { label: "الطلاب الحاصلين على تقدير مقبول", values: ["مقبول مرتفع", "مقبول"], color: "#e67e22" },
-    { label: "الطلاب الحاصلين على تقدير ضعيف", values: ["ضعيف"], color: "#e74c3c" }
+  const statsBody = document.getElementById("statsTableBody");
+  const rows = [
+    ["عدد الطلاب", period1.length, final.length],
+    ["مجموع الدرجات", period1.reduce((a,b)=>a+b,0).toFixed(2), final.reduce((a,b)=>a+b,0).toFixed(2)],
+    ["المتوسط الحسابي", p1_mean.toFixed(2), f_mean.toFixed(2)],
+    ["الوسيط", p1_median, f_median],
+    ["المنوال", p1_mode, f_mode],
+    ["الانحراف المعياري", p1_std, f_std],
+    ["التباين", p1_var, f_var],
   ];
-
-  const gradeContainer = document.getElementById("gradeGroupContainer");
-  gradeGroups.forEach(group => {
-    const students = data.filter(s => group.values.includes(s["التقدير"]));
-    const card = document.createElement("div");
-    card.className = "card";
-    const title = document.createElement("div");
-    title.className = "grade-header";
-    title.style.backgroundColor = group.color;
-    title.textContent = group.label;
-    const table = document.createElement("table");
-    table.innerHTML = `
-      <thead><tr><th>م</th><th>اسم الطالب</th></tr></thead>
-      <tbody>
-        ${students.map((s, i) => `<tr><td>${i + 1}</td><td>${s.student_name}</td></tr>`).join("")}
-      </tbody>
-    `;
-    card.appendChild(title);
-    card.appendChild(table);
-    gradeContainer.appendChild(card);
+  rows.forEach(([label,p1,f]) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${label}</td><td>${p1}</td><td>${f}</td>`;
+    statsBody.appendChild(tr);
   });
-
-  // البطاقة 11
-  const pieLabels = [], pieValues = [], pieColors = [];
-  gradeGroups.forEach(group => {
-    const count = data.filter(s => group.values.includes(s["التقدير"])).length;
-    if (count > 0) {
-      pieLabels.push(group.label.split(" ")[3]);
-      pieValues.push(count);
-      pieColors.push(group.color);
-    }
-  });
-  const pieCtx = document.getElementById("gradePieChart").getContext("2d");
-  new Chart(pieCtx, {
-    type: 'pie',
-    data: {
-      labels: pieLabels,
-      datasets: [{ data: pieValues, backgroundColor: pieColors }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'bottom' },
-        tooltip: {
-          callbacks: {
-            label: function(ctx) {
-              const total = pieValues.reduce((a,b)=>a+b,0);
-              const percent = ((ctx.parsed / total) * 100).toFixed(1);
-              return `${ctx.label}: ${ctx.parsed} (${percent}%)`;
-            }
-          }
-        }
-      }
-    }
-  });
-  document.getElementById("pieGradeCard").style.display = "block";
-
-  // البطاقة 12
-  const nationalityCounts = { "سعودي": 0, "غير سعودي": 0 };
-  data.forEach(s => {
-    const isSaudi = s.student_id.toString().startsWith("1");
-    const label = isSaudi ? "سعودي" : "غير سعودي";
-    nationalityCounts[label]++;
-  });
-  const natLabels = Object.keys(nationalityCounts);
-  const natValues = Object.values(nationalityCounts);
-  const natColors = ['#2980b9', '#16a085'];
-  const natCtx = document.getElementById("nationalityDoughnutChart").getContext("2d");
-  new Chart(natCtx, {
-    type: 'doughnut',
-    data: {
-      labels: natLabels,
-      datasets: [{ data: natValues, backgroundColor: natColors }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'bottom' },
-        tooltip: {
-          callbacks: {
-            label: function(ctx) {
-              const total = natValues.reduce((a,b)=>a+b,0);
-              const percent = ((ctx.parsed / total) * 100).toFixed(1);
-              return `${ctx.label}: ${ctx.parsed} (${percent}%)`;
-            }
-          }
-        }
-      }
-    }
-  });
-  document.getElementById("nationalityCard").style.display = "block";
 }
 
-      // يمكنك لصق كل كود دالة loadData الموحدة التي تحتوي على منطق البطاقات من 1 إلى 12
-      // تم ترك مكانها هنا لتدرج لاحقًا أو حسب الطلب.
-
-
-      // يمكنك لصق كل كود دالة loadData الموحدة التي تحتوي على منطق البطاقات من 1 إلى 12
-      // تم ترك مكانها هنا لتدرج لاحقًا أو حسب الطلب.
-    }
-
-    
-    async function loadData() {
-      // تحميل البيانات ومعالجة كل البطاقات هنا (تمت إضافته مسبقًا)
-      // يمكنك نسخ الكود الموحد هنا من التحديث السابق
-    }
-
-    loadData();
-  </script>
-</body>
-</html>
+loadData();
+</script>
