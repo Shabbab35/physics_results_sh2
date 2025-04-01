@@ -117,77 +117,53 @@ function loadData() {
   container.appendChild(card3);
 
   // === البطاقة 4 ===
-// === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير ===
-const card4 = document.createElement("div");
-card4.className = "card";
-card4.innerHTML = `
-  <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
-  <canvas id="gradeDoughnutChart" width="300" height="300"></canvas>`;
-container.appendChild(card4);
+  // === البطاقة 4 === (نسخة تعمل دون ChartDataLabels مؤقتًا)
+  const card4 = document.createElement("div");
+  card4.className = "card";
+  card4.innerHTML = `
+    <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
+    <canvas id="gradeDoughnut" width="400" height="400"></canvas>
+  `;
+  container.appendChild(card4);
 
-// ترتيب الدرجات حسب اللون
-const orderedGrades = [
-  { grade: "ممتاز مرتفع", color: '#1abc9c' },
-  { grade: "ممتاز", color: '#2ecc71' },
-  { grade: "جيد جدًا مرتفع", color: '#3498db' },
-  { grade: "جيد جدًا", color: '#9b59b6' },
-  { grade: "جيد مرتفع", color: '#f1c40f' },
-  { grade: "جيد", color: '#e67e22' },
-  { grade: "مقبول مرتفع", color: '#e74c3c' },
-  { grade: "مقبول", color: '#95a5a6' },
-  { grade: "ضعيف", color: '#34495e' }
-];
+  // تعريف البيانات يدويًا لتجريب الرسم
+  const doughnutLabels = ['ممتاز مرتفع','ممتاز','جيد جدًا مرتفع','جيد جدًا','جيد مرتفع','جيد','مقبول مرتفع','مقبول','ضعيف'];
+  const doughnutValues = [3, 2, 3, 2, 5, 1, 3, 2, 13]; // مؤقتًا
+  const doughnutColors = [
+    '#27ae60','#2ecc71','#3498db','#5dade2',
+    '#f1c40f','#f7dc6f','#e67e22','#edbb99','#e74c3c'
+  ];
 
-const doughnutLabels = [];
-const doughnutValues = [];
-const doughnutColors = [];
+  const total = doughnutValues.reduce((a, b) => a + b, 0);
 
-orderedGrades.forEach(({ grade, color }) => {
-  const count = gradeCounts[grade] || 0;
-  if (count > 0) {
-    doughnutLabels.push(grade);
-    doughnutValues.push(count);
-    doughnutColors.push(color);
-  }
-});
-
-const total = doughnutValues.reduce((a, b) => a + b, 0);
-
-// تأكد من تسجيل ChartDataLabels قبل استخدامه
-Chart.register(ChartDataLabels);
-
-const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
-new Chart(ctx4, {
-  type: 'doughnut',
-  data: {
-    labels: doughnutLabels,
-    datasets: [{
-      data: doughnutValues,
-      backgroundColor: doughnutColors
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'bottom',
-        rtl: true,
-        labels: {
-          textDirection: 'rtl'
-        }
-      },
-      datalabels: {
-        color: '#fff',
-        font: { weight: 'bold' },
-        formatter: (value) => {
-          const percent = (value / total * 100).toFixed(1);
-          return `${percent}%`;
+  const gradeCtx = document.getElementById('gradeDoughnut').getContext('2d');
+  new Chart(gradeCtx, {
+    type: 'doughnut',
+    data: {
+      labels: doughnutLabels,
+      datasets: [{
+        data: doughnutValues,
+        backgroundColor: doughnutColors
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const percent = (ctx.parsed / total * 100).toFixed(1);
+              return `${ctx.label}: ${ctx.parsed} طالب (${percent}%)`;
+            }
+          }
         }
       }
     }
-  },
-  plugins: [ChartDataLabels]
-});
+  });
 }
+
+document.addEventListener("DOMContentLoaded", loadData);
+
 
 document.addEventListener("DOMContentLoaded", loadData);
