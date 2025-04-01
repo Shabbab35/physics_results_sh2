@@ -207,8 +207,7 @@ orderedGrades.forEach(({ grade, color }) => {
 const total = doughnutValues.reduce((a, b) => a + b, 0);
 const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
 
-// تفعيل الإضافة
-Chart.register(ChartDataLabels);
+Chart.register(ChartDataLabels); // تسجيل الإضافة مرة واحدة فقط
 
 new Chart(ctx4, {
   type: 'doughnut',
@@ -231,17 +230,14 @@ new Chart(ctx4, {
       },
       datalabels: {
         color: '#fff',
-        font: {
-          weight: 'bold'
-        },
+        font: { weight: 'bold' },
         formatter: (value) => {
           const percent = (value / total * 100).toFixed(1);
           return `${percent}%`;
         }
       }
     }
-  },
-  plugins: [ChartDataLabels]
+  }
 });
     }
     loadData();
