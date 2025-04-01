@@ -1,5 +1,7 @@
 // script.js
 
+document.addEventListener("DOMContentLoaded", loadData);
+
 function loadData() {
   const data = studentData;
   const container = document.getElementById("cardsContainer");
@@ -43,60 +45,58 @@ function loadData() {
     </tbody></table>`;
   container.appendChild(card1);
 
-// === البطاقة 2: مقارنة المؤشرات (نسبة مئوية لكل مؤشر على حدة) ===
-const indicators = [
-  { label: "المتوسط", p1: p1_mean, f: f_mean },
-  { label: "الوسيط", p1: p1_median, f: f_median },
-  { label: "المنوال", p1: p1_mode, f: f_mode },
-  { label: "الانحراف المعياري", p1: p1_std, f: f_std },
-  { label: "التباين", p1: p1_var, f: f_var }
-];
+  // === البطاقة 2 ===
+  const indicators = [
+    { label: "المتوسط", p1: p1_mean, f: f_mean, max: 60 },
+    { label: "الوسيط", p1: p1_median, f: f_median, max: 60 },
+    { label: "المنوال", p1: p1_mode, f: f_mode, max: 60 },
+    { label: "الانحراف المعياري", p1: p1_std, f: f_std, max: 60 },
+    { label: "التباين", p1: p1_var, f: f_var, max: 60 ** 2 }
+  ];
 
-const normalizedP1 = [];
-const normalizedF = [];
+  const labels = indicators.map(i => i.label);
+  const p1Data = indicators.map(i => ((i.p1 / i.max) * 100).toFixed(2));
+  const fData = indicators.map(i => ((i.f / (i.label === "التباين" ? 40 ** 2 : 40)) * 100).toFixed(2));
 
-indicators.forEach(i => {
-  const maxVal = Math.max(i.p1, i.f);
-  normalizedP1.push(((i.p1 / maxVal) * 100).toFixed(2));
-  normalizedF.push(((i.f / maxVal) * 100).toFixed(2));
-});
+  const card2 = document.createElement("div");
+  card2.className = "card";
+  card2.innerHTML = `<h2>البطاقة 2: مقارنة المؤشرات كنسب مئوية مطبعة</h2><canvas id="comparisonChart"></canvas>`;
+  container.appendChild(card2);
 
-const card2 = document.createElement("div");
-card2.className = "card";
-card2.innerHTML = `<h2>البطاقة 2: مقارنة المؤشرات (تطبيع لكل مؤشر)</h2><canvas id="comparisonChart"></canvas>`;
-container.appendChild(card2);
-
-new Chart(document.getElementById("comparisonChart").getContext("2d"), {
-  type: 'bar',
-  data: {
-    labels: indicators.map(i => i.label),
-    datasets: [
-      { label: "الفترة الأولى", data: normalizedP1, backgroundColor: '#3498db' },
-      { label: "نهاية الفصل", data: normalizedF, backgroundColor: '#e74c3c' }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: 'top' },
-      tooltip: {
-        callbacks: {
-          label: ctx => ctx.dataset.label + ': ' + ctx.raw + '%'
+  new Chart(document.getElementById("comparisonChart").getContext("2d"), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        { label: "الفترة الأولى", data: p1Data, backgroundColor: '#3498db' },
+        { label: "نهاية الفصل", data: fData, backgroundColor: '#e74c3c' }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.dataset.label + ': ' + ctx.raw + '%'
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          ticks: {
+            callback: value => value + '%'
+          },
+          title: { display: true, text: 'النسبة المئوية (%)' }
         }
       }
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 100,
-        ticks: {
-          callback: value => value + '%'
-        },
-        title: { display: true, text: 'النسبة المئوية (%)' }
-      }
     }
-  }
-});
+  });
+
+}
+
 
 
   // === البطاقة 3: توزيع الطلاب حسب التقدير ===
