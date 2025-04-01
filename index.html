@@ -221,6 +221,41 @@ async function loadData() {
         </tbody></table>`;
       container.appendChild(card3);
     }
+
+  // === البطاقة 4 ===
+const doughnutCard = document.createElement("div");
+doughnutCard.className = "card";
+doughnutCard.id = "doughnutCard";
+
+const doughnutTitle = document.createElement("h2");
+doughnutTitle.textContent = "البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير";
+
+doughnutCard.appendChild(doughnutTitle);
+
+const doughnutCanvas = document.createElement("canvas");
+doughnutCanvas.id = "gradeDoughnutChart";
+doughnutCard.appendChild(doughnutCanvas);
+
+container.appendChild(doughnutCard);
+
+const doughnutCtx = doughnutCanvas.getContext("2d");
+const labels4 = orderedGrades.map(g => g.grade);
+const values4 = orderedGrades.map(g => gradeCounts[g.grade] || 0);
+const colors4 = [
+  '#1abc9c','#2ecc71','#3498db','#9b59b6','#f1c40f','#e67e22','#e74c3c','#95a5a6','#34495e'
+];
+new Chart(doughnutCtx, {
+  type: 'doughnut',
+  data: {
+    labels: labels4,
+    datasets: [{ data: values4, backgroundColor: colors4 }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom' } }
+  }
+});
+
     loadData();
   </script>
 </body>
