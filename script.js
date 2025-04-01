@@ -4,7 +4,6 @@ async function loadData() {
   document.getElementById("loadingCard").style.display = "none";
   const container = document.getElementById("cardsContainer");
 
-  // دوال مساعدة
   const mean = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
   const median = arr => {
     const sorted = [...arr].sort((a, b) => a - b);
@@ -15,13 +14,12 @@ async function loadData() {
     const freq = {};
     arr.forEach(v => freq[v] = (freq[v] || 0) + 1);
     const maxFreq = Math.max(...Object.values(freq));
-    return parseFloat(Object.keys(freq).find(k => freq[k] === maxFreq));
+    return parseFloat(Object.keys(freq).find(k => freq[k] == maxFreq));
   };
   const stddev = (arr, avg) => Math.sqrt(arr.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) / arr.length);
 
   const period1 = data.map(s => s["period1_total"]);
   const final = data.map(s => s["final_practical"] + s["final_written"]);
-  const total = data.map(s => s["المجموع الكلي"]);
 
   const p1_mean = mean(period1), f_mean = mean(final);
   const p1_median = median(period1), f_median = median(final);
@@ -29,65 +27,150 @@ async function loadData() {
   const p1_std = stddev(period1, p1_mean), f_std = stddev(final, f_mean);
   const p1_var = p1_std ** 2, f_var = f_std ** 2;
 
-  // === البطاقة 1 ===
-  container.appendChild(createStatsCard(period1, final, p1_mean, f_mean, p1_median, f_median, p1_mode, f_mode, p1_std, f_std, p1_var, f_var));
+  // البطاقة 1
+  const card1 = document.createElement("div");
+  card1.className = "card";
+  card1.innerHTML = `
+    <h2>البطاقة 1: إحصائية مفصلة للفترتين</h2>
+    <table><thead><tr><th>المؤشر الإحصائي</th><th>الفترة الأولى</th><th>نهاية الفصل</th></tr></thead><tbody>
+      <tr><td>عدد الطلاب</td><td>${period1.length}</td><td>${final.length}</td></tr>
+      <tr><td>مجموع الدرجات</td><td>${period1.reduce((a,b)=>a+b,0).toFixed(2)}</td><td>${final.reduce((a,b)=>a+b,0).toFixed(2)}</td></tr>
+      <tr><td>المتوسط الحسابي</td><td>${p1_mean.toFixed(2)}</td><td>${f_mean.toFixed(2)}</td></tr>
+      <tr><td>الوسيط</td><td>${p1_median.toFixed(2)}</td><td>${f_median.toFixed(2)}</td></tr>
+      <tr><td>المنوال</td><td>${p1_mode}</td><td>${f_mode}</td></tr>
+      <tr><td>الانحراف المعياري</td><td>${p1_std.toFixed(2)}</td><td>${f_std.toFixed(2)}</td></tr>
+      <tr><td>التباين</td><td>${p1_var.toFixed(2)}</td><td>${f_var.toFixed(2)}</td></tr>
+    </tbody></table>`;
+  container.appendChild(card1);
 
-  // === البطاقة 2 ===
-  container.appendChild(createComparisonChart(p1_mean, f_mean, p1_median, f_median, p1_mode, f_mode, p1_std, f_std, p1_var, f_var));
+  // البطاقة 2: مقارنة المؤشرات كنسبة مئوية
+  const indicators = [
+    { label: "المتوسط الحسابي", p1: p1_mean, f: f_mean },
+    { label: "الوسيط", p1: p1_median, f: f_median },
+    { label: "المنوال", p1: p1_mode, f: f_mode },
+    { label: "الانحراف المعياري", p1: p1_std, f: f_std },
+    { label: "التباين", p1: p1_var, f: f_var }
+  ];
 
-  // === البطاقة 3 ===
+  const maxVal = Math.max(...indicators.flatMap(i => [i.p1, i.f]));
+  const labels = indicators.map(i => i.label);
+  const p1Data = indicators.map(i => ((i.p1 / maxVal) * 100).toFixed(2));
+  const fData = indicators.map(i => ((i.f / maxVal) * 100).toFixed(2));
+
+  const card2 = document.createElement("div");
+  card2.className = "card";
+  card2.innerHTML = `<h2>البطاقة 2: مقارنة المؤشرات (نسبة مئوية)</h2><canvas id="comparisonChart"></canvas>`;
+  container.appendChild(card2);
+
+  new Chart(document.getElementById("comparisonChart").getContext("2d"), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        { label: "الفترة الأولى", data: p1Data, backgroundColor: '#3498db' },
+        { label: "نهاية الفصل", data: fData, backgroundColor: '#e74c3c' }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.dataset.label + ': ' + ctx.raw + '%'
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          ticks: { callback: value => value + '%' },
+          title: { display: true, text: 'النسبة المئوية (%)' }
+        }
+      }
+    }
+  });
+
+  // البطاقة 3: توزيع الطلاب حسب التقدير
   const gradeCounts = {};
   data.forEach(s => {
     const grade = s["التقدير"] || "غير محدد";
     gradeCounts[grade] = (gradeCounts[grade] || 0) + 1;
   });
-  container.appendChild(createGradeTable(gradeCounts, data.length));
 
-  // === البطاقة 4 ===
-  container.appendChild(createGradeDoughnut(gradeCounts));
+  const grades = ["ممتاز مرتفع", "ممتاز", "جيد جدًا مرتفع", "جيد جدًا", "جيد مرتفع", "جيد", "مقبول مرتفع", "مقبول", "ضعيف"];
+  const symbols = ["+A", "A", "+B", "B", "+C", "C", "+D", "D", "F"];
+  const ranges = ["100 - 95", "94 - 90", "89 - 85", "84 - 80", "79 - 75", "74 - 70", "69 - 65", "64 - 60", "59 وأقل"];
 
-// === البطاقة 5 ===
-const card5 = document.createElement("div");
-card5.className = "card";
-card5.innerHTML = `
-  <h2>البطاقة 5: مقارنة توزيع التقديرات (الرسم البياني الشريطي الأفقي)</h2>
-  <canvas id="gradesBarChart"></canvas>
-`;
-container.appendChild(card5);
+  const card3 = document.createElement("div");
+  card3.className = "card";
+  card3.innerHTML = `<h2>البطاقة 3: توزيع الطلاب حسب التقدير</h2>
+    <table><thead><tr><th>التقدير</th><th>الرمز</th><th>النطاق</th><th>عدد الطلاب</th><th>النسبة</th></tr></thead><tbody>
+      ${grades.map((g, i) => {
+        const count = gradeCounts[g] || 0;
+        const percent = ((count / data.length) * 100).toFixed(1) + "%";
+        return `<tr><td>${g}</td><td>${symbols[i]}</td><td>${ranges[i]}</td><td>${count}</td><td>${percent}</td></tr>`;
+      }).join("")}
+    </tbody></table>`;
+  container.appendChild(card3);
 
-const gradeLabels5 = grades;
-const gradeValues5 = gradeLabels5.map(g => gradeCounts[g] || 0);
+  // البطاقة 4: الرسم الكعكي
+  const doughnutCard = document.createElement("div");
+  doughnutCard.className = "card";
+  doughnutCard.innerHTML = `
+    <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
+    <canvas id="gradeDoughnutChart"></canvas>`;
+  container.appendChild(doughnutCard);
 
-new Chart(document.getElementById("gradesBarChart").getContext("2d"), {
-  type: 'bar',
-  data: {
-    labels: gradeLabels5,
-    datasets: [{
-      label: 'عدد الطلاب',
-      data: gradeValues5,
-      backgroundColor: '#2980b9'
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    responsive: true,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: ctx => ctx.raw + ' طالب'
+  const orderedGrades = [
+    { grade: "ممتاز مرتفع", color: '#1abc9c' },
+    { grade: "ممتاز", color: '#2ecc71' },
+    { grade: "جيد جدًا مرتفع", color: '#3498db' },
+    { grade: "جيد جدًا", color: '#9b59b6' },
+    { grade: "جيد مرتفع", color: '#f1c40f' },
+    { grade: "جيد", color: '#e67e22' },
+    { grade: "مقبول مرتفع", color: '#e74c3c' },
+    { grade: "مقبول", color: '#95a5a6' },
+    { grade: "ضعيف", color: '#34495e' }
+  ];
+
+  const doughnutLabels = [], doughnutValues = [], doughnutColors = [];
+  orderedGrades.forEach(({ grade, color }) => {
+    const count = gradeCounts[grade] || 0;
+    if (count > 0) {
+      doughnutLabels.push(grade);
+      doughnutValues.push(count);
+      doughnutColors.push(color);
+    }
+  });
+
+  const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
+  Chart.register(ChartDataLabels);
+  new Chart(ctx4, {
+    type: 'doughnut',
+    data: {
+      labels: doughnutLabels,
+      datasets: [{
+        data: doughnutValues,
+        backgroundColor: doughnutColors
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' },
+        datalabels: {
+          color: '#fff',
+          font: { weight: 'bold' },
+          formatter: (value, ctx) => {
+            const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+            const percent = (value / total * 100).toFixed(1);
+            return `${percent}%`;
+          }
         }
       }
     },
-    scales: {
-      x: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: 'عدد الطلاب'
-        }
-      }
-    }
-  }
-});
-  
+    plugins: [ChartDataLabels]
+  });
+}
