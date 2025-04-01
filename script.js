@@ -123,6 +123,7 @@ card4.className = "card";
 card4.innerHTML = `
   <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
   <canvas id="gradeDoughnutChart"></canvas>`;
+  console.log("إضافة البطاقة 4 إلى DOM");
 container.appendChild(card4);  // ← يجب أن يكون قبل getElementById
 
 // تحديد ألوان وتقديرات مرتبة
@@ -158,6 +159,7 @@ const total = doughnutValues.reduce((a, b) => a + b, 0);
 Chart.register(ChartDataLabels);
 
 // تنفيذ الرسم الكعكي
+  console.log("الحصول على سياق الرسم البياني");
 const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
 new Chart(ctx4, {
   type: 'doughnut',
