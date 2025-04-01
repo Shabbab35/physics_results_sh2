@@ -172,54 +172,76 @@
         </tbody></table>`;
       container.appendChild(card3);
 
-      // البطاقة 4: الرسم الكعكي مع النسب
-      const doughnutCard = document.createElement("div");
-      doughnutCard.className = "card";
-      doughnutCard.innerHTML = `<h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2><canvas id="gradeDoughnutChart"></canvas>`;
-      container.appendChild(doughnutCard);
+// البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير
+const doughnutCard = document.createElement("div");
+doughnutCard.className = "card";
+doughnutCard.innerHTML = `
+  <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
+  <canvas id="gradeDoughnutChart"></canvas>`;
+container.appendChild(doughnutCard);
 
-      const doughnutLabels = [], doughnutValues = [], doughnutColors = [];
-      grades.forEach((grade, i) => {
-        const count = gradeCounts[grade] || 0;
-        if (count > 0) {
-          doughnutLabels.push(grade);
-          doughnutValues.push(count);
-          doughnutColors.push(orderedGrades[i].color);
-        }
-      });
+// بيانات مرتبة
+const orderedGrades = [
+  { grade: "ممتاز مرتفع", color: '#1abc9c' },
+  { grade: "ممتاز", color: '#2ecc71' },
+  { grade: "جيد جدًا مرتفع", color: '#3498db' },
+  { grade: "جيد جدًا", color: '#9b59b6' },
+  { grade: "جيد مرتفع", color: '#f1c40f' },
+  { grade: "جيد", color: '#e67e22' },
+  { grade: "مقبول مرتفع", color: '#e74c3c' },
+  { grade: "مقبول", color: '#95a5a6' },
+  { grade: "ضعيف", color: '#34495e' }
+];
 
-      new Chart(document.getElementById("gradeDoughnutChart").getContext("2d"), {
-        type: 'doughnut',
-        data: {
-          labels: doughnutLabels,
-          datasets: [{ data: doughnutValues, backgroundColor: doughnutColors }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: 'bottom', labels: { textDirection: 'rtl' } },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                  const value = context.parsed;
-                  const percent = ((value / total) * 100).toFixed(1) + '%';
-                  return `${context.label}: ${value} طالب (${percent})`;
-                }
-              }
-            },
-            datalabels: {
-              color: '#fff',
-              formatter: (value, ctx) => {
-                const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                const percent = ((value / total) * 100).toFixed(1);
-                return percent + '%';
-              }
-            }
+const doughnutLabels = [], doughnutValues = [], doughnutColors = [];
+
+orderedGrades.forEach(({ grade, color }) => {
+  const count = gradeCounts[grade] || 0;
+  if (count > 0) {
+    doughnutLabels.push(grade);
+    doughnutValues.push(count);
+    doughnutColors.push(color);
+  }
+});
+
+const total = doughnutValues.reduce((a, b) => a + b, 0);
+const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
+
+new Chart(ctx4, {
+  type: 'doughnut',
+  data: {
+    labels: doughnutLabels,
+    datasets: [{
+      data: doughnutValues,
+      backgroundColor: doughnutColors
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        rtl: true,
+        labels: {
+          textDirection: 'rtl',
+          generateLabels: (chart) => {
+            const data = chart.data;
+            return data.labels.map((label, i) => {
+              const value = data.datasets[0].data[i];
+              const percent = ((value / total) * 100).toFixed(1);
+              return {
+                text: `${label}: ${percent}%`,
+                fillStyle: data.datasets[0].backgroundColor[i],
+                strokeStyle: data.datasets[0].backgroundColor[i],
+                index: i
+              };
+            });
           }
-        },
-        plugins: [ChartDataLabels]
-      });
+        }
+      }
+    }
+  }
+});
     }
     loadData();
   </script>
