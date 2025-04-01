@@ -181,4 +181,4 @@ function loadData() {
 }
 
 // استدعاء الدالة
-loadData();
+document.addEventListener("DOMContentLoaded", loadData);
