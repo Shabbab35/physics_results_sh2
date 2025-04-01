@@ -147,26 +147,8 @@
         </tbody></table>`;
       container.appendChild(card3);
 
-      setTimeout(() => {
-  const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
-  new Chart(ctx4, {
-    type: 'doughnut',
-    data: {
-      labels: doughnutLabels,
-      datasets: [{
-        data: doughnutValues,
-        backgroundColor: doughnutColors
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'bottom' }
-      }
-    }
-  });
-}, 0);
-// === البطاقة 4 ===
+      // === البطاقة 4 ===
+// أولًا: إنشاء البطاقة وإدراجها
 const doughnutCard = document.createElement("div");
 doughnutCard.className = "card";
 doughnutCard.innerHTML = `
@@ -175,6 +157,7 @@ doughnutCard.innerHTML = `
 `;
 container.appendChild(doughnutCard);
 
+// ثانيًا: حساب البيانات
 const orderedGrades = [
   { grade: "ممتاز مرتفع", color: '#1abc9c' },
   { grade: "ممتاز", color: '#2ecc71' },
@@ -200,6 +183,7 @@ orderedGrades.forEach(({ grade, color }) => {
   }
 });
 
+// ثالثًا: الرسم بعد التأكد أن العنصر موجود
 const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
 new Chart(ctx4, {
   type: 'doughnut',
@@ -217,7 +201,6 @@ new Chart(ctx4, {
     }
   }
 });
-
   </script>
 </body>
 </html>
