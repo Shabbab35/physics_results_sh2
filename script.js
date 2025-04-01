@@ -1,7 +1,5 @@
 // script.js
 
-document.addEventListener("DOMContentLoaded", loadData);
-
 function loadData() {
   const data = studentData;
   const container = document.getElementById("cardsContainer");
