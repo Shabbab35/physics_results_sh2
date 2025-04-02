@@ -1,14 +1,14 @@
 // script.js
-console.log("هل تم تحميل البيانات؟", typeof studentData);
+console.log("هل تم تحميل البيانات؟", typeof student_data);
 
 function loadData() {
-  const data = studentData;
+  const data = student_data;
   const container = document.getElementById("cardsContainer");
 
   // === البطاقة 1 ===
 // === البطاقة 1: إحصائية مفصلة للفترتين ===
-const period1 = studentData.map(s => s.period1_total);
-const final = studentData.map(s => s.final_practical + s.final_written);
+const period1 = student_data.map(s => s.period1_total);
+const final = student_data.map(s => s.final_practical + s.final_written);
 
 const mean = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
 const median = arr => {
