@@ -1,9 +1,11 @@
 function loadData() {
-  const data = student_data;
+  const data = student_data; // تأكد من تعريف بيانات الطلاب في المتغير global
   const container = document.getElementById("cardsContainer");
   container.innerHTML = ""; // مسح البطاقات السابقة إن وجدت
 
-  // === البطاقة 1 ===
+  // ===========================
+  // البطاقة 1: الإحصائيات العامة
+  // ===========================
   const period1 = data.map(s => s.period1_total);
   const final = data.map(s => s.final_practical + s.final_written);
 
@@ -51,7 +53,9 @@ function loadData() {
     </table>`;
   container.appendChild(card1);
 
-  // === البطاقة 2: مقارنة المؤشرات كنسب مئوية مطبعة ===
+  // ===========================
+  // البطاقة 2: مقارنة المؤشرات كنسب مئوية
+  // ===========================
   const indicators = [
     { label: "المتوسط", p1: p1_mean, f: f_mean, max: 60 },
     { label: "الوسيط", p1: p1_median, f: f_median, max: 60 },
@@ -99,7 +103,9 @@ function loadData() {
     }
   });
 
-  // === البطاقة 3: توزيع الطلاب حسب التقدير ===
+  // ===========================
+  // البطاقة 3: توزيع الطلاب حسب التقدير (جدول)
+  // ===========================
   const gradeCounts = {};
   data.forEach(s => {
     const grade = s["التقدير"] || "غير محدد";
@@ -143,7 +149,6 @@ function loadData() {
       </tbody>
     </table>`;
   container.appendChild(card3);
-
   // === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير (Plotly.js) ===
   const card4 = document.createElement("div");
   card4.className = "card";
