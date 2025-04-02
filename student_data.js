@@ -5,7 +5,7 @@ const student_data = [
     "assignments": 10,
     "projects": 10,
     "activities": 10,
-    "participation": 10,
+    "participation":10,
     "short_written": 15.0,
     "short_practical": 5,
     "period1_total": 60.0,
