@@ -45,7 +45,53 @@ card1.innerHTML = `
 cardsContainer.appendChild(card1);
 
   // === البطاقة 2 ===
-  // ... (كود البطاقة 2 الكامل هنا)
+// === البطاقة 2: مقارنة المؤشرات كنسب مئوية مطبعة ===
+const indicators = [
+  { label: "المتوسط", p1: p1_mean, f: f_mean, max: 60 },
+  { label: "الوسيط", p1: p1_median, f: f_median, max: 60 },
+  { label: "المنوال", p1: p1_mode, f: f_mode, max: 60 },
+  { label: "الانحراف المعياري", p1: p1_std, f: f_std, max: 60 },
+  { label: "التباين", p1: p1_var, f: f_var, max: 3600 }
+];
+
+const p1Data = indicators.map(i => ((i.p1 / i.max) * 100).toFixed(2));
+const fData = indicators.map(i => ((i.f / (i.label === "التباين" ? 1600 : 40)) * 100).toFixed(2));
+const labels = indicators.map(i => i.label);
+
+const card2 = document.createElement("div");
+card2.className = "card";
+card2.innerHTML = `<h2>البطاقة 2: مقارنة المؤشرات كنسب مئوية مطبعة</h2><div id="comparisonPlot"></div>`;
+container.appendChild(card2);
+
+Plotly.newPlot("comparisonPlot", [
+  {
+    x: labels,
+    y: p1Data,
+    name: "الفترة الأولى",
+    type: "bar",
+    marker: { color: "#3498db" }
+  },
+  {
+    x: labels,
+    y: fData,
+    name: "نهاية الفصل",
+    type: "bar",
+    marker: { color: "#e74c3c" }
+  }
+], {
+  barmode: 'group',
+  margin: { t: 30 },
+  yaxis: {
+    title: "النسبة المئوية (%)",
+    ticksuffix: "%",
+    range: [0, 100]
+  },
+  legend: {
+    x: 0,
+    y: 1.2,
+    orientation: 'h'
+  }
+});
 
   // === البطاقة 3 ===
   // ... (كود البطاقة 3 الكامل هنا)
