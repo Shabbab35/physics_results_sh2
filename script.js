@@ -1,4 +1,5 @@
 // script.js
+console.log("هل تم تحميل البيانات؟", typeof studentData);
 
 function loadData() {
   const data = studentData;
