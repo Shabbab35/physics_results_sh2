@@ -94,10 +94,89 @@ Plotly.newPlot("comparisonPlot", [
 });
 
   // === البطاقة 3 ===
-  // ... (كود البطاقة 3 الكامل هنا)
+// === البطاقة 3: توزيع الطلاب حسب التقدير ===
+const gradeCounts = {};
+data.forEach(s => {
+  const grade = s["التقدير"] || "غير محدد";
+  gradeCounts[grade] = (gradeCounts[grade] || 0) + 1;
+});
+
+const grades = [
+  "ممتاز مرتفع", "ممتاز", "جيد جدًا مرتفع", "جيد جدًا", 
+  "جيد مرتفع", "جيد", "مقبول مرتفع", "مقبول", "ضعيف"
+];
+const symbols = ["+A", "A", "+B", "B", "+C", "C", "+D", "D", "F"];
+const ranges = ["100 - 95", "94 - 90", "89 - 85", "84 - 80", "79 - 75", "74 - 70", "69 - 65", "64 - 60", "59 وأقل"];
+
+const card3 = document.createElement("div");
+card3.className = "card";
+card3.innerHTML = `<h2>البطاقة 3: توزيع الطلاب حسب التقدير</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>التقدير</th>
+        <th>الرمز</th>
+        <th>النطاق</th>
+        <th>عدد الطلاب</th>
+        <th>النسبة</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${grades.map((g, i) => {
+        const count = gradeCounts[g] || 0;
+        const percent = ((count / data.length) * 100).toFixed(1) + "%";
+        return `
+          <tr>
+            <td>${g}</td>
+            <td>${symbols[i]}</td>
+            <td>${ranges[i]}</td>
+            <td>${count}</td>
+            <td>${percent}</td>
+          </tr>
+        `;
+      }).join("")}
+    </tbody>
+  </table>`;
+container.appendChild(card3);
 
   // === البطاقة 4 === باستخدام Plotly
-  // ... (كود البطاقة 4 باستخدام Plotly)
+// === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير (Plotly.js) ===
+const card4 = document.createElement("div");
+card4.className = "card";
+card4.innerHTML = `
+  <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
+  <div id="gradeDoughnutPlot" style="height:400px;"></div>
+`;
+container.appendChild(card4);
+
+// تحضير البيانات
+const doughnutLabels = [];
+const doughnutValues = [];
+const doughnutColors = [
+  '#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#f1c40f',
+  '#e67e22', '#e74c3c', '#95a5a6', '#34495e'
+];
+
+grades.forEach((g, i) => {
+  const count = gradeCounts[g] || 0;
+  if (count > 0) {
+    doughnutLabels.push(g);
+    doughnutValues.push(count);
+  }
+});
+
+// رسم الرسم الكعكي بـ Plotly
+Plotly.newPlot('gradeDoughnutPlot', [{
+  type: "pie",
+  labels: doughnutLabels,
+  values: doughnutValues,
+  hole: 0.45,
+  textinfo: "label+percent",
+  marker: { colors: doughnutColors }
+}], {
+  title: "نسبة توزيع الطلاب حسب التقدير",
+  showlegend: true
+}, { responsive: true });
 
   // === البطاقة 5 === جدول الدرجات
   // ... (كود البطاقة 5)
