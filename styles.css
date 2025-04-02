@@ -73,31 +73,60 @@ body, #cardsContainer {
   min-height: 400px;
 }
 
-/* تنسيق خاص للبطاقة 10 (تصنيف الطلاب) */
+/* تنسيق البطاقة العاشرة */
 .card10 {
   width: 100%;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  overflow: hidden;
+  box-sizing: border-box;
+  margin: 0 auto;
 }
 
-/* ترتيب البطاقات الفرعية داخل البطاقة 10 بحيث تكون 3 في الصف الأول و2 في الصف الثاني */
+/* تنسيق عنوان البطاقة */
+.card10 h2 {
+  margin: 0;
+  padding: 15px;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #ddd;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+/* الحاوية الداخلية للبطاقة العاشرة */
 .card10 .subcards-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 15px;
   padding: 15px;
 }
 
-.card10 .sub-card {
-  /* العناصر الأولى: عرض 33.33% لكل منها */
+/* كل صف من البطاقات الفرعية */
+.card10 .subcards-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* تنسيق البطاقات الفرعية */
+/* الصف الأول: ثلاث بطاقات */
+.card10 .subcards-row:first-of-type .sub-card {
   flex: 0 0 calc(33.33% - 10px);
+}
+
+/* الصف الثاني: بطاقتان */
+.card10 .subcards-row:last-of-type .sub-card {
+  flex: 0 0 calc(50% - 10px);
+}
+
+/* تنسيق البطاقات الفرعية العامة */
+.card10 .sub-card {
   background-color: #fff;
   border: 1px solid #eee;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   padding: 10px;
   box-sizing: border-box;
-}
-
-/* من العنصر الرابع فصاعداً: عرض 50% لكل بطاقة فرعية (لتحقيق صف ثاني مكون من بطاقتين) */
-.card10 .sub-card:nth-child(n+4) {
-  flex: 0 0 calc(50% - 10px);
+  text-align: center; /* توسيط النص داخل البطاقة الفرعية */
 }
