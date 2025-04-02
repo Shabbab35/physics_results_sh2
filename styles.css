@@ -37,12 +37,13 @@ body, #cardsContainer {
   padding: 15px;
 }
 
-/* تنسيق الجداول داخل البطاقة لتكون من اليمين إلى اليسار */
+/* تنسيق الجداول داخل البطاقة لجعلها من اليمين إلى اليسار */
 .card table {
   width: 100%;
   border-collapse: collapse;
   table-layout: auto;
   margin: 0;
+  direction: rtl;  /* تحديد اتجاه الجدول من اليمين إلى اليسار */
 }
 
 .card table thead {
@@ -53,10 +54,8 @@ body, #cardsContainer {
 .card table td {
   border: 1px solid #ccc;
   padding: 12px;
-  text-align: center;
+  text-align: right;     /* محاذاة النص إلى اليمين */
   vertical-align: middle;
-  /* يمكنك تعديل المحاذاة إذا أردت النص أن يكون في أقصى اليمين */
-  /* على سبيل المثال: text-align: right; */
 }
 
 /* تنسيق لحاوية الرسوم البيانية لجعلها في الوسط */
