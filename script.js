@@ -117,15 +117,18 @@ function loadData() {
   container.appendChild(card3);
 
   // === البطاقة 4 ===
+// تسجيل الإضافة ChartDataLabels في الأعلى مرة واحدة
+Chart.register(ChartDataLabels);
+
 // === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير ===
 const card4 = document.createElement("div");
 card4.className = "card";
 card4.innerHTML = `
   <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
   <canvas id="gradeDoughnutChart"></canvas>`;
-container.appendChild(card4);
+container.appendChild(card4); // مهم إضافتها قبل getElementById
 
-// ترتيب التقديرات والألوان
+// التقديرات والألوان حسب الترتيب
 const orderedGrades = [
   { grade: "ممتاز مرتفع", color: '#1abc9c' },
   { grade: "ممتاز", color: '#2ecc71' },
@@ -137,13 +140,6 @@ const orderedGrades = [
   { grade: "مقبول", color: '#95a5a6' },
   { grade: "ضعيف", color: '#34495e' }
 ];
-
-// حساب عدد الطلاب في كل تقدير
-const gradeCounts = {};
-studentData.forEach(s => {
-  const grade = s["التقدير"] || "غير محدد";
-  gradeCounts[grade] = (gradeCounts[grade] || 0) + 1;
-});
 
 // إعداد البيانات للرسم
 const doughnutLabels = [];
@@ -159,44 +155,42 @@ orderedGrades.forEach(({ grade, color }) => {
   }
 });
 
-const total = doughnutValues.reduce((a, b) => a + b, 0);
+// تحقق من وجود بيانات قبل الرسم
+if (doughnutValues.length > 0) {
+  const total = doughnutValues.reduce((a, b) => a + b, 0);
+  const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
 
-// التأكد من تسجيل الإضافة
-Chart.register(ChartDataLabels);
-
-// رسم الشارت
-const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
-new Chart(ctx4, {
-  type: 'doughnut',
-  data: {
-    labels: doughnutLabels,
-    datasets: [{
-      data: doughnutValues,
-      backgroundColor: doughnutColors
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'bottom',
-        rtl: true,
-        labels: {
-          textDirection: 'rtl'
-        }
-      },
-      datalabels: {
-        color: '#fff',
-        font: { weight: 'bold' },
-        formatter: (value, context) => {
-          const percent = (value / total * 100).toFixed(1);
-          return `${percent}%`;
+  new Chart(ctx4, {
+    type: 'doughnut',
+    data: {
+      labels: doughnutLabels,
+      datasets: [{
+        data: doughnutValues,
+        backgroundColor: doughnutColors
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          rtl: true,
+          labels: { textDirection: 'rtl' }
+        },
+        datalabels: {
+          color: '#fff',
+          font: { weight: 'bold' },
+          formatter: (value, context) => {
+            const percent = (value / total * 100).toFixed(1);
+            return `${percent}%`;
+          }
         }
       }
-    }
-  },
-  plugins: [ChartDataLabels]
-});
+    },
+    plugins: [ChartDataLabels]
+  });
+} else {
+  console.warn("لا توجد بيانات كافية للرسم في البطاقة 4.");
 }
 
 document.addEventListener("DOMContentLoaded", loadData);
