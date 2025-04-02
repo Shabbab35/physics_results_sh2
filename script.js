@@ -51,7 +51,6 @@ function loadData() {
     { label: "الانحراف المعياري", p1: p1_std, f: f_std, max: 60 },
     { label: "التباين", p1: p1_var, f: f_var, max: 3600 }
   ];
-
   const labels = indicators.map(i => i.label);
   const p1Data = indicators.map(i => ((i.p1 / i.max) * 100).toFixed(2));
   const fData = indicators.map(i => ((i.f / (i.label === "التباين" ? 1600 : 40)) * 100).toFixed(2));
@@ -140,16 +139,12 @@ function loadData() {
   const total = doughnutValues.reduce((a, b) => a + b, 0);
 
   Chart.register(ChartDataLabels);
-
   const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
   new Chart(ctx4, {
     type: 'doughnut',
     data: {
       labels: doughnutLabels,
-      datasets: [{
-        data: doughnutValues,
-        backgroundColor: doughnutColors
-      }]
+      datasets: [{ data: doughnutValues, backgroundColor: doughnutColors }]
     },
     options: {
       responsive: true,
@@ -157,18 +152,12 @@ function loadData() {
         legend: {
           position: 'bottom',
           rtl: true,
-          labels: {
-            textDirection: 'rtl'
-          }
+          labels: { textDirection: 'rtl' }
         },
         datalabels: {
           color: '#fff',
           font: { weight: 'bold' },
-          formatter: (value, context) => {
-            const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-            const percent = (value / total * 100).toFixed(1);
-            return `${percent}%`;
-          }
+          formatter: (value, ctx) => `${(value / total * 100).toFixed(1)}%`
         }
       }
     },
@@ -176,4 +165,4 @@ function loadData() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", loadData);
+document.addEventListener("DOMContentLoaded", () => setTimeout(loadData, 200));
