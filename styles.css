@@ -38,10 +38,10 @@ body, #cardsContainer {
   padding: 15px;
 }
 
-/* تنسيق الجداول داخل البطاقة بحيث لا تمتد إلى أقصى الحواف وتكون في وسط البطاقة */
+/* تنسيق الجداول داخل البطاقة بحيث لا تمتد بالكامل وتكون في الوسط */
 .card table {
-  width: 96%;           /* عرض الجدول بنسبة 96% من عرض البطاقة */
-  margin: 0 auto;       /* توسيط الجدول داخل البطاقة */
+  width: 98%;           /* الجدول يغطي 98% من عرض البطاقة */
+  margin: 10px auto;    /* مسافة من الأعلى والأسفل وتوسيط الجدول */
   border-collapse: collapse;
   table-layout: auto;
   direction: rtl;
@@ -54,8 +54,8 @@ body, #cardsContainer {
 .card table th,
 .card table td {
   border: 1px solid #ccc;
-  padding: 12px;
-  text-align: right;
+  padding: 8px;          /* حشو أقل لتصغير ارتفاع الجدول */
+  text-align: center;    /* توسيط النص داخل الخلايا */
   vertical-align: middle;
 }
 
@@ -73,29 +73,31 @@ body, #cardsContainer {
   min-height: 400px;
 }
 
-/* تنسيق خاص للبطاقة 10 التي تحتوي على بطاقات فرعية */
+/* تنسيق خاص للبطاقة 10 (تصنيف الطلاب) */
 .card10 {
   width: 100%;
 }
 
+/* ترتيب البطاقات الفرعية داخل البطاقة 10 بحيث تكون 3 في الصف الأول و2 في الصف الثاني */
 .card10 .subcards-container {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 10px;
   padding: 15px;
 }
 
-.card10 .subcards-row {
-  display: flex;
-  gap: 10px;
-}
-
 .card10 .sub-card {
-  flex: 1;
+  /* العناصر الأولى: عرض 33.33% لكل منها */
+  flex: 0 0 calc(33.33% - 10px);
   background-color: #fff;
   border: 1px solid #eee;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   padding: 10px;
   box-sizing: border-box;
+}
+
+/* من العنصر الرابع فصاعداً: عرض 50% لكل بطاقة فرعية (لتحقيق صف ثاني مكون من بطاقتين) */
+.card10 .sub-card:nth-child(n+4) {
+  flex: 0 0 calc(50% - 10px);
 }
