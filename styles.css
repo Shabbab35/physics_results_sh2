@@ -1,14 +1,13 @@
 /* جعل الحاوية تعرض كل بطاقة في صف منفصل */
 #cardsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  display: block;
   margin: 20px;
 }
 
-/* تنسيق عام للبطاقة */
+/* تنسيق عام للبطاقة بحيث تأخذ العرض الكامل */
 .card {
   width: 100%;
+  margin-bottom: 20px;
   border: 1px solid #ccc;
   padding: 15px;
   box-sizing: border-box;
