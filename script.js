@@ -391,6 +391,42 @@ function loadData() {
   `;
   container.appendChild(card9);
 
+
+  // كود HTML للبطاقة 10 كمتغير نصي
+const card10HTML = `
+<div class="card card10">
+  <h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>
+  <div class="subcards-container">
+    <!-- الصف العلوي: ثلاثة بطاقات فرعية -->
+    <div class="subcards-row top-row">
+      <div class="sub-card">
+        <h3>ممتاز مرتفع وممتاز</h3>
+        <!-- بيانات أو جدول المجموعة الأولى -->
+      </div>
+      <div class="sub-card">
+        <h3>جيد جدًا مرتفع وجيد جدًا</h3>
+        <!-- بيانات أو جدول المجموعة الثانية -->
+      </div>
+      <div class="sub-card">
+        <h3>جيد مرتفع وجيد</h3>
+        <!-- بيانات أو جدول المجموعة الثالثة -->
+      </div>
+    </div>
+    <!-- الصف السفلي: بطاقتان فرعيتان -->
+    <div class="subcards-row bottom-row">
+      <div class="sub-card">
+        <h3>مقبول مرتفع ومقبول</h3>
+        <!-- بيانات أو جدول المجموعة الرابعة -->
+      </div>
+      <div class="sub-card">
+        <h3>ضعيف</h3>
+        <!-- بيانات أو جدول المجموعة الخامسة -->
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
   // === البطاقة 10: تصنيف الطلاب حسب التقدير (جداول منفصلة) ===
   const card10 = document.createElement("div");
   card10.className = "card";
