@@ -9,40 +9,44 @@
 </head>
 <body>
   <div id="cardsContainer"></div>
-    // كود HTML للبطاقة 10 كمتغير نصي
-const card10HTML = `
-<div class="card card10">
-  <h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>
-  <div class="subcards-container">
-    <!-- الصف العلوي: ثلاثة بطاقات فرعية -->
-    <div class="subcards-row top-row">
-      <div class="sub-card">
-        <h3>ممتاز مرتفع وممتاز</h3>
-        <!-- بيانات أو جدول المجموعة الأولى -->
-      </div>
-      <div class="sub-card">
-        <h3>جيد جدًا مرتفع وجيد جدًا</h3>
-        <!-- بيانات أو جدول المجموعة الثانية -->
-      </div>
-      <div class="sub-card">
-        <h3>جيد مرتفع وجيد</h3>
-        <!-- بيانات أو جدول المجموعة الثالثة -->
-      </div>
-    </div>
-    <!-- الصف السفلي: بطاقتان فرعيتان -->
-    <div class="subcards-row bottom-row">
-      <div class="sub-card">
-        <h3>مقبول مرتفع ومقبول</h3>
-        <!-- بيانات أو جدول المجموعة الرابعة -->
-      </div>
-      <div class="sub-card">
-        <h3>ضعيف</h3>
-        <!-- بيانات أو جدول المجموعة الخامسة -->
-      </div>
-    </div>
+  const card9 = document.createElement("div");
+card9.className = "card";
+card9.innerHTML = `
+  <h2>البطاقة 9: تفسير النتائج الإحصائية</h2>
+  <div class="card9-table">
+    <table>
+      <thead>
+        <tr>
+          <th>المؤشر الإحصائي</th>
+          <th>التفسير</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>المتوسط الحسابي</td>
+          <td>يعكس القيمة المتوسطة لدرجات الطلاب؛ حيث بلغ متوسط الفترة الأولى <strong>${p1_mean.toFixed(2)}</strong>، و متوسط نهاية الفصل <strong>${f_mean.toFixed(2)}</strong>.</td>
+        </tr>
+        <tr>
+          <td>الوسيط</td>
+          <td>يشير إلى القيمة التي تفصل المجموعة إلى نصفين؛ حيث بلغ الوسيط في الفترة الأولى <strong>${p1_median.toFixed(2)}</strong> وفي نهاية الفصل <strong>${f_median.toFixed(2)}</strong>.</td>
+        </tr>
+        <tr>
+          <td>المنوال</td>
+          <td>يعطي أكثر القيم تكراراً في الدرجات؛ حيث كان المنوال في الفترة الأولى <strong>${p1_mode}</strong> وفي نهاية الفصل <strong>${f_mode}</strong>.</td>
+        </tr>
+        <tr>
+          <td>الانحراف المعياري</td>
+          <td>يعكس مدى تشتت الدرجات؛ إذ كان الانحراف في الفترة الأولى <strong>${p1_std.toFixed(2)}</strong> وفي نهاية الفصل <strong>${f_std.toFixed(2)}</strong>.</td>
+        </tr>
+        <tr>
+          <td>التباين</td>
+          <td>هو مربع الانحراف المعياري؛ حيث بلغ التباين في الفترة الأولى <strong>${p1_var.toFixed(2)}</strong> وفي نهاية الفصل <strong>${f_var.toFixed(2)}</strong>.</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-</div>
 `;
+container.appendChild(card9);
   <!-- تضمين ملف بيانات الطلاب قبل ملف الكود الرئيسي -->
   <script src="student_data.js"></script>
   <script src="script.js"></script>
