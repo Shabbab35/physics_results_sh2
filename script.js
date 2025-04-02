@@ -1,5 +1,12 @@
 function loadData() {
-  const data = student_data; // تأكد من تعريف بيانات الطلاب في المتغير global
+  // تأكد من تعريف بيانات الطلاب في المتغير global
+  if (typeof student_data === "undefined" || !student_data.length) {
+    document.getElementById("cardsContainer").innerHTML =
+      "<p>لا توجد بيانات للعرض.</p>";
+    return;
+  }
+  
+  const data = student_data;
   const container = document.getElementById("cardsContainer");
   container.innerHTML = ""; // مسح البطاقات السابقة إن وجدت
 
@@ -112,12 +119,12 @@ function loadData() {
     gradeCounts[grade] = (gradeCounts[grade] || 0) + 1;
   });
 
-  const grades = [
+  const gradesArr = [
     "ممتاز مرتفع", "ممتاز", "جيد جدًا مرتفع", "جيد جدًا", 
     "جيد مرتفع", "جيد", "مقبول مرتفع", "مقبول", "ضعيف"
   ];
   const symbols = ["+A", "A", "+B", "B", "+C", "C", "+D", "D", "F"];
-  const ranges = ["100 - 95", "94 - 90", "89 - 85", "84 - 80", "79 - 75", "74 - 70", "69 - 65", "64 - 60", "59 وأقل"];
+  const rangesArr = ["100 - 95", "94 - 90", "89 - 85", "84 - 80", "79 - 75", "74 - 70", "69 - 65", "64 - 60", "59 وأقل"];
 
   const card3 = document.createElement("div");
   card3.className = "card";
@@ -133,14 +140,14 @@ function loadData() {
         </tr>
       </thead>
       <tbody>
-        ${grades.map((g, i) => {
+        ${gradesArr.map((g, i) => {
           const count = gradeCounts[g] || 0;
           const percent = ((count / data.length) * 100).toFixed(1) + "%";
           return `
             <tr>
               <td>${g}</td>
               <td>${symbols[i]}</td>
-              <td>${ranges[i]}</td>
+              <td>${rangesArr[i]}</td>
               <td>${count}</td>
               <td>${percent}</td>
             </tr>
@@ -168,7 +175,7 @@ function loadData() {
     "#e67e22", "#e74c3c", "#95a5a6", "#34495e"
   ];
 
-  grades.forEach((g, i) => {
+  gradesArr.forEach((g, i) => {
     const count = gradeCounts[g] || 0;
     if (count > 0) {
       doughnutLabels.push(g);
