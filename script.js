@@ -138,6 +138,14 @@ const orderedGrades = [
   { grade: "ضعيف", color: '#34495e' }
 ];
 
+// حساب عدد الطلاب في كل تقدير
+const gradeCounts = {};
+studentData.forEach(s => {
+  const grade = s["التقدير"] || "غير محدد";
+  gradeCounts[grade] = (gradeCounts[grade] || 0) + 1;
+});
+
+// إعداد البيانات للرسم
 const doughnutLabels = [];
 const doughnutValues = [];
 const doughnutColors = [];
@@ -151,9 +159,12 @@ orderedGrades.forEach(({ grade, color }) => {
   }
 });
 
-// تسجيل إضافة datalabels قبل رسم الشارت
+const total = doughnutValues.reduce((a, b) => a + b, 0);
+
+// التأكد من تسجيل الإضافة
 Chart.register(ChartDataLabels);
 
+// رسم الشارت
 const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
 new Chart(ctx4, {
   type: 'doughnut',
@@ -178,7 +189,6 @@ new Chart(ctx4, {
         color: '#fff',
         font: { weight: 'bold' },
         formatter: (value, context) => {
-          const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
           const percent = (value / total * 100).toFixed(1);
           return `${percent}%`;
         }
