@@ -114,30 +114,54 @@ function loadData() {
     </tbody></table>`;
   container.appendChild(card3);
 
-  // === البطاقة 4 ===
-  const card4 = document.createElement("div");
-  card4.className = "card";
-  card4.innerHTML = `
-    <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
-    <canvas id="gradeDoughnutChart"></canvas>`;
-  container.appendChild(card4);
+// === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير ===
+const card4 = document.createElement("div");
+card4.className = "card";
+card4.innerHTML = `
+  <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
+  <canvas id="gradeDoughnutChart" width="400" height="400"></canvas>`;
+container.appendChild(card4);
 
-  const orderedGrades = grades.map((g, i) => ({ grade: g, color: [
-    '#1abc9c','#2ecc71','#3498db','#9b59b6','#f1c40f','#e67e22','#e74c3c','#95a5a6','#34495e'][i] }));
+// بيانات التقديرات والألوان
+const orderedGrades = [
+  { grade: "ممتاز مرتفع", color: '#1abc9c' },
+  { grade: "ممتاز", color: '#2ecc71' },
+  { grade: "جيد جدًا مرتفع", color: '#3498db' },
+  { grade: "جيد جدًا", color: '#9b59b6' },
+  { grade: "جيد مرتفع", color: '#f1c40f' },
+  { grade: "جيد", color: '#e67e22' },
+  { grade: "مقبول مرتفع", color: '#e74c3c' },
+  { grade: "مقبول", color: '#95a5a6' },
+  { grade: "ضعيف", color: '#34495e' }
+];
 
-  const doughnutLabels = [], doughnutValues = [], doughnutColors = [];
-  orderedGrades.forEach(({ grade, color }) => {
-    const count = gradeCounts[grade] || 0;
-    if (count > 0) {
-      doughnutLabels.push(grade);
-      doughnutValues.push(count);
-      doughnutColors.push(color);
-    }
-  });
+const doughnutLabels = [];
+const doughnutValues = [];
+const doughnutColors = [];
 
-  const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
-  Chart.register(ChartDataLabels);
-  new Chart(ctx4, {
+orderedGrades.forEach(({ grade, color }) => {
+  const count = gradeCounts[grade] || 0;
+  if (count > 0) {
+    doughnutLabels.push(grade);
+    doughnutValues.push(count);
+    doughnutColors.push(color);
+  }
+});
+
+// تحقق من البيانات
+console.log("Labels:", doughnutLabels);
+console.log("Values:", doughnutValues);
+
+const canvas = document.getElementById("gradeDoughnutChart");
+if (canvas && doughnutValues.length > 0) {
+  const ctx = canvas.getContext("2d");
+
+  // تأكد من تسجيل الإضافة
+  if (typeof ChartDataLabels !== "undefined") {
+    Chart.register(ChartDataLabels);
+  }
+
+  new Chart(ctx, {
     type: 'doughnut',
     data: {
       labels: doughnutLabels,
@@ -157,15 +181,17 @@ function loadData() {
         datalabels: {
           color: '#fff',
           font: { weight: 'bold' },
-          formatter: (value, context) => {
-            const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-            return `${((value / total) * 100).toFixed(1)}%`;
+          formatter: (value, ctx) => {
+            const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+            return ((value / total) * 100).toFixed(1) + '%';
           }
         }
       }
     },
     plugins: [ChartDataLabels]
   });
+} else {
+  console.warn("الرسم الكعكي لم يتم إنشاؤه. تأكد من وجود بيانات كافية و canvas في DOM.");
 }
 
 document.addEventListener("DOMContentLoaded", loadData);
