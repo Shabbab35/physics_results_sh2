@@ -1,22 +1,35 @@
-/* الحاوية الرئيسية: كل بطاقة في صف مستقل */
-#cardsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;      /* مسافة بين البطاقات */
+/* الخط العام */
+body {
+  font-family: 'Cairo', sans-serif;
   margin: 20px;
+  background-color: #f9f9f9;
+  direction: rtl;
 }
 
-/* تنسيق عام للبطاقة */
-.card {
-  width: 100%;               /* تمتد على كامل العرض */
-  background-color: #fff;    /* خلفية بيضاء */
-  border-radius: 8px;        /* حواف منحنية */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* تظليل خفيف */
-  overflow: hidden;          /* إخفاء أي تجاوز للحواف */
-  border: 1px solid #eee;    /* إطار خفيف */
-  padding: 0;                /* سنضبط الحشو الداخلي بشكل منفصل */
-  box-sizing: border-box;
+/* العناوين */
+h1, h2, h3 {
+  text-align: right;
+  color: #2c3e50;
 }
+
+/* الحاوية الرئيسية للبطاقات */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
+  padding: 10px;
+}
+
+/* البطاقات */
+.card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  overflow-x: auto;
+}
+
 
 /* تنسيق العنوان داخل البطاقة */
 .card h2 {
@@ -28,51 +41,59 @@
   border-radius: 8px 8px 0 0;    /* تطابق حواف البطاقة من الأعلى */
 }
 
-
 /* الجداول داخل البطاقات */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
 }
-.card > *:not(h2) {
-  /* لضبط الحشو الداخلي لأي عنصر آخر عدا العنوان */
-  padding: 15px;
-}
 
-/* ============================= */
-/* تنسيق خاص للبطاقة 10 التي تحتوي على بطاقات فرعية */
-/* ============================= */
-
-.card10 {
-  /* نفس تنسيق البطاقة العادي، لكن يمكنك تخصيصه لو أردت */
-}
-
-.card10 .subcards-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  /* لا حاجة لحواف إضافية هنا، لأنها داخل البطاقة */
-}
-
-.card10 .subcards-row {
-  display: flex;
-  gap: 10px;
-  /* إذا أردت توزيع معيّن، يمكنك استخدام justify-content */
-}
-
-/* تنسيق البطاقات الفرعية داخل البطاقة 10 */
-.card10 .sub-card {
-  flex: 1;
-  background-color: #fff;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  border: 1px solid #eee;
+th, td {
+  border: 1px solid #ccc;
   padding: 10px;
-  box-sizing: border-box;
+  text-align: center;
+  font-size: 14px;
 }
 
-/* عنوان البطاقة الفرعية (إن وجد) */
-.card10 .sub-card h3 {
-  margin-top: 0;
+th {
+  background-color: #eef0f2;
+  font-weight: bold;
+}
+
+/* الرسم البياني */
+canvas {
+  max-width: 100%;
+}
+
+.plotly-graph-div {
+  direction: ltr;
+}
+
+/* العناوين حسب التقدير */
+.grade-header {
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 12px;
+  font-size: 1em;
+  text-align: center;
+}
+
+/* تدرجات لونية حسب التقدير */
+.grade-header.a { background-color: #2ecc71; }     /* ممتاز */
+.grade-header.b { background-color: #3498db; }     /* جيد جدا */
+.grade-header.c { background-color: #f1c40f; }     /* جيد */
+.grade-header.d { background-color: #e67e22; }     /* مقبول */
+.grade-header.f { background-color: #e74c3c; }     /* ضعيف */
+
+/* رسالة التحميل */
+.loading {
+  text-align: center;
+  font-size: 16px;
+  padding: 15px;
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 10px;
+  color: #856404;
+  margin-bottom: 20px;
 }
