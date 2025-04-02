@@ -73,6 +73,26 @@ body, #cardsContainer {
   min-height: 400px;
 }
 
+/* تنسيق الجدول داخل البطاقة 9 ليظهر في وسط البطاقة وبأبعاد مناسبة */
+.card9-table table {
+  width: 96%;           /* عرض الجدول 96% من عرض البطاقة */
+  margin: 10px auto;    /* توسيط الجدول مع مسافات من الأعلى والأسفل */
+  border-collapse: collapse;
+  table-layout: auto;
+  direction: rtl;       /* اتجاه الجدول من اليمين إلى اليسار */
+}
+
+.card9-table thead {
+  background-color: #f7f7f7;
+}
+
+.card9-table th,
+.card9-table td {
+  border: 1px solid #ccc;
+  padding: 8px;         /* حشو منخفض لتقليل ارتفاع الخلايا */
+  text-align: center;   /* توسيط النص داخل الخلايا */
+  vertical-align: middle;
+}
 
 /* ------------------------- */
 /* تنسيق خاص للبطاقة 10 */
