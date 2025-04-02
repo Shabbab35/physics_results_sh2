@@ -1,5 +1,3 @@
-// script.js
-
 function loadData() {
   const data = studentData;
   const container = document.getElementById("cardsContainer");
@@ -35,7 +33,7 @@ function loadData() {
     <table><thead><tr><th>المؤشر الإحصائي</th><th>الفترة الأولى</th><th>نهاية الفصل</th></tr></thead><tbody>
       <tr><td>عدد الطلاب</td><td>${period1.length}</td><td>${final.length}</td></tr>
       <tr><td>مجموع الدرجات</td><td>${period1.reduce((a,b)=>a+b,0).toFixed(2)}</td><td>${final.reduce((a,b)=>a+b,0).toFixed(2)}</td></tr>
-      <tr><td>المتوسط الحسابي</td><td>${p1_mean.toFixed(2)}</td><td>${f_mean.toFixed(2)}</td></tr>
+      <tr><td>المتوسط</td><td>${p1_mean.toFixed(2)}</td><td>${f_mean.toFixed(2)}</td></tr>
       <tr><td>الوسيط</td><td>${p1_median.toFixed(2)}</td><td>${f_median.toFixed(2)}</td></tr>
       <tr><td>المنوال</td><td>${p1_mode}</td><td>${f_mode}</td></tr>
       <tr><td>الانحراف المعياري</td><td>${p1_std.toFixed(2)}</td><td>${f_std.toFixed(2)}</td></tr>
@@ -51,7 +49,6 @@ function loadData() {
     { label: "الانحراف المعياري", p1: p1_std, f: f_std, max: 60 },
     { label: "التباين", p1: p1_var, f: f_var, max: 3600 }
   ];
-
   const labels = indicators.map(i => i.label);
   const p1Data = indicators.map(i => ((i.p1 / i.max) * 100).toFixed(2));
   const fData = indicators.map(i => ((i.f / (i.label === "التباين" ? 1600 : 40)) * 100).toFixed(2));
@@ -84,7 +81,9 @@ function loadData() {
         y: {
           beginAtZero: true,
           max: 100,
-          ticks: { callback: value => value + '%' },
+          ticks: {
+            callback: value => value + '%'
+          },
           title: { display: true, text: 'النسبة المئوية (%)' }
         }
       }
@@ -114,84 +113,65 @@ function loadData() {
     </tbody></table>`;
   container.appendChild(card3);
 
-// === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير ===
-const card4 = document.createElement("div");
-card4.className = "card";
-card4.innerHTML = `
-  <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
-  <canvas id="gradeDoughnutChart" width="400" height="400"></canvas>`;
-container.appendChild(card4);
+  // === البطاقة 4 ===
+  try {
+    const card4 = document.createElement("div");
+    card4.className = "card";
+    card4.innerHTML = `<h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2><canvas id="gradeDoughnutChart"></canvas>`;
+    container.appendChild(card4);
 
-// بيانات التقديرات والألوان
-const orderedGrades = [
-  { grade: "ممتاز مرتفع", color: '#1abc9c' },
-  { grade: "ممتاز", color: '#2ecc71' },
-  { grade: "جيد جدًا مرتفع", color: '#3498db' },
-  { grade: "جيد جدًا", color: '#9b59b6' },
-  { grade: "جيد مرتفع", color: '#f1c40f' },
-  { grade: "جيد", color: '#e67e22' },
-  { grade: "مقبول مرتفع", color: '#e74c3c' },
-  { grade: "مقبول", color: '#95a5a6' },
-  { grade: "ضعيف", color: '#34495e' }
-];
+    const orderedGrades = grades.map((g, i) => ({ grade: g, color: [
+      '#1abc9c','#2ecc71','#3498db','#9b59b6','#f1c40f','#e67e22','#e74c3c','#95a5a6','#34495e'][i] }));
 
-const doughnutLabels = [];
-const doughnutValues = [];
-const doughnutColors = [];
+    const doughnutLabels = [], doughnutValues = [], doughnutColors = [];
+    orderedGrades.forEach(({ grade, color }) => {
+      const count = gradeCounts[grade] || 0;
+      if (count > 0) {
+        doughnutLabels.push(grade);
+        doughnutValues.push(count);
+        doughnutColors.push(color);
+      }
+    });
 
-orderedGrades.forEach(({ grade, color }) => {
-  const count = gradeCounts[grade] || 0;
-  if (count > 0) {
-    doughnutLabels.push(grade);
-    doughnutValues.push(count);
-    doughnutColors.push(color);
-  }
-});
+    const total = doughnutValues.reduce((a, b) => a + b, 0);
 
-// تحقق من البيانات
-console.log("Labels:", doughnutLabels);
-console.log("Values:", doughnutValues);
+    if (typeof ChartDataLabels !== "undefined") {
+      Chart.register(ChartDataLabels);
+    }
 
-const canvas = document.getElementById("gradeDoughnutChart");
-if (canvas && doughnutValues.length > 0) {
-  const ctx = canvas.getContext("2d");
-
-  // تأكد من تسجيل الإضافة
-  if (typeof ChartDataLabels !== "undefined") {
-    Chart.register(ChartDataLabels);
-  }
-
-  new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: doughnutLabels,
-      datasets: [{
-        data: doughnutValues,
-        backgroundColor: doughnutColors
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'bottom',
-          rtl: true,
-          labels: { textDirection: 'rtl' }
-        },
-        datalabels: {
-          color: '#fff',
-          font: { weight: 'bold' },
-          formatter: (value, ctx) => {
-            const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-            return ((value / total) * 100).toFixed(1) + '%';
+    const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
+    new Chart(ctx4, {
+      type: 'doughnut',
+      data: {
+        labels: doughnutLabels,
+        datasets: [{
+          data: doughnutValues,
+          backgroundColor: doughnutColors
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            rtl: true,
+            labels: { textDirection: 'rtl' }
+          },
+          datalabels: {
+            color: '#fff',
+            font: { weight: 'bold' },
+            formatter: (value, context) => {
+              const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+              return ((value / total) * 100).toFixed(1) + "%";
+            }
           }
         }
-      }
-    },
-    plugins: [ChartDataLabels]
-  });
-} else {
-  console.warn("الرسم الكعكي لم يتم إنشاؤه. تأكد من وجود بيانات كافية و canvas في DOM.");
+      },
+      plugins: typeof ChartDataLabels !== "undefined" ? [ChartDataLabels] : []
+    });
+  } catch (e) {
+    console.error("حدث خطأ في البطاقة 4:", e);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", loadData);
