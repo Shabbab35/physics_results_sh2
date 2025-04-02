@@ -1,3 +1,8 @@
+/* تعيين اتجاه النص من اليمين إلى اليسار على مستوى الصفحة والحاوية */
+body, #cardsContainer {
+  direction: rtl;
+}
+
 /* جعل الحاوية تعرض كل بطاقة في صف منفصل */
 #cardsContainer {
   display: flex;
@@ -27,16 +32,16 @@
   text-align: center;
 }
 
-/* تنسيق محتوى البطاقة (الجداول، النصوص، الرسوم البيانية) */
+/* تنسيق محتوى البطاقة */
 .card > *:not(h2) {
   padding: 15px;
 }
 
-/* تنسيق الجداول داخل البطاقة */
+/* تنسيق الجداول داخل البطاقة لتكون من اليمين إلى اليسار */
 .card table {
   width: 100%;
-  border-collapse: collapse;  /* إزالة الفواصل بين الخلايا */
-  table-layout: auto;          /* توزيع الأعمدة بحسب المحتوى */
+  border-collapse: collapse;
+  table-layout: auto;
   margin: 0;
 }
 
@@ -50,6 +55,8 @@
   padding: 12px;
   text-align: center;
   vertical-align: middle;
+  /* يمكنك تعديل المحاذاة إذا أردت النص أن يكون في أقصى اليمين */
+  /* على سبيل المثال: text-align: right; */
 }
 
 /* تنسيق لحاوية الرسوم البيانية لجعلها في الوسط */
@@ -92,7 +99,7 @@
 .card10 .sub-card {
   flex: 1;
   background-color: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid #eee;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   padding: 10px;
