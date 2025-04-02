@@ -1,4 +1,4 @@
-/* حاوية البطاقات: بطاقة واحدة في كل صف */
+/* جعل الحاوية تعرض كل بطاقة في صف منفصل */
 #cardsContainer {
   display: flex;
   flex-direction: column;
@@ -10,33 +10,34 @@
 .card {
   width: 100%;
   background-color: #fff;
-  border: 1px solid #eee;
+  border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   overflow: hidden;
   box-sizing: border-box;
-  margin: 0 auto; /* إن أردت توسيط البطاقة نفسها داخل الحاوية */
 }
 
-/* عنوان البطاقة */
+/* تنسيق عنوان البطاقة */
 .card h2 {
   margin: 0;
   padding: 15px;
   background-color: #f7f7f7;
   border-bottom: 1px solid #ddd;
   font-size: 1.2rem;
+  text-align: center;
 }
 
-/* محتوى البطاقة */
+/* تنسيق محتوى البطاقة (الجداول، النصوص، الرسوم البيانية) */
 .card > *:not(h2) {
   padding: 15px;
 }
 
-/* تنسيق الجداول */
+/* تنسيق الجداول داخل البطاقة */
 .card table {
   width: 100%;
-  border-collapse: collapse;
-  margin: 15px 0;
+  border-collapse: collapse;  /* إزالة الفواصل بين الخلايا */
+  table-layout: auto;          /* توزيع الأعمدة بحسب المحتوى */
+  margin: 0;
 }
 
 .card table thead {
@@ -46,30 +47,41 @@
 .card table th,
 .card table td {
   border: 1px solid #ccc;
-  padding: 8px;
+  padding: 12px;
   text-align: center;
+  vertical-align: middle;
 }
 
-/* تنسيق لحاوية الرسم البياني (اختياري) */
+/* تنسيق لحاوية الرسوم البيانية لجعلها في الوسط */
 .plot-container {
-  width: 80%;
-  margin: 0 auto; 
-  min-height: 400px;
-}
-
-/* إن كنت تستهدف معرفًا معينًا للرسم */
-#comparisonPlot {
   width: 80%;
   margin: 0 auto;
   min-height: 400px;
 }
 
-/* البطاقة 10 (المحتوية على بطاقات فرعية) */
+/* استهداف معرفات الرسوم البيانية (Plotly) لتوسيطها داخل البطاقة */
+#comparisonPlot,
+#gradeDoughnutPlot,
+#gradePieChart,
+#nationalityChart,
+#period1DistributionChart,
+#finalDistributionChart,
+#comparisonDistributionChart {
+  width: 80% !important;
+  margin: 0 auto !important;
+  min-height: 400px;
+}
+
+/* تنسيق خاص للبطاقة 10 التي تحتوي على بطاقات فرعية */
+.card10 {
+  width: 100%;
+}
+
 .card10 .subcards-container {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 15px;
+  padding: 15px;
 }
 
 .card10 .subcards-row {
@@ -79,8 +91,10 @@
 
 .card10 .sub-card {
   flex: 1;
-  border: 1px solid #aaa;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   padding: 10px;
   box-sizing: border-box;
-  background-color: #f9f9f9;
 }
