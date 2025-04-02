@@ -1,37 +1,14 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>تحليل نتائج الطلاب - فيزياء 1 شعبة 2</title>
-
-  <!-- تحميل الخط -->
-  <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
-
-  <!-- ملف التنسيق الخارجي -->
+  <meta charset="UTF-8">
+  <title>تحليل النتائج</title>
   <link rel="stylesheet" href="styles.css">
-
-  <!-- مكتبة Plotly.js -->
+  <!-- تضمين مكتبة Plotly -->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
-  <!-- مكتبة Chart.js (لبعض البطاقات إن وجدت) -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-
-
 </head>
 <body>
-  <h1>تحليل نتائج طلاب فيزياء 1 - شعبة 2</h1>
-  
-  <!-- رسالة انتظار التحميل -->
-  <div id="loading" class="loading">انتظر لحظة... يتم تحميل البيانات من ملف JavaScript.</div>
-
-  <!-- حاوية البطاقات -->
-  <div id="cardsContainer" class="grid"></div>
-  <!-- تحميل بيانات الطلاب -->
-  <script src="student_data.js" defer></script>
-
-  <!-- تحميل كود التحليل -->
-  <script src="script.js" defer></script>
+  <div id="cardsContainer"></div>
+  <script src="script.js"></script>
 </body>
 </html>
