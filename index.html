@@ -1,19 +1,36 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تحليل نتائج فيزياء 1 - شعبة 2</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تحليل نتائج الطلاب - فيزياء 1 شعبة 2</title>
+
+  <!-- تحميل الخط -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
+
+  <!-- ملف التنسيق الخارجي -->
   <link rel="stylesheet" href="styles.css">
+
+  <!-- مكتبة Plotly.js -->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <!-- مكتبة Chart.js (لبعض البطاقات إن وجدت) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+  <!-- ملف البيانات -->
+  <script src="studentData.js"></script>
+
+  <!-- تحميل JavaScript الرئيسي -->
+  <script defer src="script.js"></script>
 </head>
 <body>
-  <h1>تحليل نتائج الطلاب - فيزياء 1 - شعبة 2</h1>
-  <div id="loading" class="loading">تحميل البيانات... انتظر لحظة</div>
-  <div id="cardsContainer" class="grid"></div>
+  <h1>تحليل نتائج طلاب فيزياء 1 - شعبة 2</h1>
+  
+  <!-- رسالة انتظار التحميل -->
+  <div id="loading" class="loading">انتظر لحظة... يتم تحميل البيانات من ملف JavaScript.</div>
 
-  <!-- ملفات الجافاسكربت -->
-  <script src="StudentData.js"></script>
-  <script src="script.js"></script>
+  <!-- حاوية البطاقات -->
+  <div id="cardsContainer" class="grid"></div>
 </body>
 </html>
