@@ -43,7 +43,7 @@ function loadData() {
       </thead>
       <tbody>
         <tr><td>عدد الطلاب</td><td>${period1.length}</td><td>${final.length}</td></tr>
-        <tr><td>مجموع الدرجات</td><td>${period1.reduce((a,b)=>a+b,0).toFixed(2)}</td><td>${final.reduce((a,b)=>a+b,0).toFixed(2)}</td></tr>
+        <tr><td>مجموع الدرجات</td><td>${period1.reduce((a, b) => a + b, 0).toFixed(2)}</td><td>${final.reduce((a, b) => a + b, 0).toFixed(2)}</td></tr>
         <tr><td>المتوسط الحسابي</td><td>${p1_mean.toFixed(2)}</td><td>${f_mean.toFixed(2)}</td></tr>
         <tr><td>الوسيط</td><td>${p1_median.toFixed(2)}</td><td>${f_median.toFixed(2)}</td></tr>
         <tr><td>المنوال</td><td>${p1_mode}</td><td>${f_mode}</td></tr>
@@ -89,7 +89,7 @@ function loadData() {
       marker: { color: "#e74c3c" }
     }
   ], {
-    barmode: 'group',
+    barmode: "group",
     margin: { t: 30 },
     yaxis: {
       title: "النسبة المئوية (%)",
@@ -99,7 +99,7 @@ function loadData() {
     legend: {
       x: 0,
       y: 1.2,
-      orientation: 'h'
+      orientation: "h"
     }
   });
 
@@ -149,7 +149,10 @@ function loadData() {
       </tbody>
     </table>`;
   container.appendChild(card3);
-  // === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير (Plotly.js) ===
+
+  // ===========================
+  // البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير (Plotly.js)
+  // ===========================
   const card4 = document.createElement("div");
   card4.className = "card";
   card4.innerHTML = `
@@ -158,12 +161,11 @@ function loadData() {
   `;
   container.appendChild(card4);
 
-  // تحضير البيانات للرسم الكعكي
   const doughnutLabels = [];
   const doughnutValues = [];
   const doughnutColors = [
-    '#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#f1c40f',
-    '#e67e22', '#e74c3c', '#95a5a6', '#34495e'
+    "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#f1c40f",
+    "#e67e22", "#e74c3c", "#95a5a6", "#34495e"
   ];
 
   grades.forEach((g, i) => {
@@ -174,7 +176,7 @@ function loadData() {
     }
   });
 
-  Plotly.newPlot('gradeDoughnutPlot', [{
+  Plotly.newPlot("gradeDoughnutPlot", [{
     type: "pie",
     labels: doughnutLabels,
     values: doughnutValues,
@@ -186,7 +188,9 @@ function loadData() {
     showlegend: true
   }, { responsive: true });
 
-  // === البطاقة 5: جدول درجات طلاب فيزياء ١ - شعبة ٢ ===
+  // ===========================
+  // البطاقة 5: جدول درجات طلاب فيزياء ١ - شعبة ٢
+  // ===========================
   const card5 = document.createElement("div");
   card5.className = "card";
   card5.innerHTML = `
@@ -234,7 +238,9 @@ function loadData() {
   `;
   container.appendChild(card5);
 
-  // === البطاقة 6: الفترة الأولى – مقارنة التوزيع الفعلي مع التوزيع الطبيعي ===
+  // ===========================
+  // البطاقة 6: الفترة الأولى – مقارنة التوزيع الفعلي مع التوزيع الطبيعي
+  // ===========================
   const card6 = document.createElement("div");
   card6.className = "card";
   card6.innerHTML = `
@@ -243,13 +249,12 @@ function loadData() {
   `;
   container.appendChild(card6);
 
-  // استخدام البيانات الموجودة مسبقاً (period1, p1_mean, p1_std)
   const actualTrace = {
     x: period1,
     type: "histogram",
     opacity: 0.6,
     name: "التوزيع الفعلي",
-    marker: { color: '#3498db' },
+    marker: { color: "#3498db" },
     autobinx: false,
     xbins: {
       start: 0,
@@ -261,7 +266,8 @@ function loadData() {
   const normalX = [];
   const normalY = [];
   for (let x = 0; x <= 60; x += 1) {
-    const y = (1 / (p1_std * Math.sqrt(2 * Math.PI))) * Math.exp(-Math.pow(x - p1_mean, 2) / (2 * Math.pow(p1_std, 2)));
+    const y = (1 / (p1_std * Math.sqrt(2 * Math.PI))) *
+              Math.exp(-Math.pow(x - p1_mean, 2) / (2 * Math.pow(p1_std, 2)));
     normalX.push(x);
     normalY.push(y * period1.length * 5);
   }
@@ -272,7 +278,7 @@ function loadData() {
     type: "scatter",
     mode: "lines",
     name: "التوزيع الطبيعي",
-    line: { color: 'red', width: 2 }
+    line: { color: "red", width: 2 }
   };
 
   Plotly.newPlot("period1DistributionChart", [actualTrace, normalTrace], {
@@ -283,7 +289,9 @@ function loadData() {
     legend: { orientation: "h", x: 0.25, y: -0.2 }
   });
 
-  // === البطاقة 7: نهاية الفصل – مقارنة التوزيع الفعلي مع التوزيع الطبيعي ===
+  // ===========================
+  // البطاقة 7: نهاية الفصل – مقارنة التوزيع الفعلي مع التوزيع الطبيعي
+  // ===========================
   const card7 = document.createElement("div");
   card7.className = "card";
   card7.innerHTML = `
@@ -292,13 +300,12 @@ function loadData() {
   `;
   container.appendChild(card7);
 
-  // استخدام البيانات الموجودة مسبقاً (final, f_mean, f_std)
   const finalActualTrace = {
     x: final,
     type: "histogram",
     opacity: 0.6,
     name: "التوزيع الفعلي",
-    marker: { color: '#9b59b6' },
+    marker: { color: "#9b59b6" },
     autobinx: false,
     xbins: {
       start: 0,
@@ -310,7 +317,8 @@ function loadData() {
   const finalNormalX = [];
   const finalNormalY = [];
   for (let x = 0; x <= 40; x += 1) {
-    const y = (1 / (f_std * Math.sqrt(2 * Math.PI))) * Math.exp(-Math.pow(x - f_mean, 2) / (2 * Math.pow(f_std, 2)));
+    const y = (1 / (f_std * Math.sqrt(2 * Math.PI))) *
+              Math.exp(-Math.pow(x - f_mean, 2) / (2 * Math.pow(f_std, 2)));
     finalNormalX.push(x);
     finalNormalY.push(y * final.length * 5);
   }
@@ -321,7 +329,7 @@ function loadData() {
     type: "scatter",
     mode: "lines",
     name: "التوزيع الطبيعي",
-    line: { color: 'red', width: 2 }
+    line: { color: "red", width: 2 }
   };
 
   Plotly.newPlot("finalDistributionChart", [finalActualTrace, finalNormalTrace], {
@@ -332,7 +340,9 @@ function loadData() {
     legend: { orientation: "h", x: 0.25, y: -0.2 }
   });
 
-  // === البطاقة 8: مقارنة التوزيعين (الفترة الأولى × نهاية الفصل) ===
+  // ===========================
+  // البطاقة 8: مقارنة التوزيعين (الفترة الأولى × نهاية الفصل)
+  // ===========================
   const card8 = document.createElement("div");
   card8.className = "card";
   card8.innerHTML = `
@@ -375,7 +385,9 @@ function loadData() {
     legend: { orientation: "h", x: 0.25, y: -0.2 }
   });
 
-  // === البطاقة 9: تفسير النتائج الإحصائية ===
+  // ===========================
+  // البطاقة 9: تفسير النتائج الإحصائية
+  // ===========================
   const card9 = document.createElement("div");
   card9.className = "card";
   card9.innerHTML = `
@@ -396,16 +408,18 @@ function loadData() {
   `;
   container.appendChild(card9);
 
+  // ===========================
   // البطاقة 10: تصنيف الطلاب حسب التقدير (بطاقة واحدة تحتوي على بطاقات فرعية)
   // ===========================
   const card10 = document.createElement("div");
-  // نضيف فئة card10 لتطبيق تنسيق خاص بالبطاقة 10
   card10.className = "card card10";
-  card10.innerHTML = `<h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>
+  card10.innerHTML = `
+    <h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>
     <div class="subcards-container">
       <div class="subcards-row" id="subcards-row-1"></div>
       <div class="subcards-row" id="subcards-row-2"></div>
-    </div>`;
+    </div>
+  `;
   container.appendChild(card10);
 
   const gradeGroups = [
@@ -439,9 +453,8 @@ function loadData() {
       const subCard = document.createElement("div");
       subCard.className = "sub-card";
       subCard.innerHTML = table;
-      // توزيع البطاقات الفرعية: الثلاثة الأولى في الصف الأول والباقي في الصف الثاني
       let targetRow;
-      if(index < 3) {
+      if (index < 3) {
         targetRow = document.getElementById("subcards-row-1");
       } else {
         targetRow = document.getElementById("subcards-row-2");
@@ -449,6 +462,13 @@ function loadData() {
       targetRow.appendChild(subCard);
     }
   });
+
+  // ===========================
+  // البطاقة 11: النسبة المئوية لتوزيع الطلاب حسب التقدير (رسم دائري)
+  // ===========================
+  const card11 = document.createElement("div");
+  card11.className = "card";
+  card11.innerHTML = `
     <h2>البطاقة 11: النسبة المئوية لتوزيع الطلاب حسب التقدير</h2>
     <div id="gradePieChart" style="height:400px;"></div>
   `;
@@ -459,8 +479,8 @@ function loadData() {
     "جيد مرتفع", "جيد", "مقبول مرتفع", "مقبول", "ضعيف"
   ];
   const gradeColors11 = [
-    '#1abc9c', '#2ecc71', '#3498db', '#9b59b6',
-    '#f1c40f', '#e67e22', '#e74c3c', '#95a5a6', '#34495e'
+    "#1abc9c", "#2ecc71", "#3498db", "#9b59b6",
+    "#f1c40f", "#e67e22", "#e74c3c", "#95a5a6", "#34495e"
   ];
 
   const gradeCounts11 = {};
@@ -494,7 +514,9 @@ function loadData() {
     legend: { orientation: "h", x: 0, y: -0.2 }
   });
 
-  // === البطاقة 12: توزيع الطلاب حسب الجنسية (كعكي) ===
+  // ===========================
+  // البطاقة 12: الرسم الكعكي لتوزيع الطلاب حسب الجنسية
+  // ===========================
   const card12 = document.createElement("div");
   card12.className = "card";
   card12.innerHTML = `
@@ -515,7 +537,7 @@ function loadData() {
 
   const labels12 = Object.keys(nationalityCounts);
   const values12 = Object.values(nationalityCounts);
-  const colors12 = ['#27ae60', '#c0392b'];
+  const colors12 = ["#27ae60", "#c0392b"];
 
   Plotly.newPlot("nationalityChart", [{
     values: values12,
