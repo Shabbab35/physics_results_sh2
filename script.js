@@ -117,32 +117,17 @@ function loadData() {
   container.appendChild(card3);
 
   // === البطاقة 4 ===
-// === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير ===
-const card4 = document.createElement("div");
-card4.className = "card";
-card4.innerHTML = `
-  <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
-  <canvas id="gradeDoughnutChart" width="400" height="400"></canvas>`;
-container.appendChild(card4);
+  const card4 = document.createElement("div");
+  card4.className = "card";
+  card4.innerHTML = `
+    <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
+    <canvas id="gradeDoughnutChart"></canvas>`;
+  container.appendChild(card4);
 
-// نستخدم setTimeout لضمان أن العنصر أُدرج فعلاً
-setTimeout(() => {
-  const doughnutLabels = [];
-  const doughnutValues = [];
-  const doughnutColors = [];
+  const orderedGrades = grades.map((g, i) => ({ grade: g, color: [
+    '#1abc9c','#2ecc71','#3498db','#9b59b6','#f1c40f','#e67e22','#e74c3c','#95a5a6','#34495e'][i] }));
 
-  const orderedGrades = [
-    { grade: "ممتاز مرتفع", color: '#1abc9c' },
-    { grade: "ممتاز", color: '#2ecc71' },
-    { grade: "جيد جدًا مرتفع", color: '#3498db' },
-    { grade: "جيد جدًا", color: '#9b59b6' },
-    { grade: "جيد مرتفع", color: '#f1c40f' },
-    { grade: "جيد", color: '#e67e22' },
-    { grade: "مقبول مرتفع", color: '#e74c3c' },
-    { grade: "مقبول", color: '#95a5a6' },
-    { grade: "ضعيف", color: '#34495e' }
-  ];
-
+  const doughnutLabels = [], doughnutValues = [], doughnutColors = [];
   orderedGrades.forEach(({ grade, color }) => {
     const count = gradeCounts[grade] || 0;
     if (count > 0) {
@@ -154,8 +139,9 @@ setTimeout(() => {
 
   const total = doughnutValues.reduce((a, b) => a + b, 0);
 
-  const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
+  Chart.register(ChartDataLabels);
 
+  const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
   new Chart(ctx4, {
     type: 'doughnut',
     data: {
@@ -171,12 +157,15 @@ setTimeout(() => {
         legend: {
           position: 'bottom',
           rtl: true,
-          labels: { textDirection: 'rtl' }
+          labels: {
+            textDirection: 'rtl'
+          }
         },
         datalabels: {
           color: '#fff',
           font: { weight: 'bold' },
           formatter: (value, context) => {
+            const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
             const percent = (value / total * 100).toFixed(1);
             return `${percent}%`;
           }
@@ -185,6 +174,6 @@ setTimeout(() => {
     },
     plugins: [ChartDataLabels]
   });
-}, 100); // تأخير بسيط لضمان تحميل العنصر
+}
 
 document.addEventListener("DOMContentLoaded", loadData);
