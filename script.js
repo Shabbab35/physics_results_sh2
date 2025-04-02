@@ -396,10 +396,16 @@ function loadData() {
   `;
   container.appendChild(card9);
 
-  // === البطاقة 10: تصنيف الطلاب حسب التقدير (جداول منفصلة) ===
+  // البطاقة 10: تصنيف الطلاب حسب التقدير (بطاقة واحدة تحتوي على بطاقات فرعية)
+  // ===========================
   const card10 = document.createElement("div");
-  card10.className = "card";
-  card10.innerHTML = `<h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>`;
+  // نضيف فئة card10 لتطبيق تنسيق خاص بالبطاقة 10
+  card10.className = "card card10";
+  card10.innerHTML = `<h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>
+    <div class="subcards-container">
+      <div class="subcards-row" id="subcards-row-1"></div>
+      <div class="subcards-row" id="subcards-row-2"></div>
+    </div>`;
   container.appendChild(card10);
 
   const gradeGroups = [
@@ -410,7 +416,7 @@ function loadData() {
     { title: "ضعيف", grades: ["ضعيف"], color: "#e74c3c" }
   ];
 
-  gradeGroups.forEach(group => {
+  gradeGroups.forEach((group, index) => {
     const studentsInGroup = data.filter(s => group.grades.includes(s["التقدير"]));
     if (studentsInGroup.length > 0) {
       const table = `
@@ -418,23 +424,31 @@ function loadData() {
           ${group.title} (${studentsInGroup.length} طلاب)
         </div>
         <table>
-          <thead><tr><th>اسم الطالب</th><th>التقدير</th><th>المجموع الكلي</th></tr></thead>
+          <thead>
+            <tr>
+              <th>اسم الطالب</th>
+              <th>التقدير</th>
+              <th>المجموع الكلي</th>
+            </tr>
+          </thead>
           <tbody>
             ${studentsInGroup.map(s => `<tr><td>${s.student_name}</td><td>${s["التقدير"]}</td><td>${s.total_score}</td></tr>`).join("")}
           </tbody>
         </table>
       `;
       const subCard = document.createElement("div");
-      subCard.className = "card";
+      subCard.className = "sub-card";
       subCard.innerHTML = table;
-      card10.appendChild(subCard);
+      // توزيع البطاقات الفرعية: الثلاثة الأولى في الصف الأول والباقي في الصف الثاني
+      let targetRow;
+      if(index < 3) {
+        targetRow = document.getElementById("subcards-row-1");
+      } else {
+        targetRow = document.getElementById("subcards-row-2");
+      }
+      targetRow.appendChild(subCard);
     }
   });
-
-  // === البطاقة 11: الرسم الدائري لتوزيع الطلاب حسب التقدير ===
-  const card11 = document.createElement("div");
-  card11.className = "card";
-  card11.innerHTML = `
     <h2>البطاقة 11: النسبة المئوية لتوزيع الطلاب حسب التقدير</h2>
     <div id="gradePieChart" style="height:400px;"></div>
   `;
