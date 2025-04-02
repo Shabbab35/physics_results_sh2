@@ -80,6 +80,40 @@ body, #cardsContainer {
   width: 100%;
 }
 
+/* تنسيق الجدول في بطاقة الفيزياء */
+.physics-table {
+  width: 96%;           /* عرض الجدول 96% من عرض البطاقة */
+  margin: 10px auto;    /* توسيط الجدول داخل البطاقة وإضافة مسافات من الأعلى والأسفل */
+  border-collapse: collapse;
+  table-layout: fixed;  /* توزيع الأعمدة بنسب ثابتة */
+  direction: rtl;
+}
+
+/* تنسيق الخلايا في الجدول */
+.physics-table th,
+.physics-table td {
+  border: 1px solid #ccc;
+  padding: 5px;         /* حشو أقل لتقليل ارتفاع الخلايا */
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;  /* منع الالتفاف */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* تخصيص عرض عمود اسم الطالب */
+.physics-table th:first-child,
+.physics-table td:first-child {
+  width: 20%;  /* العمود الأول يحصل على 20% من عرض الجدول */
+}
+
+/* بقية الأعمدة تُوزَّع على 80% المتبقية */
+/* بما أن الجدول يحتوي على 13 عموداً (العمود الأول + 12 عموداً)، فإن بقية الأعمدة ستأخذ: */
+.physics-table th:not(:first-child),
+.physics-table td:not(:first-child) {
+  width: calc(80% / 12); /* أي تقريباً 6.67% لكل عمود */
+}
+
 /* الحاوية الداخلية للبطاقة 10 */
 .card10 .subcards-container {
   display: flex;
