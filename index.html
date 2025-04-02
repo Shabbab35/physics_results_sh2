@@ -1,49 +1,19 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>تقرير نتائج الفيزياء 1 - شعبة 2</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تحليل نتائج فيزياء 1 - شعبة 2</title>
   <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-  <script src="studentData.js"></script>
-  <style>
-    body {
-      font-family: 'Cairo', sans-serif;
-      margin: 20px;
-      background-color: #f9f9f9;
-    }
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 15px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      overflow-x: auto;
-    }
-  </style>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
+  <h1>تحليل نتائج الطلاب - فيزياء 1 - شعبة 2</h1>
+  <div id="loading" class="loading">تحميل البيانات... انتظر لحظة</div>
+  <div id="cardsContainer" class="grid"></div>
 
-  <h1>تقرير إحصائي – الفيزياء 1 (شعبة 2)</h1>
-
-  <div class="card" id="loadingCard">
-    <h2>تحميل البيانات</h2>
-    <p>انتظر لحظة... يتم تحميل البيانات من ملف JavaScript.</p>
-  </div>
-
-  <div id="cardsContainer"></div>
-
-  <!-- ربط البيانات أولاً -->
-  <script src="studentData.js"></script>
-
-  <!-- ربط السكربت بعد البيانات -->
+  <!-- ملفات الجافاسكربت -->
+  <script src="StudentData.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
