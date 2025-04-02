@@ -1,36 +1,72 @@
-/* جعل الحاوية تعرض كل بطاقة في صف منفصل */
+/* الحاوية الرئيسية: كل بطاقة في صف مستقل */
 #cardsContainer {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;      /* مسافة بين البطاقات */
   margin: 20px;
 }
 
-/* تنسيق عام للبطاقة بحيث تأخذ العرض الكامل */
+/* تنسيق عام للبطاقة */
 .card {
-  width: 100%;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  padding: 15px;
+  width: 100%;               /* تمتد على كامل العرض */
+  background-color: #fff;    /* خلفية بيضاء */
+  border-radius: 8px;        /* حواف منحنية */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* تظليل خفيف */
+  overflow: hidden;          /* إخفاء أي تجاوز للحواف */
+  border: 1px solid #eee;    /* إطار خفيف */
+  padding: 0;                /* سنضبط الحشو الداخلي بشكل منفصل */
   box-sizing: border-box;
-  background-color: #fff;
 }
 
+/* تنسيق العنوان داخل البطاقة */
+.card h2 {
+  margin: 0;
+  padding: 15px;
+  font-size: 1.2rem;
+  background-color: #f7f7f7; /* خلفية فاتحة للعنوان */
+  border-bottom: 1px solid #ddd; /* خط سفلي خفيف */
+  border-radius: 8px 8px 0 0;    /* تطابق حواف البطاقة من الأعلى */
+}
+
+/* محتوى البطاقة الداخلي إن وجد (كالجداول مثلاً) */
+.card > *:not(h2) {
+  /* لضبط الحشو الداخلي لأي عنصر آخر عدا العنوان */
+  padding: 15px;
+}
+
+/* ============================= */
 /* تنسيق خاص للبطاقة 10 التي تحتوي على بطاقات فرعية */
+/* ============================= */
+
+.card10 {
+  /* نفس تنسيق البطاقة العادي، لكن يمكنك تخصيصه لو أردت */
+}
+
 .card10 .subcards-container {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 15px;
+  /* لا حاجة لحواف إضافية هنا، لأنها داخل البطاقة */
 }
 
 .card10 .subcards-row {
   display: flex;
   gap: 10px;
+  /* إذا أردت توزيع معيّن، يمكنك استخدام justify-content */
 }
 
+/* تنسيق البطاقات الفرعية داخل البطاقة 10 */
 .card10 .sub-card {
   flex: 1;
-  border: 1px solid #aaa;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid #eee;
   padding: 10px;
   box-sizing: border-box;
-  background-color: #f9f9f9;
+}
+
+/* عنوان البطاقة الفرعية (إن وجد) */
+.card10 .sub-card h3 {
+  margin-top: 0;
 }
