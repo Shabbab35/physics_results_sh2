@@ -1,18 +1,9 @@
 function loadData() {
-  // تأكد من تعريف بيانات الطلاب في المتغير global
-  if (typeof student_data === "undefined" || !student_data.length) {
-    document.getElementById("cardsContainer").innerHTML =
-      "<p>لا توجد بيانات للعرض.</p>";
-    return;
-  }
-  
   const data = student_data;
   const container = document.getElementById("cardsContainer");
   container.innerHTML = ""; // مسح البطاقات السابقة إن وجدت
 
-  // ===========================
-  // البطاقة 1: الإحصائيات العامة
-  // ===========================
+  // === البطاقة 1 ===
   const period1 = data.map(s => s.period1_total);
   const final = data.map(s => s.final_practical + s.final_written);
 
@@ -50,7 +41,7 @@ function loadData() {
       </thead>
       <tbody>
         <tr><td>عدد الطلاب</td><td>${period1.length}</td><td>${final.length}</td></tr>
-        <tr><td>مجموع الدرجات</td><td>${period1.reduce((a, b) => a + b, 0).toFixed(2)}</td><td>${final.reduce((a, b) => a + b, 0).toFixed(2)}</td></tr>
+        <tr><td>مجموع الدرجات</td><td>${period1.reduce((a,b)=>a+b,0).toFixed(2)}</td><td>${final.reduce((a,b)=>a+b,0).toFixed(2)}</td></tr>
         <tr><td>المتوسط الحسابي</td><td>${p1_mean.toFixed(2)}</td><td>${f_mean.toFixed(2)}</td></tr>
         <tr><td>الوسيط</td><td>${p1_median.toFixed(2)}</td><td>${f_median.toFixed(2)}</td></tr>
         <tr><td>المنوال</td><td>${p1_mode}</td><td>${f_mode}</td></tr>
@@ -60,9 +51,7 @@ function loadData() {
     </table>`;
   container.appendChild(card1);
 
-  // ===========================
-  // البطاقة 2: مقارنة المؤشرات كنسب مئوية
-  // ===========================
+  // === البطاقة 2: مقارنة المؤشرات كنسب مئوية مطبعة ===
   const indicators = [
     { label: "المتوسط", p1: p1_mean, f: f_mean, max: 60 },
     { label: "الوسيط", p1: p1_median, f: f_median, max: 60 },
@@ -96,7 +85,7 @@ function loadData() {
       marker: { color: "#e74c3c" }
     }
   ], {
-    barmode: "group",
+    barmode: 'group',
     margin: { t: 30 },
     yaxis: {
       title: "النسبة المئوية (%)",
@@ -106,25 +95,23 @@ function loadData() {
     legend: {
       x: 0,
       y: 1.2,
-      orientation: "h"
+      orientation: 'h'
     }
   });
 
-  // ===========================
-  // البطاقة 3: توزيع الطلاب حسب التقدير (جدول)
-  // ===========================
+  // === البطاقة 3: توزيع الطلاب حسب التقدير ===
   const gradeCounts = {};
   data.forEach(s => {
     const grade = s["التقدير"] || "غير محدد";
     gradeCounts[grade] = (gradeCounts[grade] || 0) + 1;
   });
 
-  const gradesArr = [
+  const grades = [
     "ممتاز مرتفع", "ممتاز", "جيد جدًا مرتفع", "جيد جدًا", 
     "جيد مرتفع", "جيد", "مقبول مرتفع", "مقبول", "ضعيف"
   ];
   const symbols = ["+A", "A", "+B", "B", "+C", "C", "+D", "D", "F"];
-  const rangesArr = ["100 - 95", "94 - 90", "89 - 85", "84 - 80", "79 - 75", "74 - 70", "69 - 65", "64 - 60", "59 وأقل"];
+  const ranges = ["100 - 95", "94 - 90", "89 - 85", "84 - 80", "79 - 75", "74 - 70", "69 - 65", "64 - 60", "59 وأقل"];
 
   const card3 = document.createElement("div");
   card3.className = "card";
@@ -140,14 +127,14 @@ function loadData() {
         </tr>
       </thead>
       <tbody>
-        ${gradesArr.map((g, i) => {
+        ${grades.map((g, i) => {
           const count = gradeCounts[g] || 0;
           const percent = ((count / data.length) * 100).toFixed(1) + "%";
           return `
             <tr>
               <td>${g}</td>
               <td>${symbols[i]}</td>
-              <td>${rangesArr[i]}</td>
+              <td>${ranges[i]}</td>
               <td>${count}</td>
               <td>${percent}</td>
             </tr>
@@ -157,9 +144,7 @@ function loadData() {
     </table>`;
   container.appendChild(card3);
 
-  // ===========================
-  // البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير (Plotly.js)
-  // ===========================
+  // === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير (Plotly.js) ===
   const card4 = document.createElement("div");
   card4.className = "card";
   card4.innerHTML = `
@@ -168,14 +153,15 @@ function loadData() {
   `;
   container.appendChild(card4);
 
+  // تحضير البيانات للرسم الكعكي
   const doughnutLabels = [];
   const doughnutValues = [];
   const doughnutColors = [
-    "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#f1c40f",
-    "#e67e22", "#e74c3c", "#95a5a6", "#34495e"
+    '#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#f1c40f',
+    '#e67e22', '#e74c3c', '#95a5a6', '#34495e'
   ];
 
-  gradesArr.forEach((g, i) => {
+  grades.forEach((g, i) => {
     const count = gradeCounts[g] || 0;
     if (count > 0) {
       doughnutLabels.push(g);
@@ -183,7 +169,7 @@ function loadData() {
     }
   });
 
-  Plotly.newPlot("gradeDoughnutPlot", [{
+  Plotly.newPlot('gradeDoughnutPlot', [{
     type: "pie",
     labels: doughnutLabels,
     values: doughnutValues,
@@ -195,9 +181,7 @@ function loadData() {
     showlegend: true
   }, { responsive: true });
 
-  // ===========================
-  // البطاقة 5: جدول درجات طلاب فيزياء ١ - شعبة ٢
-  // ===========================
+  // === البطاقة 5: جدول درجات طلاب فيزياء ١ - شعبة ٢ ===
   const card5 = document.createElement("div");
   card5.className = "card";
   card5.innerHTML = `
@@ -245,9 +229,7 @@ function loadData() {
   `;
   container.appendChild(card5);
 
-  // ===========================
-  // البطاقة 6: الفترة الأولى – مقارنة التوزيع الفعلي مع التوزيع الطبيعي
-  // ===========================
+  // === البطاقة 6: الفترة الأولى – مقارنة التوزيع الفعلي مع التوزيع الطبيعي ===
   const card6 = document.createElement("div");
   card6.className = "card";
   card6.innerHTML = `
@@ -256,12 +238,13 @@ function loadData() {
   `;
   container.appendChild(card6);
 
+  // استخدام البيانات الموجودة مسبقاً (period1, p1_mean, p1_std)
   const actualTrace = {
     x: period1,
     type: "histogram",
     opacity: 0.6,
     name: "التوزيع الفعلي",
-    marker: { color: "#3498db" },
+    marker: { color: '#3498db' },
     autobinx: false,
     xbins: {
       start: 0,
@@ -273,8 +256,7 @@ function loadData() {
   const normalX = [];
   const normalY = [];
   for (let x = 0; x <= 60; x += 1) {
-    const y = (1 / (p1_std * Math.sqrt(2 * Math.PI))) *
-              Math.exp(-Math.pow(x - p1_mean, 2) / (2 * Math.pow(p1_std, 2)));
+    const y = (1 / (p1_std * Math.sqrt(2 * Math.PI))) * Math.exp(-Math.pow(x - p1_mean, 2) / (2 * Math.pow(p1_std, 2)));
     normalX.push(x);
     normalY.push(y * period1.length * 5);
   }
@@ -285,7 +267,7 @@ function loadData() {
     type: "scatter",
     mode: "lines",
     name: "التوزيع الطبيعي",
-    line: { color: "red", width: 2 }
+    line: { color: 'red', width: 2 }
   };
 
   Plotly.newPlot("period1DistributionChart", [actualTrace, normalTrace], {
@@ -296,9 +278,7 @@ function loadData() {
     legend: { orientation: "h", x: 0.25, y: -0.2 }
   });
 
-  // ===========================
-  // البطاقة 7: نهاية الفصل – مقارنة التوزيع الفعلي مع التوزيع الطبيعي
-  // ===========================
+  // === البطاقة 7: نهاية الفصل – مقارنة التوزيع الفعلي مع التوزيع الطبيعي ===
   const card7 = document.createElement("div");
   card7.className = "card";
   card7.innerHTML = `
@@ -307,12 +287,13 @@ function loadData() {
   `;
   container.appendChild(card7);
 
+  // استخدام البيانات الموجودة مسبقاً (final, f_mean, f_std)
   const finalActualTrace = {
     x: final,
     type: "histogram",
     opacity: 0.6,
     name: "التوزيع الفعلي",
-    marker: { color: "#9b59b6" },
+    marker: { color: '#9b59b6' },
     autobinx: false,
     xbins: {
       start: 0,
@@ -324,8 +305,7 @@ function loadData() {
   const finalNormalX = [];
   const finalNormalY = [];
   for (let x = 0; x <= 40; x += 1) {
-    const y = (1 / (f_std * Math.sqrt(2 * Math.PI))) *
-              Math.exp(-Math.pow(x - f_mean, 2) / (2 * Math.pow(f_std, 2)));
+    const y = (1 / (f_std * Math.sqrt(2 * Math.PI))) * Math.exp(-Math.pow(x - f_mean, 2) / (2 * Math.pow(f_std, 2)));
     finalNormalX.push(x);
     finalNormalY.push(y * final.length * 5);
   }
@@ -336,7 +316,7 @@ function loadData() {
     type: "scatter",
     mode: "lines",
     name: "التوزيع الطبيعي",
-    line: { color: "red", width: 2 }
+    line: { color: 'red', width: 2 }
   };
 
   Plotly.newPlot("finalDistributionChart", [finalActualTrace, finalNormalTrace], {
@@ -347,9 +327,7 @@ function loadData() {
     legend: { orientation: "h", x: 0.25, y: -0.2 }
   });
 
-  // ===========================
-  // البطاقة 8: مقارنة التوزيعين (الفترة الأولى × نهاية الفصل)
-  // ===========================
+  // === البطاقة 8: مقارنة التوزيعين (الفترة الأولى × نهاية الفصل) ===
   const card8 = document.createElement("div");
   card8.className = "card";
   card8.innerHTML = `
@@ -392,9 +370,7 @@ function loadData() {
     legend: { orientation: "h", x: 0.25, y: -0.2 }
   });
 
-  // ===========================
-  // البطاقة 9: تفسير النتائج الإحصائية
-  // ===========================
+  // === البطاقة 9: تفسير النتائج الإحصائية ===
   const card9 = document.createElement("div");
   card9.className = "card";
   card9.innerHTML = `
@@ -415,18 +391,10 @@ function loadData() {
   `;
   container.appendChild(card9);
 
-  // ===========================
-  // البطاقة 10: تصنيف الطلاب حسب التقدير (بطاقة واحدة تحتوي على بطاقات فرعية)
-  // ===========================
+  // === البطاقة 10: تصنيف الطلاب حسب التقدير (جداول منفصلة) ===
   const card10 = document.createElement("div");
-  card10.className = "card card10";
-  card10.innerHTML = `
-    <h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>
-    <div class="subcards-container">
-      <div class="subcards-row" id="subcards-row-1"></div>
-      <div class="subcards-row" id="subcards-row-2"></div>
-    </div>
-  `;
+  card10.className = "card";
+  card10.innerHTML = `<h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>`;
   container.appendChild(card10);
 
   const gradeGroups = [
@@ -437,7 +405,7 @@ function loadData() {
     { title: "ضعيف", grades: ["ضعيف"], color: "#e74c3c" }
   ];
 
-  gradeGroups.forEach((group, index) => {
+  gradeGroups.forEach(group => {
     const studentsInGroup = data.filter(s => group.grades.includes(s["التقدير"]));
     if (studentsInGroup.length > 0) {
       const table = `
@@ -445,34 +413,20 @@ function loadData() {
           ${group.title} (${studentsInGroup.length} طلاب)
         </div>
         <table>
-          <thead>
-            <tr>
-              <th>اسم الطالب</th>
-              <th>التقدير</th>
-              <th>المجموع الكلي</th>
-            </tr>
-          </thead>
+          <thead><tr><th>اسم الطالب</th><th>التقدير</th><th>المجموع الكلي</th></tr></thead>
           <tbody>
             ${studentsInGroup.map(s => `<tr><td>${s.student_name}</td><td>${s["التقدير"]}</td><td>${s.total_score}</td></tr>`).join("")}
           </tbody>
         </table>
       `;
       const subCard = document.createElement("div");
-      subCard.className = "sub-card";
+      subCard.className = "card";
       subCard.innerHTML = table;
-      let targetRow;
-      if (index < 3) {
-        targetRow = document.getElementById("subcards-row-1");
-      } else {
-        targetRow = document.getElementById("subcards-row-2");
-      }
-      targetRow.appendChild(subCard);
+      card10.appendChild(subCard);
     }
   });
 
-  // ===========================
-  // البطاقة 11: النسبة المئوية لتوزيع الطلاب حسب التقدير (رسم دائري)
-  // ===========================
+  // === البطاقة 11: الرسم الدائري لتوزيع الطلاب حسب التقدير ===
   const card11 = document.createElement("div");
   card11.className = "card";
   card11.innerHTML = `
@@ -486,8 +440,8 @@ function loadData() {
     "جيد مرتفع", "جيد", "مقبول مرتفع", "مقبول", "ضعيف"
   ];
   const gradeColors11 = [
-    "#1abc9c", "#2ecc71", "#3498db", "#9b59b6",
-    "#f1c40f", "#e67e22", "#e74c3c", "#95a5a6", "#34495e"
+    '#1abc9c', '#2ecc71', '#3498db', '#9b59b6',
+    '#f1c40f', '#e67e22', '#e74c3c', '#95a5a6', '#34495e'
   ];
 
   const gradeCounts11 = {};
@@ -521,9 +475,7 @@ function loadData() {
     legend: { orientation: "h", x: 0, y: -0.2 }
   });
 
-  // ===========================
-  // البطاقة 12: الرسم الكعكي لتوزيع الطلاب حسب الجنسية
-  // ===========================
+  // === البطاقة 12: توزيع الطلاب حسب الجنسية (كعكي) ===
   const card12 = document.createElement("div");
   card12.className = "card";
   card12.innerHTML = `
@@ -544,7 +496,7 @@ function loadData() {
 
   const labels12 = Object.keys(nationalityCounts);
   const values12 = Object.values(nationalityCounts);
-  const colors12 = ["#27ae60", "#c0392b"];
+  const colors12 = ['#27ae60', '#c0392b'];
 
   Plotly.newPlot("nationalityChart", [{
     values: values12,
