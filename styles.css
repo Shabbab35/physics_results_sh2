@@ -48,8 +48,9 @@ th {
   background-color: #eef0f2;
 }
 
-canvas {
+canvas, .plotly-graph-div {
   max-width: 100%;
+  margin-top: 10px;
 }
 
 .grade-header {
