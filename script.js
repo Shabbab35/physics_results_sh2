@@ -117,47 +117,43 @@ function loadData() {
   container.appendChild(card3);
 
   // === البطاقة 4 ===
-// تسجيل الإضافة ChartDataLabels في الأعلى مرة واحدة
-Chart.register(ChartDataLabels);
-
 // === البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير ===
 const card4 = document.createElement("div");
 card4.className = "card";
 card4.innerHTML = `
   <h2>البطاقة 4: الرسم الكعكي لتوزيع الطلاب حسب التقدير</h2>
-  <canvas id="gradeDoughnutChart"></canvas>`;
-container.appendChild(card4); // مهم إضافتها قبل getElementById
+  <canvas id="gradeDoughnutChart" width="400" height="400"></canvas>`;
+container.appendChild(card4);
 
-// التقديرات والألوان حسب الترتيب
-const orderedGrades = [
-  { grade: "ممتاز مرتفع", color: '#1abc9c' },
-  { grade: "ممتاز", color: '#2ecc71' },
-  { grade: "جيد جدًا مرتفع", color: '#3498db' },
-  { grade: "جيد جدًا", color: '#9b59b6' },
-  { grade: "جيد مرتفع", color: '#f1c40f' },
-  { grade: "جيد", color: '#e67e22' },
-  { grade: "مقبول مرتفع", color: '#e74c3c' },
-  { grade: "مقبول", color: '#95a5a6' },
-  { grade: "ضعيف", color: '#34495e' }
-];
+// نستخدم setTimeout لضمان أن العنصر أُدرج فعلاً
+setTimeout(() => {
+  const doughnutLabels = [];
+  const doughnutValues = [];
+  const doughnutColors = [];
 
-// إعداد البيانات للرسم
-const doughnutLabels = [];
-const doughnutValues = [];
-const doughnutColors = [];
+  const orderedGrades = [
+    { grade: "ممتاز مرتفع", color: '#1abc9c' },
+    { grade: "ممتاز", color: '#2ecc71' },
+    { grade: "جيد جدًا مرتفع", color: '#3498db' },
+    { grade: "جيد جدًا", color: '#9b59b6' },
+    { grade: "جيد مرتفع", color: '#f1c40f' },
+    { grade: "جيد", color: '#e67e22' },
+    { grade: "مقبول مرتفع", color: '#e74c3c' },
+    { grade: "مقبول", color: '#95a5a6' },
+    { grade: "ضعيف", color: '#34495e' }
+  ];
 
-orderedGrades.forEach(({ grade, color }) => {
-  const count = gradeCounts[grade] || 0;
-  if (count > 0) {
-    doughnutLabels.push(grade);
-    doughnutValues.push(count);
-    doughnutColors.push(color);
-  }
-});
+  orderedGrades.forEach(({ grade, color }) => {
+    const count = gradeCounts[grade] || 0;
+    if (count > 0) {
+      doughnutLabels.push(grade);
+      doughnutValues.push(count);
+      doughnutColors.push(color);
+    }
+  });
 
-// تحقق من وجود بيانات قبل الرسم
-if (doughnutValues.length > 0) {
   const total = doughnutValues.reduce((a, b) => a + b, 0);
+
   const ctx4 = document.getElementById("gradeDoughnutChart").getContext("2d");
 
   new Chart(ctx4, {
@@ -189,8 +185,6 @@ if (doughnutValues.length > 0) {
     },
     plugins: [ChartDataLabels]
   });
-} else {
-  console.warn("لا توجد بيانات كافية للرسم في البطاقة 4.");
-}
+}, 100); // تأخير بسيط لضمان تحميل العنصر
 
 document.addEventListener("DOMContentLoaded", loadData);
