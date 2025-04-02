@@ -17,7 +17,7 @@ body, #cardsContainer {
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   overflow: hidden;
   box-sizing: border-box;
   margin: 0 auto;
@@ -40,7 +40,7 @@ body, #cardsContainer {
 
 /* تنسيق الجداول داخل البطاقة بحيث لا تمتد إلى أقصى الحواف وتكون في وسط البطاقة */
 .card table {
-  width: 95%;           /* عرض الجدول بنسبة 80% من عرض البطاقة */
+  width: 96%;           /* عرض الجدول بنسبة 96% من عرض البطاقة */
   margin: 0 auto;       /* توسيط الجدول داخل البطاقة */
   border-collapse: collapse;
   table-layout: auto;
@@ -55,7 +55,7 @@ body, #cardsContainer {
 .card table td {
   border: 1px solid #ccc;
   padding: 12px;
-  text-align: right;    /* محاذاة النص إلى اليمين */
+  text-align: right;
   vertical-align: middle;
 }
 
@@ -95,7 +95,7 @@ body, #cardsContainer {
   background-color: #fff;
   border: 1px solid #eee;
   border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   padding: 10px;
   box-sizing: border-box;
 }
