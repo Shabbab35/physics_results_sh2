@@ -229,54 +229,63 @@ function loadData() {
   `;
   container.appendChild(card5);
 
-  // === البطاقة 6: الفترة الأولى – مقارنة التوزيع الفعلي مع التوزيع الطبيعي ===
-  const card6 = document.createElement("div");
-  card6.className = "card";
-  card6.innerHTML = `
-    <h2>البطاقة 6: الفترة الأولى – مقارنة التوزيع الفعلي مع التوزيع الطبيعي</h2>
-    <div id="period1DistributionChart" style="width: 100%; height: 400px;"></div>
-  `;
-  container.appendChild(card6);
+// البطاقة 6: الفترة الأولى – مقارنة التوزيع الفعلي مع التوزيع الطبيعي
+const card6 = document.createElement("div");
+card6.className = "card";
+card6.innerHTML = `
+  <h2>البطاقة 6: الفترة الأولى – مقارنة التوزيع الفعلي مع التوزيع الطبيعي</h2>
+  <div id="period1DistributionChart" style="width: 100%; height: 400px;"></div>
+`;
+container.appendChild(card6);
 
-  // استخدام البيانات الموجودة مسبقاً (period1, p1_mean, p1_std)
-  const actualTrace = {
-    x: period1,
-    type: "histogram",
-    opacity: 0.6,
-    name: "التوزيع الفعلي",
-    marker: { color: '#3498db' },
-    autobinx: false,
-    xbins: {
-      start: 0,
-      end: 60,
-      size: 5
+// تعريف التوزيع الفعلي مع تحويل المحور Y إلى كثافة احتمالية
+const actualTrace = {
+  x: period1,
+  type: "histogram",
+  histnorm: "probability density",  // تحويل المحور Y إلى كثافة احتمالية
+  opacity: 0.6,
+  name: "التوزيع الفعلي",
+  marker: {
+    color: "#3498db",
+    line: {
+      color: "black", // حدود سوداء
+      width: 1      // خط رفيع
     }
-  };
-
-  const normalX = [];
-  const normalY = [];
-  for (let x = 0; x <= 60; x += 1) {
-    const y = (1 / (p1_std * Math.sqrt(2 * Math.PI))) * Math.exp(-Math.pow(x - p1_mean, 2) / (2 * Math.pow(p1_std, 2)));
-    normalX.push(x);
-    normalY.push(y * period1.length * 5);
+  },
+  autobinx: false,
+  xbins: {
+    start: 0,
+    end: 60,
+    size: 5
   }
+};
 
-  const normalTrace = {
-    x: normalX,
-    y: normalY,
-    type: "scatter",
-    mode: "lines",
-    name: "التوزيع الطبيعي",
-    line: { color: 'red', width: 2 }
-  };
+// منحنى التوزيع الطبيعي (يبقى كما هو)
+const normalX = [];
+const normalY = [];
+for (let x = 0; x <= 60; x += 1) {
+  const y = (1 / (p1_std * Math.sqrt(2 * Math.PI))) *
+            Math.exp(-Math.pow(x - p1_mean, 2) / (2 * Math.pow(p1_std, 2)));
+  normalX.push(x);
+  normalY.push(y * period1.length * 5);
+}
 
-  Plotly.newPlot("period1DistributionChart", [actualTrace, normalTrace], {
-    barmode: "overlay",
-    title: "توزيع درجات الفترة الأولى",
-    xaxis: { title: "الدرجة من 60" },
-    yaxis: { title: "عدد الطلاب" },
-    legend: { orientation: "h", x: 0.25, y: -0.2 }
-  });
+const normalTrace = {
+  x: normalX,
+  y: normalY,
+  type: "scatter",
+  mode: "lines",
+  name: "التوزيع الطبيعي",
+  line: { color: "red", width: 2 }
+};
+
+Plotly.newPlot("period1DistributionChart", [actualTrace, normalTrace], {
+  barmode: "overlay",
+  title: "توزيع درجات الفترة الأولى",
+  xaxis: { title: "الدرجة من 60" },
+  yaxis: { title: "الكثافة الاحتمالية" },
+  legend: { orientation: "h", x: 0.25, y: -0.2 }
+});
 
   // === البطاقة 7: نهاية الفصل – مقارنة التوزيع الفعلي مع التوزيع الطبيعي ===
   const card7 = document.createElement("div");
