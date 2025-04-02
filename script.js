@@ -1,3 +1,34 @@
+var student_data = [
+  {
+    student_name: "أحمد",
+    period1_total: 55,
+    final_practical: 30,
+    final_written: 25,
+    assignments: 10,
+    projects: 10,
+    activities: 10,
+    participation: 5,
+    short_written: 5,
+    short_practical: 5,
+    total_score: 100,
+    "التقدير": "ممتاز مرتفع"
+  },
+  {
+    student_name: "محمد",
+    period1_total: 45,
+    final_practical: 20,
+    final_written: 20,
+    assignments: 8,
+    projects: 9,
+    activities: 7,
+    participation: 4,
+    short_written: 4,
+    short_practical: 4,
+    total_score: 85,
+    "التقدير": "جيد"
+  }
+];
+
 function loadData() {
   const data = student_data; // تأكد من تعريف بيانات الطلاب في المتغير global
   const container = document.getElementById("cardsContainer");
