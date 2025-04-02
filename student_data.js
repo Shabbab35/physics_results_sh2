@@ -1,4 +1,4 @@
-const studentData = [
+const student_data = [
   {
     "student_name": "أحمد محمد احمد العمري",
     "student_id": 1149366674,
