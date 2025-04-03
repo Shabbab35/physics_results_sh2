@@ -463,40 +463,71 @@ container.appendChild(card9);
 
 
 
-  // === البطاقة 10: تصنيف الطلاب حسب التقدير (جداول منفصلة) ===
-  const card10 = document.createElement("div");
-  card10.className = "card";
-  card10.innerHTML = `<h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>`;
-  container.appendChild(card10);
+// === البطاقة 10: تصنيف الطلاب حسب التقدير (جداول منفصلة) ===
+const card10 = document.createElement("div");
+card10.className = "card card10";
+card10.innerHTML = `<h2>البطاقة 10: تصنيف الطلاب حسب التقدير</h2>`;
+container.appendChild(card10);
 
-  const gradeGroups = [
-    { title: "ممتاز مرتفع وممتاز", grades: ["ممتاز مرتفع", "ممتاز"], color: "#2ecc71" },
-    { title: "جيد جدًا مرتفع وجيد جدًا", grades: ["جيد جدًا مرتفع", "جيد جدًا"], color: "#3498db" },
-    { title: "جيد مرتفع وجيد", grades: ["جيد مرتفع", "جيد"], color: "#f39c12" },
-    { title: "مقبول مرتفع ومقبول", grades: ["مقبول مرتفع", "مقبول"], color: "#95a5a6" },
-    { title: "ضعيف", grades: ["ضعيف"], color: "#e74c3c" }
-  ];
+// إنشاء الحاوية الداخلية للبطاقة 10 التي ستحتوي على الصفوف
+const subcardsContainer = document.createElement("div");
+subcardsContainer.className = "subcards-container";
+card10.appendChild(subcardsContainer);
 
-  gradeGroups.forEach(group => {
-    const studentsInGroup = data.filter(s => group.grades.includes(s["التقدير"]));
-    if (studentsInGroup.length > 0) {
-      const table = `
-        <div class="grade-header" style="background-color: ${group.color};">
-          ${group.title} (${studentsInGroup.length} طلاب)
-        </div>
-        <table>
-          <thead><tr><th>اسم الطالب</th><th>التقدير</th><th>المجموع الكلي</th></tr></thead>
-          <tbody>
-            ${studentsInGroup.map(s => `<tr><td>${s.student_name}</td><td>${s["التقدير"]}</td><td>${s.total_score}</td></tr>`).join("")}
-          </tbody>
-        </table>
-      `;
-      const subCard = document.createElement("div");
-      subCard.className = "card";
-      subCard.innerHTML = table;
-      card10.appendChild(subCard);
+// إنشاء صف علوي وصف سفلي
+const topRow = document.createElement("div");
+topRow.className = "subcards-row top-row";
+subcardsContainer.appendChild(topRow);
+
+const bottomRow = document.createElement("div");
+bottomRow.className = "subcards-row bottom-row";
+subcardsContainer.appendChild(bottomRow);
+
+const gradeGroups = [
+  { title: "ممتاز مرتفع وممتاز", grades: ["ممتاز مرتفع", "ممتاز"], color: "#2ecc71" },
+  { title: "جيد جدًا مرتفع وجيد جدًا", grades: ["جيد جدًا مرتفع", "جيد جدًا"], color: "#3498db" },
+  { title: "جيد مرتفع وجيد", grades: ["جيد مرتفع", "جيد"], color: "#f39c12" },
+  { title: "مقبول مرتفع ومقبول", grades: ["مقبول مرتفع", "مقبول"], color: "#95a5a6" },
+  { title: "ضعيف", grades: ["ضعيف"], color: "#e74c3c" }
+];
+
+gradeGroups.forEach((group, index) => {
+  const studentsInGroup = data.filter(s => group.grades.includes(s["التقدير"]));
+  if (studentsInGroup.length > 0) {
+    const tableHTML = `
+      <div class="grade-header" style="background-color: ${group.color};">
+        ${group.title} (${studentsInGroup.length} طلاب)
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>اسم الطالب</th>
+            <th>التقدير</th>
+            <th>المجموع الكلي</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${studentsInGroup.map(s => `<tr>
+              <td>${s.student_name}</td>
+              <td>${s["التقدير"]}</td>
+              <td>${s.total_score}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+    `;
+    // ننشئ بطاقة فرعية جديدة
+    const subCard = document.createElement("div");
+    subCard.className = "sub-card";
+    subCard.innerHTML = tableHTML;
+    // توزيع البطاقات: الثلاثة الأولى في الصف العلوي، والباقي في الصف السفلي
+    if (index < 3) {
+      topRow.appendChild(subCard);
+    } else {
+      bottomRow.appendChild(subCard);
     }
-  });
+  }
+});
+  
 
   // === البطاقة 11: الرسم الدائري لتوزيع الطلاب حسب التقدير ===
   const card11 = document.createElement("div");
