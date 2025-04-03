@@ -300,7 +300,7 @@ Plotly.newPlot("period1DistributionChart", [actualTrace, normalTrace], {
 });
 
   
-// === البطاقة 7: نهاية الفصل – مقارنة التوزيع الفعلي مع التوزيع الطبيعي ===
+// === البطاقة 7: نهاية الفصل – مقارنة التوزيع الفعلي مع التوزيع الطبيعي باستخدام محورين ===
 const card7 = document.createElement("div");
 card7.className = "card";
 card7.innerHTML = `
@@ -309,15 +309,15 @@ card7.innerHTML = `
 `;
 container.appendChild(card7);
 
-// نستخدم histnorm: "density" ليصبح عرض الهيستوغرام كثافة احتمالية
+// التوزيع الفعلي: عرض عدد الطلاب في كل فئة (هيستوغرام) على المحور الأيسر
 const finalActualTrace = {
   x: final,
   type: "histogram",
-  histnorm: "density",
+  histnorm: "count", // استخدام العدد الفعلي للطلاب
   opacity: 0.6,
-  name: "التوزيع الفعلي",
+  name: "عدد الطلاب",
   marker: {
-    color: "#e74c3c",  // لون مختلف للتمييز عن البطاقة 6 (يمكن تغييره إذا رغبت)
+    color: "#e74c3c",
     line: {
       color: "black",  // حدود سوداء
       width: 1         // خط رفيع
@@ -327,11 +327,12 @@ const finalActualTrace = {
   xbins: {
     start: 0,
     end: 40,
-    size: 5         // حجم البِن يحدد عرض الأعمدة
+    size: 5
   }
 };
 
 // حساب منحنى التوزيع الطبيعي (PDF) لدرجات نهاية الفصل
+// نستخدم صيغة PDF القياسية دون ضرب إضافي
 const finalNormalX = [];
 const finalNormalY = [];
 for (let x = 0; x <= 40; x += 1) {
@@ -346,16 +347,29 @@ const finalNormalTrace = {
   y: finalNormalY,
   type: "scatter",
   mode: "lines",
-  name: "التوزيع الطبيعي",
-  line: { color: "red", width: 2 }
+  name: "الكثافة الاحتمالية (PDF)",
+  line: { color: "red", width: 2 },
+  yaxis: "y2" // سيتم رسمه على المحور الثاني (الأيمن)
 };
 
+// رسم الشكل باستخدام Plotly بمحور مزدوج
 Plotly.newPlot("finalDistributionChart", [finalActualTrace, finalNormalTrace], {
   barmode: "overlay",
   title: "توزيع درجات نهاية الفصل",
   xaxis: { title: "الدرجة من 40" },
-  yaxis: { title: "الكثافة الاحتمالية", autorange: true },
-  legend: { orientation: "h", x: 0.25, y: -0.2 }
+  yaxis: {
+    title: "عدد الطلاب"
+  },
+  yaxis2: {
+    title: "الكثافة الاحتمالية (PDF)",
+    overlaying: "y",
+    side: "right"
+  },
+  legend: {
+    orientation: "h",
+    x: 0.25,
+    y: -0.2
+  }
 });
   
 
