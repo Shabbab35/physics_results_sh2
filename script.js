@@ -230,7 +230,7 @@ function loadData() {
   container.appendChild(card5);
 
 
-  // === البطاقة 6: الفترة الأولى – مقارنة التوزيع الفعلي مع التوزيع الطبيعي ===
+// === البطاقة 6: الفترة الأولى – مقارنة التوزيع الفعلي مع التوزيع الطبيعي (محوران) ===
 const card6 = document.createElement("div");
 card6.className = "card";
 card6.innerHTML = `
@@ -239,11 +239,11 @@ card6.innerHTML = `
 `;
 container.appendChild(card6);
 
-// التوزيع الفعلي
+// التوزيع الفعلي: عدد الطلاب في كل فئة
 const actualTrace = {
   x: period1,
   type: "histogram",
-  histnorm: "density",   // يجعل المساحة تحت الأعمدة = 1
+  // histnorm: "count",  // القيمة الافتراضية هي count
   opacity: 0.6,
   name: "التوزيع الفعلي",
   marker: {
@@ -261,34 +261,40 @@ const actualTrace = {
   }
 };
 
-// منحنى التوزيع الطبيعي (بدون ضرب في حجم البِن)
+// حساب منحنى التوزيع الطبيعي (PDF)
 const normalX = [];
 const normalY = [];
 for (let x = 0; x <= 60; x += 1) {
   const pdf = (1 / (p1_std * Math.sqrt(2 * Math.PI))) *
               Math.exp(-Math.pow(x - p1_mean, 2) / (2 * Math.pow(p1_std, 2)));
   normalX.push(x);
-  // لا نضرب في period1.length أو binSize
   normalY.push(pdf);
 }
 
+// منحنى التوزيع الطبيعي يُرسم على المحور الثاني (yaxis2)
 const normalTrace = {
   x: normalX,
   y: normalY,
   type: "scatter",
   mode: "lines",
-  name: "التوزيع الطبيعي",
-  line: { color: "red", width: 2 }
+  name: "التوزيع الطبيعي (PDF)",
+  line: { color: "red", width: 2 },
+  yaxis: "y2" // استخدم المحور الثاني
 };
 
-// الرسم
 Plotly.newPlot("period1DistributionChart", [actualTrace, normalTrace], {
   barmode: "overlay",
   title: "توزيع درجات الفترة الأولى",
   xaxis: { title: "الدرجة من 60" },
+  // المحور الأول (يسار) للهيستوغرام: عدد الطلاب
   yaxis: {
-    title: "الكثافة الاحتمالية",
-    autorange: true  // اجعل Plotly يختار النطاق المناسب
+    title: "عدد الطلاب" 
+  },
+  // المحور الثاني (يمين) للمنحنى: الكثافة الاحتمالية (PDF)
+  yaxis2: {
+    title: "الكثافة الاحتمالية (PDF)",
+    overlaying: "y",   // اجعله فوق نفس الرسم
+    side: "right"      // عرضه في الجانب الأيمن
   },
   legend: { orientation: "h", x: 0.25, y: -0.2 }
 });
