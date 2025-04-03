@@ -300,54 +300,64 @@ Plotly.newPlot("period1DistributionChart", [actualTrace, normalTrace], {
 });
 
   
-  // === البطاقة 7: نهاية الفصل – مقارنة التوزيع الفعلي مع التوزيع الطبيعي ===
-  const card7 = document.createElement("div");
-  card7.className = "card";
-  card7.innerHTML = `
-    <h2>البطاقة 7: نهاية الفصل – مقارنة التوزيع الفعلي مع التوزيع الطبيعي</h2>
-    <div id="finalDistributionChart" style="width: 100%; height: 400px;"></div>
-  `;
-  container.appendChild(card7);
+// === البطاقة 7: نهاية الفصل – مقارنة التوزيع الفعلي مع التوزيع الطبيعي ===
+const card7 = document.createElement("div");
+card7.className = "card";
+card7.innerHTML = `
+  <h2>البطاقة 7: نهاية الفصل – مقارنة التوزيع الفعلي مع التوزيع الطبيعي</h2>
+  <div id="finalDistributionChart" style="width: 100%; height: 400px;"></div>
+`;
+container.appendChild(card7);
 
-  // استخدام البيانات الموجودة مسبقاً (final, f_mean, f_std)
-  const finalActualTrace = {
-    x: final,
-    type: "histogram",
-    opacity: 0.6,
-    name: "التوزيع الفعلي",
-    marker: { color: '#9b59b6' },
-    autobinx: false,
-    xbins: {
-      start: 0,
-      end: 40,
-      size: 5
+// نستخدم histnorm: "density" ليصبح عرض الهيستوغرام كثافة احتمالية
+const finalActualTrace = {
+  x: final,
+  type: "histogram",
+  histnorm: "density",
+  opacity: 0.6,
+  name: "التوزيع الفعلي",
+  marker: {
+    color: "#e74c3c",  // لون مختلف للتمييز عن البطاقة 6 (يمكن تغييره إذا رغبت)
+    line: {
+      color: "black",  // حدود سوداء
+      width: 1         // خط رفيع
     }
-  };
-
-  const finalNormalX = [];
-  const finalNormalY = [];
-  for (let x = 0; x <= 40; x += 1) {
-    const y = (1 / (f_std * Math.sqrt(2 * Math.PI))) * Math.exp(-Math.pow(x - f_mean, 2) / (2 * Math.pow(f_std, 2)));
-    finalNormalX.push(x);
-    finalNormalY.push(y * final.length * 5);
+  },
+  autobinx: false,
+  xbins: {
+    start: 0,
+    end: 40,
+    size: 5         // حجم البِن يحدد عرض الأعمدة
   }
+};
 
-  const finalNormalTrace = {
-    x: finalNormalX,
-    y: finalNormalY,
-    type: "scatter",
-    mode: "lines",
-    name: "التوزيع الطبيعي",
-    line: { color: 'red', width: 2 }
-  };
+// حساب منحنى التوزيع الطبيعي (PDF) لدرجات نهاية الفصل
+const finalNormalX = [];
+const finalNormalY = [];
+for (let x = 0; x <= 40; x += 1) {
+  const pdf = (1 / (f_std * Math.sqrt(2 * Math.PI))) *
+              Math.exp(-Math.pow(x - f_mean, 2) / (2 * Math.pow(f_std, 2)));
+  finalNormalX.push(x);
+  finalNormalY.push(pdf);
+}
 
-  Plotly.newPlot("finalDistributionChart", [finalActualTrace, finalNormalTrace], {
-    barmode: "overlay",
-    title: "توزيع درجات نهاية الفصل",
-    xaxis: { title: "الدرجة من 40" },
-    yaxis: { title: "عدد الطلاب" },
-    legend: { orientation: "h", x: 0.25, y: -0.2 }
-  });
+const finalNormalTrace = {
+  x: finalNormalX,
+  y: finalNormalY,
+  type: "scatter",
+  mode: "lines",
+  name: "التوزيع الطبيعي",
+  line: { color: "red", width: 2 }
+};
+
+Plotly.newPlot("finalDistributionChart", [finalActualTrace, finalNormalTrace], {
+  barmode: "overlay",
+  title: "توزيع درجات نهاية الفصل",
+  xaxis: { title: "الدرجة من 40" },
+  yaxis: { title: "الكثافة الاحتمالية", autorange: true },
+  legend: { orientation: "h", x: 0.25, y: -0.2 }
+});
+  
 
   // === البطاقة 8: مقارنة التوزيعين (الفترة الأولى × نهاية الفصل) ===
   const card8 = document.createElement("div");
