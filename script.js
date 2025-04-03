@@ -239,17 +239,17 @@ card6.innerHTML = `
 `;
 container.appendChild(card6);
 
-// استخدم histnorm: "density"
+// توزيع الفترة الأولى
 const actualTrace = {
   x: period1,
   type: "histogram",
-  histnorm: "density",  
+  histnorm: "density",  // استخدام "density"
   opacity: 0.6,
   name: "التوزيع الفعلي",
   marker: {
     color: "#3498db",
     line: {
-      color: "black",
+      color: "black", // حدود سوداء
       width: 1
     }
   },
@@ -257,18 +257,19 @@ const actualTrace = {
   xbins: {
     start: 0,
     end: 60,
-    size: 5
+    size: 5  // حجم البِن
   }
 };
 
-// حساب منحنى التوزيع الطبيعي مع تعديل معامل الضرب
+// حساب منحنى التوزيع الطبيعي (PDF مضروب في حجم البِن)
+const binSize = 5;
 const normalX = [];
 const normalY = [];
 for (let x = 0; x <= 60; x += 1) {
-  const y = (1 / (p1_std * Math.sqrt(2 * Math.PI))) *
-            Math.exp(-Math.pow(x - p1_mean, 2) / (2 * Math.pow(p1_std, 2)));
+  const pdf = (1 / (p1_std * Math.sqrt(2 * Math.PI))) *
+              Math.exp(-Math.pow(x - p1_mean, 2) / (2 * Math.pow(p1_std, 2)));
   normalX.push(x);
-  normalY.push(y * period1.length * 5); // جرب تعديل المعامل 5 إذا لزم الأمر
+  normalY.push(pdf * binSize); // ضرب PDF في حجم البِن (5)
 }
 
 const normalTrace = {
@@ -284,10 +285,14 @@ Plotly.newPlot("period1DistributionChart", [actualTrace, normalTrace], {
   barmode: "overlay",
   title: "توزيع درجات الفترة الأولى",
   xaxis: { title: "الدرجة من 60" },
-  yaxis: { title: "الكثافة الاحتمالية", range: [0, 0.3] },
+  yaxis: {
+    title: "الكثافة الاحتمالية",
+    autorange: true    // اجعل النطاق تلقائياً أو حدده يدوياً إذا لزم الأمر
+  },
   legend: { orientation: "h", x: 0.25, y: -0.2 }
 });
 
+  
   // === البطاقة 7: نهاية الفصل – مقارنة التوزيع الفعلي مع التوزيع الطبيعي ===
   const card7 = document.createElement("div");
   card7.className = "card";
