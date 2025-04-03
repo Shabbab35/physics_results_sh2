@@ -73,13 +73,11 @@ body, #cardsContainer {
   min-height: 400px;
 }
 
-/* ------------------------- */
+
 /* تنسيق خاص للبطاقة 10 */
-/* ------------------------- */
 .card10 {
   width: 100%;
 }
-
 
 /* الحاوية الداخلية للبطاقة 10 */
 .card10 .subcards-container {
@@ -89,29 +87,33 @@ body, #cardsContainer {
   padding: 15px;
 }
 
-/* صفوف البطاقات الفرعية */
+/* تنسيق صفوف البطاقات الفرعية */
 .card10 .subcards-row {
   display: flex;
   gap: 10px;
 }
 
-/* التنسيق للصف العلوي: 3 بطاقات فرعية */
+/* الصف العلوي: ثلاث بطاقات فرعية */
 .card10 .subcards-row.top-row .sub-card {
   flex: 0 0 calc(33.33% - 10px);
+  padding: 8px;
+  font-size: 0.9rem;
 }
 
-/* التنسيق للصف السفلي: 2 بطاقات فرعية */
+/* الصف السفلي: بطاقتان فرعيتان */
 .card10 .subcards-row.bottom-row .sub-card {
   flex: 0 0 calc(50% - 10px);
+  padding: 8px;
+  font-size: 0.9rem;
 }
 
-/* تنسيق البطاقات الفرعية داخل البطاقة 10 */
+/* تنسيق البطاقات الفرعية العامة */
 .card10 .sub-card {
   background-color: #fff;
   border: 1px solid #eee;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  padding: 10px;
   box-sizing: border-box;
-  text-align: center;  /* توسيط النص داخل البطاقات الفرعية */
+  text-align: center;
 }
+
