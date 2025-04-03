@@ -229,7 +229,8 @@ function loadData() {
   `;
   container.appendChild(card5);
 
-// البطاقة 6: الفترة الأولى – مقارنة التوزيع الفعلي مع التوزيع الطبيعي
+
+  // البطاقة 6: الفترة الأولى – مقارنة التوزيع الفعلي مع التوزيع الطبيعي
 const card6 = document.createElement("div");
 card6.className = "card";
 card6.innerHTML = `
@@ -238,18 +239,18 @@ card6.innerHTML = `
 `;
 container.appendChild(card6);
 
-// تعريف التوزيع الفعلي مع تحويل المحور Y إلى كثافة احتمالية
+// استخدم histnorm: "density"
 const actualTrace = {
   x: period1,
   type: "histogram",
-  histnorm: "probability density",  // تحويل المحور Y إلى كثافة احتمالية
+  histnorm: "density",  
   opacity: 0.6,
   name: "التوزيع الفعلي",
   marker: {
     color: "#3498db",
     line: {
-      color: "black", // حدود سوداء
-      width: 1      // خط رفيع
+      color: "black",
+      width: 1
     }
   },
   autobinx: false,
@@ -260,14 +261,14 @@ const actualTrace = {
   }
 };
 
-// منحنى التوزيع الطبيعي (يبقى كما هو)
+// حساب منحنى التوزيع الطبيعي مع تعديل معامل الضرب
 const normalX = [];
 const normalY = [];
 for (let x = 0; x <= 60; x += 1) {
   const y = (1 / (p1_std * Math.sqrt(2 * Math.PI))) *
             Math.exp(-Math.pow(x - p1_mean, 2) / (2 * Math.pow(p1_std, 2)));
   normalX.push(x);
-  normalY.push(y * period1.length * 5);
+  normalY.push(y * period1.length * 5); // جرب تعديل المعامل 5 إذا لزم الأمر
 }
 
 const normalTrace = {
@@ -283,7 +284,7 @@ Plotly.newPlot("period1DistributionChart", [actualTrace, normalTrace], {
   barmode: "overlay",
   title: "توزيع درجات الفترة الأولى",
   xaxis: { title: "الدرجة من 60" },
-  yaxis: { title: "الكثافة الاحتمالية" },
+  yaxis: { title: "الكثافة الاحتمالية", range: [0, 0.3] },
   legend: { orientation: "h", x: 0.25, y: -0.2 }
 });
 
